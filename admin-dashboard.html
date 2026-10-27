@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Command Center — SastaDeal</title>
+  <script src="_config.js"></script>
+  <style>
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 120;
+      background: var(--bg-glass);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 800;
+      font-size: 1.15rem;
+    }
+    .brand-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--accent), #9f6e3d);
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+    .btn {
+      padding: 7px 13px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn:hover { border-color: var(--accent); }
+    .btn.primary {
+      background: var(--accent);
+      color: var(--accent-text);
+      border-color: transparent;
+      font-weight: 700;
+    }
+    .btn.success {
+      background: var(--green-bg);
+      color: #22c55e;
+      border-color: rgba(22,163,74,0.35);
+    }
+    .btn.danger {
+      background: var(--red-bg);
+      color: #ef4444;
+      border-color: rgba(220,38,38,0.35);
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 18px 16px 80px;
+    }
+
+    /* 11 Admin Navigation Tabs */
+    .admin-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .admin-tab {
+      padding: 9px 15px;
+      border-radius: 9px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.83rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .admin-tab.active {
+      background: var(--accent);
+      color: var(--accent-text);
+      font-weight: 700;
+    }
+
+    /* 10 KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 13px;
+    }
+    .kpi-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .kpi-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    /* Advanced Filter Panel */
+    .filter-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .filter-row-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .input-ctrl, .select-ctrl {
+      padding: 8px 11px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.82rem;
+      outline: none;
+    }
+    .input-ctrl:focus, .select-ctrl:focus { border-color: var(--accent); }
+
+    /* 13+ Status Multi-Select Checkboxes */
+    .status-checks-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-color);
+    }
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      border-radius: 6px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      font-size: 0.74rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .status-chip input { accent-color: var(--accent); }
+
+    /* Filter Stats Row (5 Cards) */
+    .filter-stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .fstat-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 9px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+    }
+
+    /* Sticky Header 16-Column Admin Table */
+    .table-wrap {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: auto;
+      max-height: 70vh;
+      box-shadow: var(--shadow-sm);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.79rem;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.69rem;
+      padding: 11px 8px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+    }
+    thead th:hover { color: var(--accent); }
+    tbody tr { border-bottom: 1px solid var(--border-color); }
+    tbody tr:hover { background: rgba(212, 165, 116, 0.06); }
+    tbody td { padding: 9px 8px; vertical-align: middle; }
+
+    /* Bulk Floating Bar */
+    .bulk-bar {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      background: var(--bg-secondary);
+      border: 2px solid var(--accent);
+      border-radius: 14px;
+      padding: 10px 18px;
+      box-shadow: var(--shadow-lg);
+      display: none;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .bulk-bar.active { display: flex; }
+
+    /* Card View */
+    .cards-grid {
+      display: none;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 14px;
+    }
+    .order-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.74);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      width: 100%;
+      max-width: 620px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: var(--shadow-lg);
+    }
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+    }
+    .field label {
+      display: block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.84rem;
+    }
+    .curr-val {
+      font-size: 0.7rem;
+      color: var(--accent);
+      margin-top: 3px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a href="index.html" class="brand">
+        <div class="brand-badge">SD</div>
+        <span>Admin Command Center</span>
+      </a>
+      <span class="mono" style="font-size:0.75rem;padding:3px 10px;border-radius:999px;background:var(--accent-glow);color:var(--accent);" id="syncTimeLabel">Live</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn" onclick="refreshAdminData()">🔄 Sync Sheet</button>
+      <button class="btn" onclick="runSheetHealthRepair()" title="Fix Ghost Rows, Formulas & Sync Mediators">🛠️ Repair Sheet</button>
+      <button class="btn" onclick="SD.toggleTheme()">🌓</button>
+      <button class="btn danger" onclick="SD.logout()">Logout</button>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- 11 Tabs -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('tabOrders', this)">📦 Orders</button>
+      <button class="admin-tab" onclick="switchAdminTab('tabAddOrder', this)">➕ Add Order</button>
+      <button class="admin-tab" onclick="switchAdminTab('tabPayments', this)">💸 Payments & Batch Payout</button>
+      <button class="admin-tab" onclick="switchAdminTab('tabMediators', this)">🤝 Mediators</button>
+      <button class="admin-tab" onclick="switchAdminTab('tabBuyers', this)">👥 Buyers (Accounts)</button>
+      <button class="admin-tab" onclick="switchAdminTab('tabDeals', this)">🔥 Deals</button>
+      <button class="admin-tab" onclick="switchAdminTab('tabRequests', this)">🔔 Deal Requests <span id="reqCountBadge" class="mono"></span></button>
+      <button class="admin-tab" onclick="switchAdminTab('tabWhatsApp', this)">💬 WhatsApp</button>
+      <button class="admin-tab" onclick="switchAdminTab('tabEmail', this)">📧 Email</button>
+      <button class="admin-tab" onclick="switchAdminTab('tabHighlights', this)">📢 Highlights</button>
+      <button class="admin-tab" onclick="switchAdminTab('tabSettings', this)">⚙️ Settings & Analytics</button>
+    </div>
+
+    <!-- =====================================================================
+         TAB 1: ORDERS MANAGEMENT
+         ===================================================================== -->
+    <section id="tabOrders" class="tab-pane active">
+      <!-- 10 KPI Cards (9 Spec KPIs + Net Commission) -->
+      <div class="kpi-grid">
+        <div class="kpi-card"><span class="kpi-label">Orders</span><div class="kpi-val mono" id="aKpiOrders">0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Price Paid</span><div class="kpi-val mono" id="aKpiPricePaid">₹0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Pending Orders</span><div class="kpi-val mono" style="color:#f59e0b" id="aKpiPending">0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Total Paid (Buyers)</span><div class="kpi-val mono" style="color:#dc2626" id="aKpiTotalPaid">₹0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Total Refund (Med)</span><div class="kpi-val mono" style="color:#16a34a" id="aKpiTotalRefund">₹0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Pay Pending (#)</span><div class="kpi-val mono" style="color:#d97706" id="aKpiPayPending">0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Refunded (#)</span><div class="kpi-val mono" style="color:#22c55e" id="aKpiRefunded">0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Difference (ToGet≠Got)</span><div class="kpi-val mono" style="color:#dc2626" id="aKpiDiff">₹0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Today Orders</span><div class="kpi-val mono" style="color:var(--accent)" id="aKpiToday">0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Net Commission</span><div class="kpi-val mono" style="color:#22c55e" id="aKpiProfit">₹0</div></div>
+      </div>
+
+      <!-- Filter Panel -->
+      <div class="filter-panel">
+        <div class="filter-row-top">
+          <input
+            type="text"
+            id="adminSearch"
+            class="input-ctrl"
+            style="min-width:250px;flex:1;"
+            placeholder="🔍 Search Order ID, OrderNo, Product, Buyer, Mediator, Seller..."
+            oninput="applyAdminFilters()"
+          />
+          <select id="filterMediator" class="select-ctrl" onchange="applyAdminFilters()">
+            <option value="ALL">All Mediators</option>
+          </select>
+          <select id="filterParent" class="select-ctrl" onchange="applyAdminFilters()">
+            <option value="ALL">All Parent Buyers</option>
+          </select>
+          <select id="filterSla" class="select-ctrl" onchange="applyAdminFilters()">
+            <option value="ALL">All SLA Timelines</option>
+            <option value="PENDING_REFUND_ONLY">⏳ Pending Refund (Exclude Got Refund)</option>
+            <option value="READY_TO_PAY">💸 Got Refund & Unpaid to Buyer</option>
+            <option value="STUCK_FORM">⚠️ Stuck >15d Since Refund Form</option>
+            <option value="NO_FORM">📋 Missing Refund Form Date</option>
+          </select>
+
+          <!-- Payment Radio Group -->
+          <div style="display:flex;align-items:center;gap:8px;background:var(--bg-primary);padding:6px 10px;border-radius:8px;border:1px solid var(--border-color);font-size:0.78rem;">
+            <label><input type="radio" name="payRadio" value="ALL" checked onchange="applyAdminFilters()" /> All</label>
+            <label><input type="radio" name="payRadio" value="Paid" onchange="applyAdminFilters()" /> Paid</label>
+            <label><input type="radio" name="payRadio" value="Pending" onchange="applyAdminFilters()" /> Pending</label>
+          </div>
+
+          <button class="btn" onclick="resetAdminFilters()">↺ Reset</button>
+          <button class="btn" id="adminViewBtn" onclick="toggleAdminView()">🗂️ Card View</button>
+          <button class="btn" onclick="exportAdminOrders('csv')">⬇️ CSV</button>
+          <button class="btn" onclick="exportAdminOrders('xls')">📊 XLS</button>
+        </div>
+
+        <!-- Status Checkboxes (13+ Options) -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:0.72rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;">Filter by Order Status (Multi-Select):</span>
+          <div style="display:flex;gap:8px;">
+            <button class="btn" style="padding:2px 8px;font-size:0.7rem;" onclick="toggleAllStatusChecks(true)">Select All</button>
+            <button class="btn" style="padding:2px 8px;font-size:0.7rem;" onclick="toggleAllStatusChecks(false)">Clear All</button>
+          </div>
+        </div>
+        <div class="status-checks-wrap" id="statusCheckboxesContainer"></div>
+      </div>
+
+      <!-- Filter Stats Row (5 Summary Cards for Filtered Results) -->
+      <div class="filter-stats-row">
+        <div class="fstat-box"><span>Filtered Count:</span><strong class="mono" id="fsCount">0</strong></div>
+        <div class="fstat-box"><span>Filtered Price Paid:</span><strong class="mono" id="fsPrice">₹0</strong></div>
+        <div class="fstat-box"><span>Mediator ToGet Sum:</span><strong class="mono" style="color:#16a34a" id="fsMedToGet">₹0</strong></div>
+        <div class="fstat-box"><span>Buyer ToGet Sum:</span><strong class="mono" style="color:var(--accent)" id="fsBuyerToGet">₹0</strong></div>
+        <div class="fstat-box"><span>Filtered Buyer Paid:</span><strong class="mono" style="color:#dc2626" id="fsBuyerPaid">₹0</strong></div>
+      </div>
+
+      <!-- Pagination & Page Size Control -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:10px;">
+        <div style="font-size:0.8rem;color:var(--text-secondary);" id="pageInfoText">Showing orders</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <label style="font-size:0.78rem;color:var(--text-secondary);">Rows:</label>
+          <select id="pageSizeSelect" class="select-ctrl" style="padding:4px 8px;" onchange="adminPage=1;renderAdminOrders()">
+            <option value="100">100 / page</option>
+            <option value="250">250 / page</option>
+            <option value="500">500 / page</option>
+            <option value="99999">Show All</option>
+          </select>
+          <button class="btn" onclick="if(adminPage>1){adminPage--;renderAdminOrders();}">◀ Prev</button>
+          <span class="mono" style="font-size:0.8rem;" id="pageNumIndicator">1</span>
+          <button class="btn" onclick="adminPage++;renderAdminOrders();">Next ▶</button>
+        </div>
+      </div>
+
+      <!-- 16-Column Admin Table -->
+      <div class="table-wrap" id="adminTableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="selectAllOrdersCb" onchange="toggleSelectAllVisible(this.checked)" /></th>
+              <th onclick="sortAdminTable('orderNo')"># ↕</th>
+              <th onclick="sortAdminTable('platformOrderId')">Order ID ↕</th>
+              <th onclick="sortAdminTable('productName')">Product ↕</th>
+              <th onclick="sortAdminTable('accountName')">Account ↕</th>
+              <th onclick="sortAdminTable('mediatorName')">Mediator ↕</th>
+              <th onclick="sortAdminTable('sellerName')">Seller ↕</th>
+              <th onclick="sortAdminTable('orderDate')">Order Date ↕</th>
+              <th onclick="sortAdminTable('pricePaid')">Price ↕</th>
+              <th onclick="sortAdminTable('less')">Less ↕</th>
+              <th onclick="sortAdminTable('buyerLess')">BuyerLess ↕</th>
+              <th onclick="sortAdminTable('toGet')">ToGet ↕</th>
+              <th onclick="sortAdminTable('buyerActualGot')">BuyerGot ↕</th>
+              <th onclick="sortAdminTable('refundDate')">Refund Date ↕</th>
+              <th onclick="sortAdminTable('orderStatus')">Status ↕</th>
+              <th onclick="sortAdminTable('paymentStatus')">Payment ↕</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminTableBody">
+            <tr><td colspan="17" style="text-align:center;padding:40px;color:var(--text-secondary);">Loading all orders...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Card View -->
+      <div class="cards-grid" id="adminCardWrap"></div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 2: ADD NEW ORDER (Admin with Parent->Account->UserID Chain)
+         ===================================================================== -->
+    <section id="tabAddOrder" class="tab-pane">
+      <div style="max-width:880px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:16px;padding:24px;">
+        <h2 style="font-size:1.25rem;margin-bottom:6px;">➕ Add New Order (Admin)</h2>
+        <p style="font-size:0.83rem;color:var(--text-secondary);margin-bottom:14px;">
+          Select Parent ID → Reviewer Account → UserID auto-fills automatically. Or paste an existing Order ID to pre-fill.
+        </p>
+
+        <!-- Smart Pre-fill / Paste Bar -->
+        <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;">
+          <input
+            type="text"
+            id="prefillOrderIdInput"
+            class="input-ctrl mono"
+            style="flex:1;"
+            placeholder="Paste existing PlatformOrderID or Order text snippet to auto-fill..."
+            oninput="adminSmartParseOrder(this.value)"
+          />
+          <button type="button" class="btn" onclick="fetchExistingOrderForPrefill()">🔍 Fetch Existing</button>
+        </div>
+
+        <form id="adminAddOrderForm" onsubmit="submitAdminAddOrder(event)">
+          <div class="field-grid">
+            <div class="field">
+              <label>1. Select Parent Buyer ID</label>
+              <select id="addParentSelect" onchange="onAdminParentChange()"></select>
+            </div>
+            <div class="field">
+              <label>2. Select Reviewer Account *</label>
+              <select id="addAccountSelect" onchange="onAdminAccountChange()" required></select>
+            </div>
+            <div class="field">
+              <label>3. Auto-Filled UserID *</label>
+              <input type="text" id="addUserId" class="mono" required />
+            </div>
+            <div class="field">
+              <label>Platform *</label>
+              <select id="addPlatform" required></select>
+            </div>
+            <div class="field">
+              <label>Platform Order ID *</label>
+              <input type="text" id="addPlatformOrderId" class="mono" placeholder="404-xxxxxxx-xxxxxxx" required />
+            </div>
+            <div class="field">
+              <label>Mediator Name *</label>
+              <select id="addMediator" required></select>
+            </div>
+            <div class="field" style="grid-column:1/-1;">
+              <label>Product Name *</label>
+              <input type="text" id="addProductName" placeholder="Full product name" required />
+            </div>
+            <div class="field">
+              <label>Seller Name</label>
+              <input type="text" id="addSellerName" placeholder="e.g. Appario" />
+            </div>
+            <div class="field">
+              <label>Product Link</label>
+              <input type="url" id="addProductLink" placeholder="https://..." />
+            </div>
+            <div class="field">
+              <label>Deal Contact No</label>
+              <select id="addDealContact"></select>
+            </div>
+            <div class="field">
+              <label>Price Paid (₹) *</label>
+              <input type="number" step="0.01" id="addPricePaid" class="mono" oninput="calcAdminAddMath()" required />
+            </div>
+            <div class="field">
+              <label>Mediator Less (e.g. -200 or +100) *</label>
+              <input type="number" step="0.01" id="addMedLess" class="mono" value="0" oninput="calcAdminAddMath()" required />
+            </div>
+            <div class="field">
+              <label>Buyer Less (Deduction e.g. 200) *</label>
+              <input type="number" step="0.01" id="addBuyerLess" class="mono" value="0" oninput="calcAdminAddMath()" required />
+            </div>
+            <div class="field">
+              <label>Preview: Med ToGet | Buyer ToGet</label>
+              <input type="text" id="addMathPreview" class="mono" readonly value="Med: ₹0 | Buyer: ₹0" style="color:#22c55e;font-weight:700;" />
+            </div>
+            <div class="field">
+              <label>Order Date *</label>
+              <input type="date" id="addOrderDate" required />
+            </div>
+            <div class="field">
+              <label>For Whom</label>
+              <select id="addForWhom">
+                <option value="Buyer">Buyer</option>
+                <option value="Self">Self</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Screenshot (≤200KB Drive Upload)</label>
+              <input type="file" id="addScreenshotFile" accept="image/*" />
+            </div>
+            <div class="field">
+              <label>Remarks (Col U)</label>
+              <input type="text" id="addRemarks" placeholder="Optional remarks" />
+            </div>
+            <div class="field" style="grid-column:1/-1;">
+              <label>Notes</label>
+              <textarea id="addNotes" rows="2"></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn primary" id="adminAddBtn" style="margin-top:18px;width:100%;justify-content:center;padding:12px;">
+            🚀 Create Order & Send Alert
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 3: PAYMENTS & PARENT BUYER BATCH SETTLEMENT
+         ===================================================================== -->
+    <section id="tabPayments" class="tab-pane">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;">
+        <!-- Parent Buyer Batch Settlement Card -->
+        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:16px;padding:20px;">
+          <h3 style="font-size:1.1rem;margin-bottom:6px;">💸 Parent Buyer Batch Payout Ledger</h3>
+          <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:14px;">
+            Groups all <strong>"Got Refund"</strong> orders that are still <strong>Unpaid</strong> by Parent Buyer so you can settle all sub-accounts in 1 click and generate a consolidated WhatsApp receipt.
+          </p>
+          <div id="parentPayoutLedgerList" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+
+        <!-- Payment History Search by Date / Amount -->
+        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:16px;padding:20px;">
+          <h3 style="font-size:1.1rem;margin-bottom:6px;">🔍 Search Paid Orders by Date or Amount</h3>
+          <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+            <input type="date" id="paySearchDate" class="input-ctrl" onchange="renderPaymentSearch()" />
+            <input type="text" id="paySearchQuery" class="input-ctrl" placeholder="Amount (e.g. 439) or Buyer..." oninput="renderPaymentSearch()" style="flex:1;" />
+            <button class="btn" onclick="document.getElementById('paySearchDate').value='';document.getElementById('paySearchQuery').value='';renderPaymentSearch();">Clear</button>
+          </div>
+          <div id="paymentSearchResults" style="max-height:480px;overflow-y:auto;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 4: MEDIATORS MANAGEMENT
+         ===================================================================== -->
+    <section id="tabMediators" class="tab-pane">
+      <div style="display:grid;grid-template-columns:340px 1fr;gap:18px;align-items:start;">
+        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:16px;padding:20px;">
+          <h3 style="margin-bottom:12px;">🤝 Add / Update Mediator</h3>
+          <form onsubmit="submitSaveMediator(event)">
+            <div class="field" style="margin-bottom:10px;"><label>Mediator Name *</label><input type="text" id="medFormName" required /></div>
+            <div class="field" style="margin-bottom:10px;"><label>10-Digit Contact</label><input type="text" id="medFormContact" /></div>
+            <div class="field" style="margin-bottom:10px;"><label>WhatsApp (with 91)</label><input type="text" id="medFormWa" /></div>
+            <div class="field" style="margin-bottom:14px;"><label>Login Password</label><input type="text" id="medFormPass" value="123456" /></div>
+            <button type="submit" class="btn primary" style="width:100%;justify-content:center;">💾 Save Mediator</button>
+          </form>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Mediator Name</th>
+                <th>Contact</th>
+                <th>WhatsApp</th>
+                <th>Password</th>
+                <th>Orders</th>
+                <th>Pending Refund (₹)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="mediatorsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 5: BUYERS / ACCOUNTS MANAGEMENT
+         ===================================================================== -->
+    <section id="tabBuyers" class="tab-pane">
+      <div style="display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start;">
+        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:16px;padding:20px;">
+          <h3 style="margin-bottom:12px;">👤 Add / Edit Account</h3>
+          <form onsubmit="submitSaveAccount(event)">
+            <div class="field" style="margin-bottom:8px;"><label>UserID (e.g. An_Mukesh_937_1) *</label><input type="text" id="accFormUid" class="mono" required /></div>
+            <div class="field" style="margin-bottom:8px;"><label>Reviewer / Buyer Name *</label><input type="text" id="accFormName" required /></div>
+            <div class="field" style="margin-bottom:8px;">
+              <label>Account Type</label>
+              <select id="accFormType"><option value="Main">Main</option><option value="Sub">Sub</option><option value="mediator">mediator</option></select>
+            </div>
+            <div class="field" style="margin-bottom:8px;"><label>Parent_UserID *</label><input type="text" id="accFormParent" class="mono" required /></div>
+            <div class="field" style="margin-bottom:8px;"><label>Mobile</label><input type="text" id="accFormMob" /></div>
+            <div class="field" style="margin-bottom:8px;"><label>Email</label><input type="email" id="accFormEmail" /></div>
+            <div class="field" style="margin-bottom:8px;"><label>Role</label><select id="accFormRole"><option value="buyer">buyer</option><option value="mediator">mediator</option></select></div>
+            <div class="field" style="margin-bottom:8px;"><label>Password *</label><input type="text" id="accFormPass" value="123456789" required /></div>
+            <div class="field" style="margin-bottom:12px;"><label>Amazon Profile Link</label><input type="url" id="accFormProfile" placeholder="https://www.amazon.in/gp/profile/..." /></div>
+            <button type="submit" class="btn primary" style="width:100%;justify-content:center;">💾 Save Account</button>
+          </form>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>UserID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Parent ID</th>
+                <th>Mobile</th>
+                <th>Role</th>
+                <th>Password</th>
+                <th>Profile Link</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="accountsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 6: DEALS MANAGEMENT
+         ===================================================================== -->
+    <section id="tabDeals" class="tab-pane">
+      <div style="display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start;">
+        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:16px;padding:20px;">
+          <h3 style="margin-bottom:12px;">🔥 Post / Edit Deal</h3>
+          <form onsubmit="submitSaveDeal(event)">
+            <input type="hidden" id="dealFormId" />
+            <div class="field" style="margin-bottom:8px;"><label>Deal Title *</label><input type="text" id="dealFormTitle" required /></div>
+            <div class="field" style="margin-bottom:8px;"><label>Platform *</label><select id="dealFormPlat"></select></div>
+            <div class="field" style="margin-bottom:8px;"><label>Product URL</label><input type="url" id="dealFormUrl" /></div>
+            <div class="field" style="margin-bottom:8px;"><label>Price (₹) *</label><input type="number" step="0.01" id="dealFormPrice" required /></div>
+            <div class="field" style="margin-bottom:8px;"><label>Less Amount (₹) *</label><input type="number" step="0.01" id="dealFormLess" value="0" required /></div>
+            <div class="field" style="margin-bottom:8px;"><label>Image URL</label><input type="url" id="dealFormImg" /></div>
+            <div class="field" style="margin-bottom:8px;"><label>Instructions</label><textarea id="dealFormInst" rows="2"></textarea></div>
+            <div class="field" style="margin-bottom:12px;"><label>Status</label><select id="dealFormStatus"><option value="active">active</option><option value="inactive">inactive</option></select></div>
+            <button type="submit" class="btn primary" style="width:100%;justify-content:center;">🚀 Publish Deal</button>
+          </form>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Deal ID</th>
+                <th>Platform</th>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Less</th>
+                <th>You Get</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dealsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 7: DEAL REQUESTS
+         ===================================================================== -->
+    <section id="tabRequests" class="tab-pane">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Request ID</th>
+              <th>Date</th>
+              <th>Buyer Name</th>
+              <th>Mobile</th>
+              <th>Deal Title</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="requestsTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 8: MANUAL WHATSAPP SENDER (With Auto-Fill Order Details)
+         ===================================================================== -->
+    <section id="tabWhatsApp" class="tab-pane">
+      <div style="max-width:680px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:16px;padding:24px;">
+        <h3 style="margin-bottom:8px;">💬 Manual WhatsApp Notification & Receipt Generator</h3>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <input type="text" id="waOrderLookup" class="input-ctrl mono" style="flex:1;" placeholder="Enter OrderNo or PlatformOrderID to auto-fill message..." />
+          <button class="btn" onclick="autoFillNotification('wa')">⚡ Auto-Fill Order</button>
+        </div>
+        <div class="field" style="margin-bottom:12px;">
+          <label>Recipient WhatsApp Number (with 91)</label>
+          <input type="text" id="waRecipient" class="mono" placeholder="919876543210" />
+        </div>
+        <div class="field" style="margin-bottom:14px;">
+          <label>Message Text *</label>
+          <textarea id="waMessageText" rows="6"></textarea>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn primary" style="flex:1;justify-content:center;" onclick="sendManualWa(true)">📲 Open in WhatsApp Web / App</button>
+          <button class="btn" style="flex:1;justify-content:center;" onclick="sendManualWa(false)">🤖 Send via CallMeBot API</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 9: MANUAL EMAIL SENDER
+         ===================================================================== -->
+    <section id="tabEmail" class="tab-pane">
+      <div style="max-width:680px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:16px;padding:24px;">
+        <h3 style="margin-bottom:12px;">📧 Send Email Notification (GmailApp)</h3>
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <input type="text" id="emOrderLookup" class="input-ctrl mono" style="flex:1;" placeholder="Enter OrderNo or PlatformOrderID to auto-fill..." />
+          <button class="btn" onclick="autoFillNotification('email')">⚡ Auto-Fill Order</button>
+        </div>
+        <div class="field" style="margin-bottom:10px;"><label>Recipient Email *</label><input type="email" id="emRecipient" placeholder="buyer@example.com" /></div>
+        <div class="field" style="margin-bottom:10px;"><label>Subject *</label><input type="text" id="emSubject" value="SastaDeal — Order Update" /></div>
+        <div class="field" style="margin-bottom:14px;"><label>Email Body *</label><textarea id="emBody" rows="6"></textarea></div>
+        <button class="btn primary" style="width:100%;justify-content:center;padding:11px;" onclick="sendManualEmail()">📨 Send Email Now</button>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 10: HIGHLIGHTS / ANNOUNCEMENTS
+         ===================================================================== -->
+    <section id="tabHighlights" class="tab-pane">
+      <div style="display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start;">
+        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:16px;padding:20px;">
+          <h3 style="margin-bottom:12px;">📢 Publish Highlight Banner</h3>
+          <form onsubmit="submitSaveHighlight(event)">
+            <div class="field" style="margin-bottom:10px;"><label>Title *</label><input type="text" id="hlTitle" placeholder="📛 Important Notice" required /></div>
+            <div class="field" style="margin-bottom:10px;"><label>Target Role</label><select id="hlRole"><option value="all">All Visitors</option><option value="buyer">Buyers Only</option><option value="mediator">Mediators Only</option></select></div>
+            <div class="field" style="margin-bottom:14px;"><label>Message *</label><textarea id="hlMessage" rows="3" required></textarea></div>
+            <button type="submit" class="btn primary" style="width:100%;justify-content:center;">Publish Highlight</button>
+          </form>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Title</th><th>Message</th><th>Role</th><th>Date</th><th>Action</th></tr>
+            </thead>
+            <tbody id="highlightsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 11: SETTINGS, DATA HEALTH & TOP MEDIATOR ANALYTICS
+         ===================================================================== -->
+    <section id="tabSettings" class="tab-pane">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;">
+        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:16px;padding:20px;">
+          <h3 style="margin-bottom:8px;">🛠️ Sheet Health & Formula Repair Tool</h3>
+          <p style="font-size:0.83rem;color:var(--text-secondary);margin-bottom:14px;">
+            Automatically cleans ghost rows at the bottom of Tracking, fixes any broken <code class="mono">#REF!</code> array formulas, restores missing <code class="mono">ToGet</code> / <code class="mono">BuyerToget</code> formulas, and syncs missing Mediators.
+          </p>
+          <button class="btn primary" onclick="runSheetHealthRepair()">⚡ Run Full Sheet Repair & Sync Now</button>
+        </div>
+
+        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:16px;padding:20px;">
+          <h3 style="margin-bottom:10px;">📊 Top Mediators by Pending Refund Money</h3>
+          <div id="topMediatorsAnalytics"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating Bulk Action Bar -->
+  <div class="bulk-bar" id="bulkActionBar">
+    <strong class="mono" style="color:var(--accent);" id="bulkSelectedCount">0 Selected</strong>
+    <button class="btn success" onclick="executeBulkAction('got_refund')">✓ Bulk Mark Got Refund (Auto ToGet)</button>
+    <button class="btn primary" onclick="executeBulkAction('paid_upi')">💸 Bulk Mark Paid (UPI Today)</button>
+    <select id="bulkCustomStatus" class="select-ctrl">
+      <option value="">Or Choose Status...</option>
+    </select>
+    <button class="btn" onclick="executeBulkAction('custom_status')">Apply Status</button>
+    <button class="btn danger" onclick="clearBulkSelection()">✕ Clear</button>
+  </div>
+
+  <!-- =======================================================================
+       PRE-POPULATED EDIT MODALS (Status, Payment, 6-Step Tracking)
+       ======================================================================= -->
+
+  <!-- 1. Edit Status Modal -->
+  <div class="modal-backdrop" id="modalEditStatus">
+    <div class="modal-box" style="max-width:460px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h3 id="esTitle">Edit Order Status</h3>
+        <button onclick="closeAdminModal('modalEditStatus')" style="background:none;border:none;color:var(--text-secondary);font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
+      <form onsubmit="submitEditStatusModal(event)">
+        <input type="hidden" id="esOrderNo" />
+        <div class="field" style="margin-bottom:12px;">
+          <label>Order Status *</label>
+          <select id="esStatusSelect" required></select>
+          <div class="curr-val" id="esCurrStatus"></div>
+        </div>
+        <div class="field" style="margin-bottom:12px;">
+          <label>Mediator Actual Got (₹)</label>
+          <input type="number" step="0.01" id="esActualGot" class="mono" />
+          <div class="curr-val" id="esCurrActualGot"></div>
+        </div>
+        <div class="field" style="margin-bottom:12px;">
+          <label>Refund Date</label>
+          <input type="date" id="esRefundDate" />
+          <div class="curr-val" id="esCurrRefundDate"></div>
+        </div>
+        <div class="field" style="margin-bottom:16px;">
+          <label>Notes</label>
+          <textarea id="esNotes" rows="2"></textarea>
+          <div class="curr-val" id="esCurrNotes"></div>
+        </div>
+        <button type="submit" class="btn primary" id="esSaveBtn" style="width:100%;justify-content:center;padding:11px;">💾 Update Status</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Edit Payment Modal -->
+  <div class="modal-backdrop" id="modalEditPayment">
+    <div class="modal-box" style="max-width:460px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h3 id="epTitle">Edit Buyer Payment</h3>
+        <button onclick="closeAdminModal('modalEditPayment')" style="background:none;border:none;color:var(--text-secondary);font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
+      <form onsubmit="submitEditPaymentModal(event)">
+        <input type="hidden" id="epOrderNo" />
+        <div class="field" style="margin-bottom:12px;">
+          <label>Payment Status *</label>
+          <select id="epPaymentStatus" required>
+            <option value="Paid">Paid</option>
+            <option value="Pending payment">Pending payment</option>
+          </select>
+          <div class="curr-val" id="epCurrStatus"></div>
+        </div>
+        <div class="field" style="margin-bottom:12px;">
+          <label>Buyer Actual Got (₹) *</label>
+          <input type="number" step="0.01" id="epBuyerActualGot" class="mono" required />
+          <div class="curr-val" id="epCurrBuyerGot"></div>
+        </div>
+        <div class="field" style="margin-bottom:12px;">
+          <label>Payment Method</label>
+          <select id="epPaymentMethod">
+            <option value="UPI">UPI</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="Amazon Pay">Amazon Pay</option>
+            <option value="Cash / Adjustment">Cash / Adjustment</option>
+          </select>
+          <div class="curr-val" id="epCurrMethod"></div>
+        </div>
+        <div class="field" style="margin-bottom:12px;">
+          <label>Payment Date</label>
+          <input type="date" id="epPaymentDate" />
+          <div class="curr-val" id="epCurrDate"></div>
+        </div>
+        <div class="field" style="margin-bottom:16px;">
+          <label>Notes</label>
+          <textarea id="epNotes" rows="2"></textarea>
+        </div>
+        <button type="submit" class="btn primary" id="epSaveBtn" style="width:100%;justify-content:center;padding:11px;">💸 Save Payment & Notify</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Edit 6-Step Tracking & Full Details Modal -->
+  <div class="modal-backdrop" id="modalEditTracking">
+    <div class="modal-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h3 id="etTitle">Edit Tracking & Order Details</h3>
+        <button onclick="closeAdminModal('modalEditTracking')" style="background:none;border:none;color:var(--text-secondary);font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
+      <form onsubmit="submitEditTrackingModal(event)">
+        <input type="hidden" id="etOrderNo" />
+        <div class="field-grid">
+          <div class="field">
+            <label>Order Status</label>
+            <select id="etOrderStatus"></select>
+            <div class="curr-val" id="etCurrStatus"></div>
+          </div>
+          <div class="field">
+            <label>1. Order Date</label>
+            <input type="date" id="etOrderDate" />
+            <div class="curr-val" id="etCurrOrderDate"></div>
+          </div>
+          <div class="field">
+            <label>2. Delivery Date</label>
+            <input type="date" id="etDeliveryDate" />
+            <div class="curr-val" id="etCurrDeliveryDate"></div>
+          </div>
+          <div class="field">
+            <label>3. Review Date</label>
+            <input type="date" id="etReviewDate" />
+            <div class="curr-val" id="etCurrReviewDate"></div>
+          </div>
+          <div class="field">
+            <label>4. Review Live Date</label>
+            <input type="date" id="etReviewLiveDate" />
+            <div class="curr-val" id="etCurrReviewLiveDate"></div>
+          </div>
+          <div class="field">
+            <label>5. Refund Form Date</label>
+            <input type="date" id="etRefundFormDate" />
+            <div class="curr-val" id="etCurrRefundFormDate"></div>
+          </div>
+          <div class="field">
+            <label>6. Refund Date</label>
+            <input type="date" id="etRefundDate" />
+            <div class="curr-val" id="etCurrRefundDate"></div>
+          </div>
+          <div class="field">
+            <label>Price Paid (₹)</label>
+            <input type="number" step="0.01" id="etPricePaid" class="mono" />
+          </div>
+          <div class="field">
+            <label>Mediator Less (₹)</label>
+            <input type="number" step="0.01" id="etLess" class="mono" />
+          </div>
+          <div class="field">
+            <label>Buyer Less (₹)</label>
+            <input type="number" step="0.01" id="etBuyerLess" class="mono" />
+          </div>
+          <div class="field">
+            <label>Mediator Name</label>
+            <input type="text" id="etMediatorName" />
+          </div>
+          <div class="field">
+            <label>Review Link</label>
+            <input type="url" id="etReviewLink" placeholder="https://..." />
+          </div>
+          <div class="field" style="grid-column:1/-1;">
+            <label>Notes</label>
+            <textarea id="etNotes" rows="2"></textarea>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button type="submit" class="btn primary" id="etSaveBtn" style="flex:1;justify-content:center;padding:11px;">💾 Save Full Tracking Changes</button>
+          <button type="button" class="btn danger" onclick="deleteCurrentOrder()">🗑️ Delete Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const adminUser = SD.requireAuth('admin');
+    let allOrders = [];
+    let filteredOrders = [];
+    let allAccounts = [];
+    let allMediators = [];
+    let allDeals = [];
+    let allRequests = [];
+    let allHighlights = [];
+    let selectedOrderNos = new Set();
+
+    let adminView = 'table';
+    let adminSortField = 'orderNo';
+    let adminSortAsc = false;
+    let adminPage = 1;
+
+    document.getElementById('addOrderDate').value = new Date().toISOString().split('T')[0];
+
+    function switchAdminTab(tabId, btn) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function renderAdminDashboard(data) {
+      if (!data || !data.success) return;
+
+      allOrders = data.orders || [];
+      allAccounts = data.accounts || [];
+      allMediators = data.mediators || [];
+      allDeals = data.deals || [];
+      allRequests = data.dealRequests || [];
+      allHighlights = data.highlights || [];
+
+      const statuses = data.dropdowns?.statuses?.length ? data.dropdowns.statuses : SASTADEAL_CONFIG.ORDER_STATUSES;
+      const platforms = data.dropdowns?.platforms?.length ? data.dropdowns.platforms : SASTADEAL_CONFIG.PLATFORMS;
+      const contacts = data.dropdowns?.dealContacts?.length ? data.dropdowns.dealContacts : ['7004984949', '8271066951', '8228953219', '8541902293'];
+
+      // Populate Status Multi-Select Checkboxes (if first load)
+      const stWrap = document.getElementById('statusCheckboxesContainer');
+      if (!stWrap.children.length) {
+        stWrap.innerHTML = statuses.map(s => `
+          <label class="status-chip">
+            <input type="checkbox" class="st-filter-cb" value="${SD.escapeHtml(s.toLowerCase())}" onchange="applyAdminFilters()" />
+            <span>${SD.escapeHtml(s)}</span>
+          </label>
+        `).join('');
+      }
+
+      // Populate Status dropdowns in modals & bulk bar
+      const stOptionsHtml = statuses.map(s => `<option value="${SD.escapeHtml(s)}">${SD.escapeHtml(s)}</option>`).join('');
+      document.getElementById('esStatusSelect').innerHTML = stOptionsHtml;
+      document.getElementById('etOrderStatus').innerHTML = stOptionsHtml;
+      document.getElementById('bulkCustomStatus').innerHTML = `<option value="">Or Choose Status...</option>` + stOptionsHtml;
+
+      // Populate Mediator Filter & Add Order Mediator Dropdown
+      const medNames = Array.from(new Set([...allMediators.map(m => m.name), ...allOrders.map(o => o.mediatorName)].filter(Boolean))).sort();
+      document.getElementById('filterMediator').innerHTML = `<option value="ALL">All Mediators (${medNames.length})</option>` +
+        medNames.map(m => `<option value="${SD.escapeHtml(m)}">${SD.escapeHtml(m)}</option>`).join('');
+      document.getElementById('addMediator').innerHTML = `<option value="Self">Self</option>` +
+        medNames.map(m => `<option value="${SD.escapeHtml(m)}">${SD.escapeHtml(m)}</option>`).join('');
+
+      // Populate Parent Buyer Filter & Add Order Parent->Account Chain
+      const buyerAccs = allAccounts.filter(a => a.role === 'buyer');
+      const parents = Array.from(new Set(buyerAccs.map(a => a.parentUserId || a.userId).filter(Boolean))).sort();
+      document.getElementById('filterParent').innerHTML = `<option value="ALL">All Parent Buyers (${parents.length})</option>` +
+        parents.map(p => {
+          const mainObj = buyerAccs.find(a => a.userId.toLowerCase() === p.toLowerCase());
+          return `<option value="${SD.escapeHtml(p)}">${SD.escapeHtml(mainObj ? `${mainObj.name} (${p})` : p)}</option>`;
+        }).join('');
+
+      document.getElementById('addParentSelect').innerHTML = `<option value="ALL">-- All Buyers --</option>` +
+        parents.map(p => {
+          const mainObj = buyerAccs.find(a => a.userId.toLowerCase() === p.toLowerCase());
+          return `<option value="${SD.escapeHtml(p)}">${SD.escapeHtml(mainObj ? `${mainObj.name} (${p})` : p)}</option>`;
+        }).join('');
+      onAdminParentChange();
+
+      // Populate Platforms & Deal Contacts
+      const platHtml = platforms.map(p => `<option value="${SD.escapeHtml(p)}">${SD.escapeHtml(p)}</option>`).join('');
+      document.getElementById('addPlatform').innerHTML = platHtml;
+      document.getElementById('dealFormPlat').innerHTML = platHtml;
+      document.getElementById('addDealContact').innerHTML = contacts.map(c => `<option value="${SD.escapeHtml(c)}">${SD.escapeHtml(c)}</option>`).join('');
+
+      // Pending Requests badge
+      const pendingReqs = allRequests.filter(r => r.status.toLowerCase() === 'pending').length;
+      document.getElementById('reqCountBadge').textContent = pendingReqs ? `(${pendingReqs})` : '';
+
+      computeGlobalAdminKPIs(allOrders);
+      applyAdminFilters();
+      renderParentPayoutLedger();
+      renderPaymentSearch();
+      renderMediatorsTab();
+      renderBuyersTab();
+      renderDealsTab();
+      renderRequestsTab();
+      renderHighlightsTab();
+      renderTopMediatorsAnalytics();
+    }
+
+    function computeGlobalAdminKPIs(orders) {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      let pricePaidSum = 0;
+      let pendingOrders = 0;
+      let totalPaidToBuyers = 0;
+      let totalMedRefund = 0;
+      let payPendingCount = 0;
+      let refundedCount = 0;
+      let diffSum = 0;
+      let todayCount = 0;
+      let netCommission = 0;
+
+      orders.forEach(o => {
+        const st = String(o.orderStatus || '').toLowerCase();
+        const paySt = String(o.paymentStatus || '').toLowerCase();
+        const isRefunded = st === 'got refund';
+        const isPaid = paySt === 'paid';
+        const isCancelled = st.includes('cancel');
+
+        pricePaidSum += Number(o.pricePaid) || 0;
+        if (o.orderDate === todayStr) todayCount++;
+
+        if (isRefunded) {
+          refundedCount++;
+          const medGot = o.actualGot !== null ? Number(o.actualGot) : Number(o.toGet);
+          totalMedRefund += medGot || 0;
+          if (o.actualGot !== null && Number(o.toGet) !== Number(o.actualGot)) {
+            diffSum += Math.abs(Number(o.toGet) - Number(o.actualGot));
+          }
+          if (!isPaid) payPendingCount++;
+        } else if (!isCancelled) {
+          pendingOrders++;
+        }
+
+        if (isPaid) {
+          const bGot = o.buyerActualGot !== null ? Number(o.buyerActualGot) : Number(o.buyerToGet);
+          totalPaidToBuyers += bGot || 0;
+          if (isRefunded) {
+            const medGot = o.actualGot !== null ? Number(o.actualGot) : Number(o.toGet);
+            netCommission += (medGot - bGot);
+          }
+        }
+      });
+
+      document.getElementById('aKpiOrders').textContent = orders.length.toLocaleString('en-IN');
+      document.getElementById('aKpiPricePaid').textContent = SD.formatCurrency(pricePaidSum);
+      document.getElementById('aKpiPending').textContent = pendingOrders.toLocaleString('en-IN');
+      document.getElementById('aKpiTotalPaid').textContent = SD.formatCurrency(totalPaidToBuyers);
+      document.getElementById('aKpiTotalRefund').textContent = SD.formatCurrency(totalMedRefund);
+      document.getElementById('aKpiPayPending').textContent = payPendingCount.toLocaleString('en-IN');
+      document.getElementById('aKpiRefunded').textContent = refundedCount.toLocaleString('en-IN');
+      document.getElementById('aKpiDiff').textContent = SD.formatCurrency(diffSum);
+      document.getElementById('aKpiToday').textContent = todayCount.toLocaleString('en-IN');
+      document.getElementById('aKpiProfit').textContent = SD.formatCurrency(netCommission);
+    }
+
+    function applyAdminFilters() {
+      const q = document.getElementById('adminSearch').value.trim().toLowerCase();
+      const medVal = document.getElementById('filterMediator').value;
+      const parentVal = document.getElementById('filterParent').value;
+      const slaVal = document.getElementById('filterSla').value;
+      const payRadio = document.querySelector('input[name="payRadio"]:checked')?.value || 'ALL';
+
+      const checkedStatuses = Array.from(document.querySelectorAll('.st-filter-cb:checked')).map(cb => cb.value);
+
+      // Map UserID -> Parent_UserID for fast parent filtering
+      const uidToParent = new Map();
+      allAccounts.forEach(a => uidToParent.set(a.userId.toLowerCase(), (a.parentUserId || a.userId).toLowerCase()));
+
+      filteredOrders = allOrders.filter(o => {
+        const stLow = String(o.orderStatus || '').toLowerCase();
+        const payLow = String(o.paymentStatus || '').toLowerCase();
+
+        if (medVal !== 'ALL' && String(o.mediatorName || '').toLowerCase() !== medVal.toLowerCase()) return false;
+        if (parentVal !== 'ALL') {
+          const pId = uidToParent.get(String(o.userId || '').toLowerCase()) || String(o.userId || '').toLowerCase();
+          if (pId !== parentVal.toLowerCase()) return false;
+        }
+
+        if (checkedStatuses.length > 0 && !checkedStatuses.includes(stLow)) return false;
+
+        if (payRadio === 'Paid' && payLow !== 'paid') return false;
+        if (payRadio === 'Pending' && payLow === 'paid') return false;
+
+        if (slaVal === 'PENDING_REFUND_ONLY' && (stLow === 'got refund' || stLow.includes('cancel'))) return false;
+        if (slaVal === 'READY_TO_PAY' && (stLow !== 'got refund' || payLow === 'paid')) return false;
+        if (slaVal === 'STUCK_FORM') {
+          if (stLow === 'got refund' || !o.refundFormDate) return false;
+          if ((SD.daysBetween(o.refundFormDate) || 0) < 15) return false;
+        }
+        if (slaVal === 'NO_FORM' && (o.refundFormDate || stLow === 'got refund' || stLow.includes('cancel'))) return false;
+
+        if (q) {
+          const hay = `${o.orderNo} ${o.platformOrderId} ${o.productName} ${o.accountName} ${o.mediatorName} ${o.sellerName} ${o.userId} ${o.orderedPlatform} ${o.notes}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      filteredOrders.sort((a, b) => {
+        let vA = a[adminSortField], vB = b[adminSortField];
+        if (['orderNo', 'pricePaid', 'less', 'buyerLess', 'toGet', 'buyerActualGot'].includes(adminSortField)) {
+          vA = Number(vA) || 0;
+          vB = Number(vB) || 0;
+        } else {
+          vA = String(vA || '').toLowerCase();
+          vB = String(vB || '').toLowerCase();
+        }
+        if (vA < vB) return adminSortAsc ? -1 : 1;
+        if (vA > vB) return adminSortAsc ? 1 : -1;
+        return 0;
+      });
+
+      // Update 5 Filter Stats Cards
+      let fPrice = 0, fMedToGet = 0, fBuyerToGet = 0, fBuyerPaid = 0;
+      filteredOrders.forEach(o => {
+        fPrice += Number(o.pricePaid) || 0;
+        fMedToGet += Number(o.toGet) || 0;
+        fBuyerToGet += Number(o.buyerToGet) || 0;
+        if (String(o.paymentStatus || '').toLowerCase() === 'paid') {
+          fBuyerPaid += (o.buyerActualGot !== null ? Number(o.buyerActualGot) : Number(o.buyerToGet)) || 0;
+        }
+      });
+      document.getElementById('fsCount').textContent = filteredOrders.length.toLocaleString('en-IN');
+      document.getElementById('fsPrice').textContent = SD.formatCurrency(fPrice);
+      document.getElementById('fsMedToGet').textContent = SD.formatCurrency(fMedToGet);
+      document.getElementById('fsBuyerToGet').textContent = SD.formatCurrency(fBuyerToGet);
+      document.getElementById('fsBuyerPaid').textContent = SD.formatCurrency(fBuyerPaid);
+
+      adminPage = 1;
+      renderAdminOrders();
+    }
+
+    function resetAdminFilters() {
+      document.getElementById('adminSearch').value = '';
+      document.getElementById('filterMediator').value = 'ALL';
+      document.getElementById('filterParent').value = 'ALL';
+      document.getElementById('filterSla').value = 'ALL';
+      document.querySelector('input[name="payRadio"][value="ALL"]').checked = true;
+      toggleAllStatusChecks(false);
+      applyAdminFilters();
+    }
+
+    function toggleAllStatusChecks(state) {
+      document.querySelectorAll('.st-filter-cb').forEach(cb => cb.checked = state);
+      applyAdminFilters();
+    }
+
+    function sortAdminTable(field) {
+      if (adminSortField === field) adminSortAsc = !adminSortAsc;
+      else { adminSortField = field; adminSortAsc = true; }
+      applyAdminFilters();
+    }
+
+    function renderAdminOrders() {
+      const tbody = document.getElementById('adminTableBody');
+      const cardWrap = document.getElementById('adminCardWrap');
+      const pageSize = Number(document.getElementById('pageSizeSelect').value) || 100;
+
+      const total = filteredOrders.length;
+      const maxPage = Math.max(1, Math.ceil(total / pageSize));
+      if (adminPage > maxPage) adminPage = maxPage;
+
+      const startIdx = (adminPage - 1) * pageSize;
+      const pageSlice = filteredOrders.slice(startIdx, startIdx + pageSize);
+
+      document.getElementById('pageInfoText').textContent = `Showing ${total ? startIdx + 1 : 0}–${Math.min(startIdx + pageSize, total)} of ${total} matching orders`;
+      document.getElementById('pageNumIndicator').textContent = `${adminPage} / ${maxPage}`;
+
+      if (!pageSlice.length) {
+        tbody.innerHTML = `<tr><td colspan="17" style="text-align:center;padding:40px;color:var(--text-secondary);">No orders match your current filters.</td></tr>`;
+        cardWrap.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-secondary);">No orders match your current filters.</div>`;
+        return;
+      }
+
+      tbody.innerHTML = pageSlice.map(o => {
+        const checked = selectedOrderNos.has(String(o.orderNo)) ? 'checked' : '';
+        const buyerGotHtml = SD.formatActualGotHtml(o.buyerActualGot, o.buyerToGet);
+
+        return `
+          <tr>
+            <td><input type="checkbox" class="row-select-cb" value="${o.orderNo}" ${checked} onchange="toggleOrderSelection('${o.orderNo}', this.checked)" /></td>
+            <td class="mono" style="font-weight:800;color:var(--accent);">#${o.orderNo}</td>
+            <td class="mono" onclick="SD.copyText('${SD.escapeHtml(o.platformOrderId)}')" style="cursor:pointer;" title="Click to copy Order ID">
+              ${SD.escapeHtml(o.platformOrderId)} 📋
+            </td>
+            <td style="max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${SD.escapeHtml(o.productName)}">
+              ${SD.escapeHtml(o.productName)}
+            </td>
+            <td>
+              <span style="color:var(--cyan);font-weight:600;">${SD.escapeHtml(o.accountName)}</span>
+              <div class="mono" style="font-size:0.68rem;color:var(--text-muted);">${SD.escapeHtml(o.userId)}</div>
+            </td>
+            <td style="color:#a855f7;font-weight:600;">${SD.escapeHtml(o.mediatorName)}</td>
+            <td>${SD.escapeHtml(o.sellerName || '—')}</td>
+            <td class="mono">${SD.formatDate(o.orderDate)}</td>
+            <td class="mono">${SD.formatCurrency(o.pricePaid)}</td>
+            <td class="mono" style="color:#d97706;font-weight:700;">${SD.formatCurrency(o.less)}</td>
+            <td class="mono" style="color:#dc2626;font-weight:700;">-${SD.formatCurrency(o.buyerLess)}</td>
+            <td class="mono" style="color:#16a34a;font-weight:700;">${SD.formatCurrency(o.toGet)}</td>
+            <td>${buyerGotHtml}</td>
+            <td class="mono">${SD.formatDate(o.refundDate)}</td>
+            <td>${SD.statusBadge(o.orderStatus)}</td>
+            <td>${SD.paymentBadge(o.paymentStatus)}</td>
+            <td style="white-space:nowrap;">
+              <button class="btn" style="padding:4px 7px;" onclick="openEditStatusModal('${o.orderNo}')" title="Edit Status">🔄</button>
+              <button class="btn" style="padding:4px 7px;" onclick="openEditPaymentModal('${o.orderNo}')" title="Edit Payment">💸</button>
+              <button class="btn" style="padding:4px 7px;" onclick="openEditTrackingModal('${o.orderNo}')" title="Edit 6-Step Tracking & Details">✏️</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      cardWrap.innerHTML = pageSlice.map(o => `
+        <div class="order-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="mono" style="font-weight:800;color:var(--accent);">#${o.orderNo} • ${SD.escapeHtml(o.platformOrderId)}</span>
+            ${SD.statusBadge(o.orderStatus)}
+          </div>
+          <div style="font-weight:700;font-size:0.88rem;">${SD.escapeHtml(o.productName)}</div>
+          <div style="font-size:0.78rem;display:flex;justify-content:space-between;">
+            <span style="color:var(--cyan)">👤 ${SD.escapeHtml(o.accountName)} (${SD.escapeHtml(o.userId)})</span>
+            <span style="color:#a855f7">🤝 ${SD.escapeHtml(o.mediatorName)}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:var(--bg-primary);padding:8px;border-radius:8px;text-align:center;">
+            <div><small style="font-size:0.64rem;color:var(--text-muted);display:block;">Price</small><strong class="mono">${SD.formatCurrency(o.pricePaid)}</strong></div>
+            <div><small style="font-size:0.64rem;color:var(--text-muted);display:block;">BuyerLess</small><strong class="mono" style="color:#dc2626">-${SD.formatCurrency(o.buyerLess)}</strong></div>
+            <div><small style="font-size:0.64rem;color:var(--text-muted);display:block;">ToGet</small><strong class="mono" style="color:#16a34a">${SD.formatCurrency(o.toGet)}</strong></div>
+            <div><small style="font-size:0.64rem;color:var(--text-muted);display:block;">BuyerGot</small>${SD.formatActualGotHtml(o.buyerActualGot, o.buyerToGet)}</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            ${SD.paymentBadge(o.paymentStatus)}
+            <div style="display:flex;gap:6px;">
+              <button class="btn" onclick="openEditStatusModal('${o.orderNo}')">🔄 Status</button>
+              <button class="btn" onclick="openEditPaymentModal('${o.orderNo}')">💸 Pay</button>
+              <button class="btn" onclick="openEditTrackingModal('${o.orderNo}')">✏️ Track</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleAdminView() {
+      const btn = document.getElementById('adminViewBtn');
+      const tbl = document.getElementById('adminTableWrap');
+      const crd = document.getElementById('adminCardWrap');
+      if (adminView === 'table') {
+        adminView = 'card';
+        tbl.style.display = 'none';
+        crd.style.display = 'grid';
+        btn.textContent = '📋 Table View';
+      } else {
+        adminView = 'table';
+        tbl.style.display = 'block';
+        crd.style.display = 'none';
+        btn.textContent = '🗂️ Card View';
+      }
+    }
+
+    // ─── BULK SELECTION & ACTIONS ───────────────────────────────────────────
+
+    function toggleOrderSelection(orderNo, isChecked) {
+      if (isChecked) selectedOrderNos.add(String(orderNo));
+      else selectedOrderNos.delete(String(orderNo));
+      updateBulkBarUI();
+    }
+
+    function toggleSelectAllVisible(isChecked) {
+      document.querySelectorAll('.row-select-cb').forEach(cb => {
+        cb.checked = isChecked;
+        if (isChecked) selectedOrderNos.add(String(cb.value));
+        else selectedOrderNos.delete(String(cb.value));
+      });
+      updateBulkBarUI();
+    }
+
+    function clearBulkSelection() {
+      selectedOrderNos.clear();
+      document.querySelectorAll('.row-select-cb').forEach(cb => cb.checked = false);
+      const allCb = document.getElementById('selectAllOrdersCb');
+      if (allCb) allCb.checked = false;
+      updateBulkBarUI();
+    }
+
+    function updateBulkBarUI() {
+      const bar = document.getElementById('bulkActionBar');
+      document.getElementById('bulkSelectedCount').textContent = `${selectedOrderNos.size} Selected`;
+      bar.classList.toggle('active', selectedOrderNos.size > 0);
+    }
+
+    async function executeBulkAction(type) {
+      const nos = Array.from(selectedOrderNos);
+      if (!nos.length) return;
+
+      let payload = { orderNos: nos };
+      if (type === 'got_refund') {
+        payload.bulkMode = 'status';
+        payload.orderStatus = 'Got Refund';
+        payload.autoFillActualGot = true;
+      } else if (type === 'paid_upi') {
+        payload.bulkMode = 'payment';
+        payload.paymentStatus = 'Paid';
+        payload.paymentMethod = 'UPI';
+        payload.autoFillBuyerGot = true;
+      } else if (type === 'custom_status') {
+        const st = document.getElementById('bulkCustomStatus').value;
+        if (!st) { SD.toast('Select a status first', 'warning'); return; }
+        payload.bulkMode = 'status';
+        payload.orderStatus = st;
+      }
+
+      SD.toast(`Updating ${nos.length} orders...`, 'info');
+      const res = await SD.api('bulkUpdateOrders', payload);
+      if (res && res.success) {
+        SD.toast(res.message, 'success');
+        clearBulkSelection();
+        refreshAdminData();
+      } else {
+        SD.toast(res?.error || 'Bulk update failed.', 'error');
+      }
+    }
+
+    // ─── PRE-POPULATED EDIT MODALS ──────────────────────────────────────────
+
+    function closeAdminModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    function openEditStatusModal(orderNo) {
+      const o = allOrders.find(x => String(x.orderNo) === String(orderNo));
+      if (!o) return;
+      document.getElementById('esTitle').textContent = `Edit Status — Order #${o.orderNo}`;
+      document.getElementById('esOrderNo').value = o.orderNo;
+      document.getElementById('esStatusSelect').value = o.orderStatus || 'Order Placed';
+      document.getElementById('esActualGot').value = o.actualGot !== null ? o.actualGot : o.toGet;
+      document.getElementById('esRefundDate').value = o.refundDate || new Date().toISOString().slice(0, 10);
+      document.getElementById('esNotes').value = o.notes || '';
+
+      document.getElementById('esCurrStatus').textContent = `Current: ${o.orderStatus} | ToGet: ₹${o.toGet}`;
+      document.getElementById('esCurrActualGot').textContent = `Current Saved ActualGot: ${o.actualGot !== null ? '₹' + o.actualGot : 'Not set'}`;
+      document.getElementById('esCurrRefundDate').textContent = `Current Refund Date: ${o.refundDate || 'None'}`;
+      document.getElementById('esCurrNotes').textContent = `Current Note: ${o.notes || 'None'}`;
+
+      document.getElementById('modalEditStatus').classList.add('open');
+    }
+
+    async function submitEditStatusModal(e) {
+      e.preventDefault();
+      const btn = document.getElementById('esSaveBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
+      const res = await SD.api('updateOrderStatus', {
+        orderNo: document.getElementById('esOrderNo').value,
+        orderStatus: document.getElementById('esStatusSelect').value,
+        actualGot: document.getElementById('esActualGot').value,
+        refundDate: document.getElementById('esRefundDate').value,
+        notes: document.getElementById('esNotes').value.trim()
+      });
+
+      btn.disabled = false;
+      btn.textContent = '💾 Update Status';
+
+      if (res && res.success) {
+        SD.toast(res.message, 'success');
+        closeAdminModal('modalEditStatus');
+        refreshAdminData();
+      } else {
+        SD.toast(res?.error || 'Update failed.', 'error');
+      }
+    }
+
+    function openEditPaymentModal(orderNo) {
+      const o = allOrders.find(x => String(x.orderNo) === String(orderNo));
+      if (!o) return;
+      document.getElementById('epTitle').textContent = `Edit Payment — Order #${o.orderNo}`;
+      document.getElementById('epOrderNo').value = o.orderNo;
+      document.getElementById('epPaymentStatus').value = String(o.paymentStatus).toLowerCase() === 'paid' ? 'Paid' : 'Pending payment';
+      document.getElementById('epBuyerActualGot').value = o.buyerActualGot !== null ? o.buyerActualGot : o.buyerToGet;
+      document.getElementById('epPaymentMethod').value = o.paymentMethod || 'UPI';
+      document.getElementById('epPaymentDate').value = o.paymentDate || new Date().toISOString().slice(0, 10);
+      document.getElementById('epNotes').value = o.notes || '';
+
+      document.getElementById('epCurrStatus').textContent = `Current: ${o.paymentStatus} | BuyerToGet: ₹${o.buyerToGet}`;
+      document.getElementById('epCurrBuyerGot').textContent = `Current Saved BuyerGot: ${o.buyerActualGot !== null ? '₹' + o.buyerActualGot : 'Not set'}`;
+      document.getElementById('epCurrMethod').textContent = `Current Method: ${o.paymentMethod || 'None'}`;
+      document.getElementById('epCurrDate').textContent = `Current Date: ${o.paymentDate || 'None'}`;
+
+      document.getElementById('modalEditPayment').classList.add('open');
+    }
+
+    async function submitEditPaymentModal(e) {
+      e.preventDefault();
+      const btn = document.getElementById('epSaveBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving Payment...';
+
+      const res = await SD.api('updateOrderPayment', {
+        orderNo: document.getElementById('epOrderNo').value,
+        paymentStatus: document.getElementById('epPaymentStatus').value,
+        buyerActualGot: document.getElementById('epBuyerActualGot').value,
+        paymentMethod: document.getElementById('epPaymentMethod').value,
+        paymentDate: document.getElementById('epPaymentDate').value,
+        notes: document.getElementById('epNotes').value.trim()
+      });
+
+      btn.disabled = false;
+      btn.textContent = '💸 Save Payment & Notify';
+
+      if (res && res.success) {
+        SD.toast(res.message, 'success');
+        closeAdminModal('modalEditPayment');
+        refreshAdminData();
+      } else {
+        SD.toast(res?.error || 'Payment update failed.', 'error');
+      }
+    }
+
+    function openEditTrackingModal(orderNo) {
+      const o = allOrders.find(x => String(x.orderNo) === String(orderNo));
+      if (!o) return;
+      document.getElementById('etTitle').textContent = `Full Edit — Order #${o.orderNo} (${o.platformOrderId})`;
+      document.getElementById('etOrderNo').value = o.orderNo;
+      document.getElementById('etOrderStatus').value = o.orderStatus || 'Order Placed';
+      document.getElementById('etOrderDate').value = o.orderDate || '';
+      document.getElementById('etDeliveryDate').value = o.deliveryDate || '';
+      document.getElementById('etReviewDate').value = o.reviewDate || '';
+      document.getElementById('etReviewLiveDate').value = o.reviewLiveDate || '';
+      document.getElementById('etRefundFormDate').value = o.refundFormDate || '';
+      document.getElementById('etRefundDate').value = o.refundDate || '';
+      document.getElementById('etPricePaid').value = o.pricePaid;
+      document.getElementById('etLess').value = o.less;
+      document.getElementById('etBuyerLess').value = o.buyerLess;
+      document.getElementById('etMediatorName').value = o.mediatorName || '';
+      document.getElementById('etReviewLink').value = o.reviewLink || '';
+      document.getElementById('etNotes').value = o.notes || '';
+
+      document.getElementById('etCurrStatus').textContent = `Current: ${o.orderStatus}`;
+      document.getElementById('etCurrOrderDate').textContent = `Saved: ${o.orderDate || '—'}`;
+      document.getElementById('etCurrDeliveryDate').textContent = `Saved: ${o.deliveryDate || '—'}`;
+      document.getElementById('etCurrReviewDate').textContent = `Saved: ${o.reviewDate || '—'}`;
+      document.getElementById('etCurrReviewLiveDate').textContent = `Saved: ${o.reviewLiveDate || '—'}`;
+      document.getElementById('etCurrRefundFormDate').textContent = `Saved: ${o.refundFormDate || '—'}`;
+      document.getElementById('etCurrRefundDate').textContent = `Saved: ${o.refundDate || '—'}`;
+
+      document.getElementById('modalEditTracking').classList.add('open');
+    }
+
+    async function submitEditTrackingModal(e) {
+      e.preventDefault();
+      const btn = document.getElementById('etSaveBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
+      const res = await SD.api('updateOrderFull', {
+        orderNo: document.getElementById('etOrderNo').value,
+        orderStatus: document.getElementById('etOrderStatus').value,
+        orderDate: document.getElementById('etOrderDate').value,
+        deliveryDate: document.getElementById('etDeliveryDate').value,
+        reviewDate: document.getElementById('etReviewDate').value,
+        reviewLiveDate: document.getElementById('etReviewLiveDate').value,
+        refundFormDate: document.getElementById('etRefundFormDate').value,
+        refundDate: document.getElementById('etRefundDate').value,
+        pricePaid: document.getElementById('etPricePaid').value,
+        less: document.getElementById('etLess').value,
+        buyerLess: document.getElementById('etBuyerLess').value,
+        mediatorName: document.getElementById('etMediatorName').value.trim(),
+        reviewLink: document.getElementById('etReviewLink').value.trim(),
+        notes: document.getElementById('etNotes').value.trim()
+      });
+
+      btn.disabled = false;
+      btn.textContent = '💾 Save Full Tracking Changes';
+
+      if (res && res.success) {
+        SD.toast(res.message, 'success');
+        closeAdminModal('modalEditTracking');
+        refreshAdminData();
+      } else {
+        SD.toast(res?.error || 'Update failed.', 'error');
+      }
+    }
+
+    async function deleteCurrentOrder() {
+      const orderNo = document.getElementById('etOrderNo').value;
+      if (!confirm(`Are you sure you want to permanently delete Order #${orderNo}?`)) return;
+      const res = await SD.api('deleteOrder', { orderNo });
+      if (res && res.success) {
+        SD.toast(res.message, 'success');
+        closeAdminModal('modalEditTracking');
+        refreshAdminData();
+      } else {
+        SD.toast(res?.error || 'Delete failed.', 'error');
+      }
+    }
+
+    // ─── ADD ORDER CHAIN (Parent -> Account -> UserID) ──────────────────────
+
+    function onAdminParentChange() {
+      const parentVal = document.getElementById('addParentSelect').value;
+      const buyerAccs = allAccounts.filter(a => a.role === 'buyer');
+      const filteredAccs = parentVal === 'ALL'
+        ? buyerAccs
+        : buyerAccs.filter(a => (a.parentUserId || a.userId).toLowerCase() === parentVal.toLowerCase());
+
+      const accSel = document.getElementById('addAccountSelect');
+      accSel.innerHTML = filteredAccs.map(a =>
+        `<option value="${SD.escapeHtml(a.name)}" data-uid="${SD.escapeHtml(a.userId)}">${SD.escapeHtml(a.name)} (${SD.escapeHtml(a.userId)})</option>`
+      ).join('');
+      onAdminAccountChange();
+    }
+
+    function onAdminAccountChange() {
+      const sel = document.getElementById('addAccountSelect');
+      const opt = sel.options[sel.selectedIndex];
+      if (opt) {
+        document.getElementById('addUserId').value = opt.getAttribute('data-uid') || '';
+      }
+    }
+
+    function calcAdminAddMath() {
+      const p = parseFloat(document.getElementById('addPricePaid').value) || 0;
+      const medLess = parseFloat(document.getElementById('addMedLess').value) || 0;
+      const bLess = parseFloat(document.getElementById('addBuyerLess').value) || 0;
+      const medToGet = p + medLess;
+      const bToGet = p - Math.abs(bLess);
+      document.getElementById('addMathPreview').value = `Med: ₹${medToGet} | Buyer: ₹${bToGet}`;
+    }
+
+    function adminSmartParseOrder(raw) {
+      if (!raw) return;
+      const amzMatch = raw.match(/\b\d{3}-\d{7}-\d{7}\b/);
+      const fktMatch = raw.match(/\bOD\d{14,22}\b/i);
+      const id = amzMatch?.[0] || fktMatch?.[0];
+      if (id) document.getElementById('addPlatformOrderId').value = id;
+
+      const priceMatch = raw.match(/(?:₹|Rs\.?|INR)\s*([\d,]+(?:\.\d{1,2})?)/i);
+      if (priceMatch && priceMatch[1]) {
+        document.getElementById('addPricePaid').value = priceMatch[1].replace(/,/g, '');
+        calcAdminAddMath();
+      }
+    }
+
+    async function fetchExistingOrderForPrefill() {
+      const q = document.getElementById('prefillOrderIdInput').value.trim();
+      if (!q) return;
+      const res = await SD.api('getOrderByPlatformID', { query: q });
+      if (!res || !res.success || !res.order) {
+        SD.toast('No existing order found for ' + q, 'warning');
+        return;
+      }
+      const o = res.order;
+      document.getElementById('addPlatform').value = o.orderedPlatform || 'Amazon';
+      document.getElementById('addProductName').value = o.productName || '';
+      document.getElementById('addSellerName').value = o.sellerName || '';
+      document.getElementById('addProductLink').value = o.productLink || '';
+      document.getElementById('addPricePaid').value = o.pricePaid || 0;
+      document.getElementById('addMedLess').value = o.less || 0;
+      document.getElementById('addBuyerLess').value = o.buyerLess || 0;
+      document.getElementById('addMediator').value = o.mediatorName || 'Self';
+      calcAdminAddMath();
+      SD.toast(`Pre-filled details from Order #${o.orderNo}`, 'success');
+    }
+
+    async function submitAdminAddOrder(e) {
+      e.preventDefault();
+      const btn = document.getElementById('adminAddBtn');
+      btn.disabled = true;
+      btn.textContent = 'Creating Order...';
+
+      let screenshotUrl = '';
+      const fileInput = document.getElementById('addScreenshotFile');
+      if (fileInput.files && fileInput.files[0]) {
+        try {
+          const compressed = await SD.compressImageFile(fileInput.files[0], 200);
+          const up = await SD.api('uploadScreenshot', compressed);
+          if (up && up.success) screenshotUrl = up.url;
+        } catch (err) {}
+      }
+
+      const res = await SD.api('addOrder', {
+        accountName: document.getElementById('addAccountSelect').value,
+        userId: document.getElementById('addUserId').value,
+        orderedPlatform: document.getElementById('addPlatform').value,
+        platformOrderId: document.getElementById('addPlatformOrderId').value.trim(),
+        mediatorName: document.getElementById('addMediator').value,
+        productName: document.getElementById('addProductName').value.trim(),
+        sellerName: document.getElementById('addSellerName').value.trim(),
+        productLink: document.getElementById('addProductLink').value.trim(),
+        dealContactNo: document.getElementById('addDealContact').value,
+        pricePaid: document.getElementById('addPricePaid').value,
+        less: document.getElementById('addMedLess').value,
+        buyerLess: document.getElementById('addBuyerLess').value,
+        orderDate: document.getElementById('addOrderDate').value,
+        forWhom: document.getElementById('addForWhom').value,
+        orderScreenshot: screenshotUrl,
+        remarks: document.getElementById('addRemarks').value.trim(),
+        notes: document.getElementById('addNotes').value.trim()
+      });
+
+      btn.disabled = false;
+      btn.textContent = '🚀 Create Order & Send Alert';
+
+      if (res && res.success) {
+        SD.toast(res.message, 'success');
+        document.getElementById('addPlatformOrderId').value = '';
+        refreshAdminData();
+      } else {
+        SD.toast(res?.error || 'Failed to add order.', 'error');
+      }
+    }
+
+    // ─── PARENT BUYER BATCH SETTLEMENT & PAYMENT SEARCH ─────────────────────
+
+    function renderParentPayoutLedger() {
+      const container = document.getElementById('parentPayoutLedgerList');
+      const uidMap = new Map();
+      allAccounts.forEach(a => uidMap.set(a.userId.toLowerCase(), a));
+
+      const groups = new Map();
+      allOrders.forEach(o => {
+        const isRefunded = String(o.orderStatus || '').toLowerCase() === 'got refund';
+        const isPaid = String(o.paymentStatus || '').toLowerCase() === 'paid';
+        if (!isRefunded || isPaid) return;
+
+        const acc = uidMap.get(String(o.userId || '').toLowerCase());
+        const parentId = acc ? (acc.parentUserId || acc.userId) : (o.userId || 'Unknown');
+        const mainAcc = uidMap.get(parentId.toLowerCase()) || acc;
+
+        if (!groups.has(parentId)) {
+          groups.set(parentId, {
+            parentId: parentId,
+            parentName: mainAcc ? mainAcc.name : parentId,
+            mobile: mainAcc ? mainAcc.mobile : '',
+            orders: [],
+            totalPayable: 0
+          });
+        }
+        const g = groups.get(parentId);
+        g.orders.push(o);
+        g.totalPayable += Number(o.buyerToGet) || 0;
+      });
+
+      const list = Array.from(groups.values()).sort((a, b) => b.totalPayable - a.totalPayable);
+      if (!list.length) {
+        container.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-secondary);">🎉 All "Got Refund" orders have been paid!</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(g => `
+        <div style="background:var(--bg-primary);border:1px solid var(--border-color);border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+          <div>
+            <div style="font-weight:700;">👤 ${SD.escapeHtml(g.parentName)} <span class="mono" style="font-size:0.75rem;color:var(--accent);">(${SD.escapeHtml(g.parentId)})</span></div>
+            <div style="font-size:0.78rem;color:var(--text-secondary);">
+              ${g.orders.length} Ready Order(s): ${g.orders.map(x => '#' + x.orderNo).slice(0, 6).join(', ')}${g.orders.length > 6 ? '...' : ''}
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <strong class="mono" style="font-size:1.1rem;color:#22c55e;">${SD.formatCurrency(g.totalPayable)}</strong>
+            <button class="btn primary" onclick="settleParentGroup('${SD.escapeHtml(g.parentId)}', '${SD.escapeHtml(g.parentName.replace(/'/g, "\\'"))}', '${SD.escapeHtml(g.mobile)}', [${g.orders.map(x => x.orderNo).join(',')}])">
+              💸 Settle All & WhatsApp
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function settleParentGroup(parentId, parentName, mobile, orderNos) {
+      if (!confirm(`Mark all ${orderNos.length} "Got Refund" orders for ${parentName} as PAID today via UPI?`)) return;
+      const res = await SD.api('batchSettleParentBuyer', {
+        parentName,
+        orderNos,
+        paymentMethod: 'UPI',
+        paymentDate: new Date().toISOString().slice(0, 10)
+      });
+      if (res && res.success) {
+        SD.toast(res.message, 'success');
+        if (res.whatsappReceipt) {
+          SD.openWhatsApp(mobile, res.whatsappReceipt);
+        }
+        refreshAdminData();
+      } else {
+        SD.toast(res?.error || 'Settlement failed.', 'error');
+      }
+    }
+
+    function renderPaymentSearch() {
+      const dt = document.getElementById('paySearchDate').value;
+      const q = document.getElementById('paySearchQuery').value.trim().toLowerCase();
+      const wrap = document.getElementById('paymentSearchResults');
+
+      const paidList = allOrders.filter(o => {
+        if (String(o.paymentStatus || '').toLowerCase() !== 'paid') return false;
+        if (dt && o.paymentDate !== dt) return false;
+        if (q) {
+          const hay = `${o.orderNo} ${o.platformOrderId} ${o.accountName} ${o.userId} ${o.buyerActualGot} ${o.buyerToGet} ${o.paymentMethod}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      }).slice(0, 50);
+
+      if (!paidList.length) {
+        wrap.innerHTML = `<div style="padding:20px;text-align:center;color:var(--text-secondary);">No matching paid records.</div>`;
+        return;
+      }
+
+      wrap.innerHTML = paidList.map(o => `
+        <div style="padding:10px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;">
+          <div>
+            <strong class="mono" style="color:var(--accent);">#${o.orderNo}</strong> • ${SD.escapeHtml(o.accountName)} (${SD.escapeHtml(o.userId)})
+            <div class="mono" style="font-size:0.72rem;color:var(--text-muted);">${SD.escapeHtml(o.platformOrderId)}</div>
+          </div>
+          <div style="text-align:right;">
+            <strong class="mono" style="color:#dc2626;">${SD.formatCurrency(o.buyerActualGot !== null ? o.buyerActualGot : o.buyerToGet)}</strong>
+            <div class="mono" style="font-size:0.7rem;color:var(--text-secondary);">${SD.formatDate(o.paymentDate)} (${SD.escapeHtml(o.paymentMethod || 'UPI')})</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ─── MEDIATORS, BUYERS, DEALS, REQUESTS & HIGHLIGHTS TABS ───────────────
+
+    function renderMediatorsTab() {
+      const tbody = document.getElementById('mediatorsTableBody');
+      tbody.innerHTML = allMediators.map(m => {
+        const mOrders = allOrders.filter(o => String(o.mediatorName || '').toLowerCase() === m.name.toLowerCase());
+        const pendingSum = mOrders
+          .filter(o => String(o.orderStatus || '').toLowerCase() !== 'got refund')
+          .reduce((acc, x) => acc + (Number(x.toGet) || 0), 0);
+
+        return `
+          <tr>
+            <td style="font-weight:700;color:#a855f7;">${SD.escapeHtml(m.name)}</td>
+            <td class="mono">${SD.escapeHtml(m.contact)}</td>
+            <td class="mono">${SD.escapeHtml(m.whatsApp)}</td>
+            <td class="mono">${SD.escapeHtml(m.password)}</td>
+            <td class="mono">${mOrders.length}</td>
+            <td class="mono" style="color:#f59e0b;font-weight:700;">${SD.formatCurrency(pendingSum)}</td>
+            <td>
+              <button class="btn" style="padding:4px 8px;" onclick="fillMedForm('${SD.escapeHtml(m.name.replace(/'/g,"\\'"))}','${SD.escapeHtml(m.contact)}','${SD.escapeHtml(m.whatsApp)}','${SD.escapeHtml(m.password)}')">✏️</button>
+              <button class="btn danger" style="padding:4px 8px;" onclick="removeMediator('${SD.escapeHtml(m.name.replace(/'/g,"\\'"))}')">🗑️</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function fillMedForm(name, contact, wa, pass) {
+      document.getElementById('medFormName').value = name;
+      document.getElementById('medFormContact').value = contact;
+      document.getElementById('medFormWa').value = wa;
+      document.getElementById('medFormPass').value = pass;
+    }
+
+    async function submitSaveMediator(e) {
+      e.preventDefault();
+      const res = await SD.api('saveMediator', {
+        name: document.getElementById('medFormName').value.trim(),
+        contact: document.getElementById('medFormContact').value.trim(),
+        whatsApp: document.getElementById('medFormWa').value.trim(),
+        password: document.getElementById('medFormPass').value.trim()
+      });
+      if (res && res.success) { SD.toast(res.message, 'success'); refreshAdminData(); }
+      else SD.toast(res?.error || 'Error', 'error');
+    }
+
+    async function removeMediator(name) {
+      if (!confirm(`Delete Mediator "${name}"?`)) return;
+      const res = await SD.api('deleteMediator', { name });
+      if (res && res.success) { SD.toast(res.message, 'success'); refreshAdminData(); }
+    }
+
+    function renderBuyersTab() {
+      const tbody = document.getElementById('accountsTableBody');
+      tbody.innerHTML = allAccounts.map(a => `
+        <tr>
+          <td class="mono" style="font-weight:700;color:var(--accent);">${SD.escapeHtml(a.userId)}</td>
+          <td style="font-weight:600;">${SD.escapeHtml(a.name)}</td>
+          <td>${SD.escapeHtml(a.accountType)}</td>
+          <td class="mono">${SD.escapeHtml(a.parentUserId)}</td>
+          <td class="mono">${SD.escapeHtml(a.mobile)}</td>
+          <td>${SD.escapeHtml(a.role)}</td>
+          <td class="mono">${SD.escapeHtml(a.password || '')}</td>
+          <td>${a.profileLink ? `<a href="${SD.escapeHtml(a.profileLink)}" target="_blank" class="btn" style="padding:3px 8px;">🔗 Profile</a>` : '—'}</td>
+          <td>
+            <button class="btn" style="padding:4px 8px;" onclick='fillAccForm(${JSON.stringify(a).replace(/'/g, "&#39;")})'>✏️</button>
+            <button class="btn danger" style="padding:4px 8px;" onclick="removeAccount('${SD.escapeHtml(a.userId)}')">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function fillAccForm(a) {
+      document.getElementById('accFormUid').value = a.userId || '';
+      document.getElementById('accFormName').value = a.name || '';
+      document.getElementById('accFormType').value = a.accountType || 'Main';
+      document.getElementById('accFormParent').value = a.parentUserId || a.userId || '';
+      document.getElementById('accFormMob').value = a.mobile || '';
+      document.getElementById('accFormEmail').value = a.email || '';
+      document.getElementById('accFormRole').value = a.role || 'buyer';
+      document.getElementById('accFormPass').value = a.password || '';
+      document.getElementById('accFormProfile').value = a.profileLink || '';
+    }
+
+    async function submitSaveAccount(e) {
+      e.preventDefault();
+      const res = await SD.api('saveAccount', {
+        userId: document.getElementById('accFormUid').value.trim(),
+        name: document.getElementById('accFormName').value.trim(),
+        accountType: document.getElementById('accFormType').value,
+        parentUserId: document.getElementById('accFormParent').value.trim(),
+        mobile: document.getElementById('accFormMob').value.trim(),
+        email: document.getElementById('accFormEmail').value.trim(),
+        role: document.getElementById('accFormRole').value,
+        password: document.getElementById('accFormPass').value.trim(),
+        profileLink: document.getElementById('accFormProfile').value.trim()
+      });
+      if (res && res.success) { SD.toast(res.message, 'success'); refreshAdminData(); }
+      else SD.toast(res?.error || 'Error', 'error');
+    }
+
+    async function removeAccount(userId) {
+      if (!confirm(`Delete Account ${userId}?`)) return;
+      const res = await SD.api('deleteAccount', { userId });
+      if (res && res.success) { SD.toast(res.message, 'success'); refreshAdminData(); }
+    }
+
+    function renderDealsTab() {
+      const tbody = document.getElementById('dealsTableBody');
+      tbody.innerHTML = allDeals.map(d => `
+        <tr>
+          <td class="mono">${SD.escapeHtml(d.dealId)}</td>
+          <td>${SD.escapeHtml(d.platform)}</td>
+          <td style="font-weight:700;">${SD.escapeHtml(d.title)}</td>
+          <td class="mono">${SD.formatCurrency(d.price)}</td>
+          <td class="mono" style="color:#dc2626">-${SD.formatCurrency(d.lessAmount)}</td>
+          <td class="mono" style="color:#16a34a">${SD.formatCurrency(d.youGet)}</td>
+          <td>${SD.escapeHtml(d.status)}</td>
+          <td>
+            <button class="btn danger" style="padding:4px 8px;" onclick="removeDeal('${SD.escapeHtml(d.dealId)}')">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function submitSaveDeal(e) {
+      e.preventDefault();
+      const res = await SD.api('saveDeal', {
+        dealId: document.getElementById('dealFormId').value.trim(),
+        title: document.getElementById('dealFormTitle').value.trim(),
+        platform: document.getElementById('dealFormPlat').value,
+        productUrl: document.getElementById('dealFormUrl').value.trim(),
+        price: document.getElementById('dealFormPrice').value,
+        lessAmount: document.getElementById('dealFormLess').value,
+        imageUrl: document.getElementById('dealFormImg').value.trim(),
+        instructions: document.getElementById('dealFormInst').value.trim(),
+        status: document.getElementById('dealFormStatus').value
+      });
+      if (res && res.success) {
+        SD.toast(res.message, 'success');
+        document.getElementById('dealFormId').value = '';
+        refreshAdminData();
+      }
+    }
+
+    async function removeDeal(dealId) {
+      if (!confirm('Delete this deal?')) return;
+      const res = await SD.api('deleteDeal', { dealId });
+      if (res && res.success) { SD.toast(res.message, 'success'); refreshAdminData(); }
+    }
+
+    function renderRequestsTab() {
+      const tbody = document.getElementById('requestsTableBody');
+      if (!allRequests.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-secondary);">No deal requests yet.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = allRequests.map(r => `
+        <tr>
+          <td class="mono">${SD.escapeHtml(r.requestId)}</td>
+          <td class="mono">${SD.formatDate(r.timestamp)}</td>
+          <td style="font-weight:700;">${SD.escapeHtml(r.buyerName)}</td>
+          <td class="mono">${SD.escapeHtml(r.buyerMobile)}</td>
+          <td>${SD.escapeHtml(r.dealTitle)}</td>
+          <td>${SD.escapeHtml(r.status)}</td>
+          <td style="display:flex;gap:6px;">
+            <button class="btn" onclick="SD.openWhatsApp('${SD.escapeHtml(r.buyerMobile)}', 'Hi ${SD.escapeHtml(r.buyerName)}, regarding your SastaDeal request for: ${SD.escapeHtml(r.dealTitle.replace(/'/g,""))}')">💬 WhatsApp</button>
+            <button class="btn success" onclick="markRequestHandled('${SD.escapeHtml(r.requestId)}')">✓ Handled</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function markRequestHandled(requestId) {
+      const res = await SD.api('updateDealRequestStatus', { requestId, status: 'handled' });
+      if (res && res.success) { SD.toast(res.message, 'success'); refreshAdminData(); }
+    }
+
+    function renderHighlightsTab() {
+      const tbody = document.getElementById('highlightsTableBody');
+      tbody.innerHTML = allHighlights.map(h => `
+        <tr>
+          <td style="font-weight:700;color:var(--accent);">${SD.escapeHtml(h.title)}</td>
+          <td>${SD.escapeHtml(h.message)}</td>
+          <td>${SD.escapeHtml(h.role)}</td>
+          <td class="mono">${SD.escapeHtml(h.date)}</td>
+          <td><button class="btn danger" style="padding:4px 8px;" onclick="removeHighlight(${h.rowIndex})">🗑️</button></td>
+        </tr>
+      `).join('');
+    }
+
+    async function submitSaveHighlight(e) {
+      e.preventDefault();
+      const res = await SD.api('saveHighlight', {
+        title: document.getElementById('hlTitle').value.trim(),
+        targetRole: document.getElementById('hlRole').value,
+        message: document.getElementById('hlMessage').value.trim()
+      });
+      if (res && res.success) {
+        SD.toast(res.message, 'success');
+        document.getElementById('hlMessage').value = '';
+        refreshAdminData();
+      }
+    }
+
+    async function removeHighlight(rowIndex) {
+      const res = await SD.api('deleteHighlight', { rowIndex });
+      if (res && res.success) { SD.toast(res.message, 'success'); refreshAdminData(); }
+    }
+
+    // ─── MANUAL WHATSAPP & EMAIL AUTO-FILL ──────────────────────────────────
+
+    function autoFillNotification(mode) {
+      const q = document.getElementById(mode === 'wa' ? 'waOrderLookup' : 'emOrderLookup').value.trim().toLowerCase();
+      const o = allOrders.find(x => String(x.orderNo).toLowerCase() === q || String(x.platformOrderId).toLowerCase() === q);
+      if (!o) { SD.toast('Order not found', 'warning'); return; }
+
+      const acc = allAccounts.find(a => a.userId.toLowerCase() === String(o.userId || '').toLowerCase());
+      const msg = [
+        `🛒 *SASTADEAL — ORDER UPDATE (#${o.orderNo})*`,
+        `📦 Product: ${o.productName}`,
+        `🆔 Order ID: ${o.platformOrderId}`,
+        `👤 Account: ${o.accountName} (${o.userId})`,
+        `💵 Price Paid: ₹${o.pricePaid} | Less: -₹${o.buyerLess}`,
+        `💰 Refund To Get: ₹${o.buyerToGet}`,
+        `📊 Status: ${o.orderStatus} | Payment: ${o.paymentStatus}`
+      ].join('\n');
+
+      if (mode === 'wa') {
+        document.getElementById('waRecipient').value = acc?.whatsApp || acc?.mobile || '';
+        document.getElementById('waMessageText').value = msg;
+      } else {
+        document.getElementById('emRecipient').value = acc?.email || '';
+        document.getElementById('emSubject').value = `SastaDeal Update — Order #${o.orderNo} (${o.platformOrderId})`;
+        document.getElementById('emBody').value = msg.replace(/\*/g, '');
+      }
+    }
+
+    async function sendManualWa(openWaWeb) {
+      const phone = document.getElementById('waRecipient').value.trim();
+      const msg = document.getElementById('waMessageText').value.trim();
+      if (!msg) return;
+      if (openWaWeb) {
+        SD.openWhatsApp(phone, msg);
+      } else {
+        const res = await SD.api('sendManualNotification', { channel: 'whatsapp', recipient: phone, message: msg });
+        SD.toast(res?.message || 'Sent', 'success');
+      }
+    }
+
+    async function sendManualEmail() {
+      const recipient = document.getElementById('emRecipient').value.trim();
+      const subject = document.getElementById('emSubject').value.trim();
+      const message = document.getElementById('emBody').value.trim();
+      const res = await SD.api('sendManualNotification', { channel: 'email', recipient, subject, message });
+      if (res && res.success) SD.toast(res.message, 'success');
+      else SD.toast(res?.message || 'Email failed', 'error');
+    }
+
+    // ─── ANALYTICS & SHEET HEALTH REPAIR ────────────────────────────────────
+
+    function renderTopMediatorsAnalytics() {
+      const map = new Map();
+      allOrders.forEach(o => {
+        if (String(o.orderStatus || '').toLowerCase() === 'got refund') return;
+        const m = o.mediatorName || 'Self';
+        map.set(m, (map.get(m) || 0) + (Number(o.toGet) || 0));
+      });
+      const top = Array.from(map.entries()).sort((a, b) => b[1] - a[1]).slice(0, 8);
+      const maxVal = top[0]?.[1] || 1;
+
+      document.getElementById('topMediatorsAnalytics').innerHTML = top.map(([name, amt]) => `
+        <div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:3px;">
+            <strong>${SD.escapeHtml(name)}</strong>
+            <span class="mono" style="color:#f59e0b">${SD.formatCurrency(amt)}</span>
+          </div>
+          <div style="height:7px;background:var(--bg-primary);border-radius:999px;overflow:hidden;">
+            <div style="height:100%;width:${Math.round((amt / maxVal) * 100)}%;background:var(--accent);"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function runSheetHealthRepair() {
+      SD.toast('Running sheet audit & repairing ghost rows/formulas...', 'info');
+      const res = await SD.api('runHealthCheck');
+      if (res && res.success) {
+        SD.toast(res.message, 'success', 7000);
+        refreshAdminData();
+      } else {
+        SD.toast(res?.error || 'Health check failed.', 'error');
+      }
+    }
+
+    function exportAdminOrders(format) {
+      const headers = ['#', 'Order ID', 'Product', 'Account', 'UserID', 'Mediator', 'Seller', 'Order Date', 'Price', 'Less', 'BuyerLess', 'ToGet', 'ActualGot', 'BuyerToGet', 'BuyerGot', 'Refund Date', 'Status', 'Payment', 'Payment Date'];
+      const rows = filteredOrders.map(o => [
+        o.orderNo, o.platformOrderId, o.productName, o.accountName, o.userId,
+        o.mediatorName, o.sellerName, o.orderDate, o.pricePaid, o.less,
+        o.buyerLess, o.toGet, o.actualGot ?? '', o.buyerToGet, o.buyerActualGot ?? '',
+        o.refundDate, o.orderStatus, o.paymentStatus, o.paymentDate
+      ]);
+      const fn = `SastaDeal_Admin_Export_${new Date().toISOString().slice(0,10)}`;
+      if (format === 'csv') SD.exportToCSV(fn, headers, rows);
+      else SD.exportToXLS(fn, headers, rows);
+    }
+
+    function refreshAdminData() {
+      document.getElementById('syncTimeLabel').textContent = 'Syncing...';
+      SD.api('getDashboardData', {}, {
+        useCache: true,
+        onCached: cached => renderAdminDashboard(cached)
+      }).then(fresh => {
+        renderAdminDashboard(fresh);
+        document.getElementById('syncTimeLabel').textContent = 'Synced ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      });
+    }
+
+    refreshAdminData();
+  </script>
+</body>
+</html>
