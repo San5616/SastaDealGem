@@ -10,7 +10,7 @@
 
 const SASTADEAL_CONFIG = {
   // Paste your deployed Google Apps Script Web App URL here:
-  API_URL: 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID_HERE/exec',
+  API_URL: 'https://script.google.com/macros/s/AKfycbwJH7pAV5vrhuEDoWP62AdXkseyESG34GRmYBU74_F7iMFHWpDnPeLGaA1BPktfC7IiDA/exec',
 
   APP_NAME: 'SastaDeal',
   TAGLINE: 'Premium Order & Deal Management Platform',
