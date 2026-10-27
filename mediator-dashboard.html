@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mediator Dashboard — SastaDeal</title>
+  <script src="_config.js"></script>
+  <style>
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-glass);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 800;
+      font-size: 1.15rem;
+    }
+    .brand-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--purple);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+    .med-pill {
+      background: var(--purple-bg);
+      color: #c084fc;
+      border: 1px solid rgba(124,58,237,0.35);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn.primary {
+      background: var(--accent);
+      color: var(--accent-text);
+      border-color: transparent;
+      font-weight: 700;
+    }
+    .btn.danger {
+      background: var(--red-bg);
+      color: #ef4444;
+      border-color: rgba(220,38,38,0.3);
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px 18px 64px;
+    }
+
+    .dash-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+    .dash-tab {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .dash-tab.active {
+      background: var(--accent);
+      color: var(--accent-text);
+      font-weight: 700;
+    }
+
+    /* 8 KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 15px;
+    }
+    .kpi-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .kpi-val {
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .toolbar {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .input-ctrl, .select-ctrl {
+      padding: 9px 12px;
+      border-radius: 9px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .table-wrap {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border-color); }
+    tbody tr:hover { background: rgba(212, 165, 116, 0.05); }
+    tbody td { padding: 10px; vertical-align: middle; }
+
+    .cards-grid {
+      display: none;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 16px;
+    }
+    .order-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      width: 100%;
+      max-width: 520px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 22px;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <a href="index.html" class="brand">
+        <div class="brand-badge">M</div>
+        <span>Mediator Portal</span>
+      </a>
+      <span class="med-pill" id="medNameBadge">🤝 Mediator</span>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn" onclick="refreshMediatorData()">🔄 Sync</button>
+      <button class="btn" onclick="SD.toggleTheme()">🌓</button>
+      <button class="btn danger" onclick="SD.logout()">Logout</button>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div id="medHighlights"></div>
+
+    <div class="dash-tabs">
+      <button class="dash-tab active" onclick="switchMedTab('medOrdersTab', this)">📦 Deal Orders</button>
+      <button class="dash-tab" onclick="switchMedTab('medQueryTab', this)">📩 Contact Admin</button>
+    </div>
+
+    <!-- TAB 1: ORDERS -->
+    <section id="medOrdersTab" class="tab-pane active">
+      <!-- 8 KPI Cards (Exact Mediator Formulas) -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Total Orders</span>
+          <div class="kpi-val mono" id="mKpiTotal">0</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Order Amount</span>
+          <div class="kpi-val mono" id="mKpiAmount">₹0</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Total Less</span>
+          <div class="kpi-val mono" style="color:#d97706" id="mKpiLess">₹0</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Total Refund</span>
+          <div class="kpi-val mono" style="color:#16a34a" id="mKpiRefund">₹0</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Yet to Receive</span>
+          <div class="kpi-val mono" style="color:#f59e0b" id="mKpiYetToReceive">₹0</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Pending Refund (#)</span>
+          <div class="kpi-val mono" style="color:#a855f7" id="mKpiPendingCount">0</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Got Refund (#)</span>
+          <div class="kpi-val mono" style="color:#22c55e" id="mKpiGotCount">0</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Difference (ToGet≠Got)</span>
+          <div class="kpi-val mono" style="color:#dc2626" id="mKpiDiff">₹0</div>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="toolbar">
+        <div style="display:flex;flex-wrap:wrap;gap:10px;flex:1;">
+          <input
+            type="text"
+            id="medSearch"
+            class="input-ctrl"
+            style="min-width:250px;"
+            placeholder="🔍 Search Order ID, Product, Account, Seller..."
+            oninput="applyMedFilters()"
+          />
+          <select id="medStatusFilter" class="select-ctrl" onchange="applyMedFilters()">
+            <option value="ALL">All Statuses</option>
+            <option value="PENDING_REFUND">⏳ Pending Refund (Exclude Refunded)</option>
+            <option value="Got Refund">✓ Got Refund</option>
+            <option value="Refund form filled">Refund form filled</option>
+            <option value="Review Live">Review Live</option>
+            <option value="Reviewed">Reviewed</option>
+            <option value="Product Received">Product Received</option>
+            <option value="Order Placed">Order Placed</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn" id="medViewBtn" onclick="toggleMedView()">🗂️ Card View</button>
+          <button class="btn" onclick="exportMedOrders('csv')">⬇️ CSV</button>
+          <button class="btn" onclick="exportMedOrders('xls')">📊 XLS</button>
+        </div>
+      </div>
+
+      <!-- 13-Column Mediator Table -->
+      <div class="table-wrap" id="medTableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortMedTable('orderNo')">Order No ↕</th>
+              <th onclick="sortMedTable('platformOrderId')">Order ID ↕</th>
+              <th onclick="sortMedTable('accountName')">Account ↕</th>
+              <th onclick="sortMedTable('productName')">Product ↕</th>
+              <th onclick="sortMedTable('sellerName')">Seller ↕</th>
+              <th onclick="sortMedTable('orderDate')">Order Date ↕</th>
+              <th onclick="sortMedTable('refundFormDate')">Refund Form Date ↕</th>
+              <th onclick="sortMedTable('pricePaid')">Price ↕</th>
+              <th onclick="sortMedTable('less')">Less ↕</th>
+              <th onclick="sortMedTable('toGet')">ToGet ↕</th>
+              <th onclick="sortMedTable('actualGot')">Got ↕</th>
+              <th onclick="sortMedTable('orderStatus')">Status ↕</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="medTableBody">
+            <tr><td colspan="13" style="text-align:center;padding:36px;color:var(--text-secondary);">Loading mediator orders...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="cards-grid" id="medCardWrap"></div>
+    </section>
+
+    <!-- TAB 2: QUERY -->
+    <section id="medQueryTab" class="tab-pane">
+      <div style="max-width:680px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:16px;padding:24px;">
+        <h2 style="font-size:1.2rem;margin-bottom:8px;">📩 Send Message / Query to Admin</h2>
+        <form onsubmit="submitMedQuery(event)">
+          <div style="margin-bottom:14px;">
+            <label style="display:block;font-size:0.8rem;color:var(--text-secondary);margin-bottom:6px;">Order ID / Reference</label>
+            <input type="text" id="mqOrderId" class="input-ctrl mono" style="width:100%" placeholder="e.g. 404-2759471-7602761" />
+          </div>
+          <div style="margin-bottom:16px;">
+            <label style="display:block;font-size:0.8rem;color:var(--text-secondary);margin-bottom:6px;">Message *</label>
+            <textarea id="mqMessage" rows="4" class="input-ctrl" style="width:100%" placeholder="Enter your query or settlement update..." required></textarea>
+          </div>
+          <button type="submit" class="btn primary" id="mqBtn" style="width:100%;justify-content:center;padding:12px;">Send to Admin</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Note Modal (📝) -->
+  <div class="modal-backdrop" id="noteModal">
+    <div class="modal-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h3 id="noteModalTitle">Edit Order Note</h3>
+        <button onclick="document.getElementById('noteModal').classList.remove('open')" style="background:none;border:none;color:var(--text-secondary);font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
+      <form onsubmit="saveMedNote(event)">
+        <input type="hidden" id="noteOrderNo" />
+        <textarea id="noteText" rows="4" class="input-ctrl" style="width:100%;margin-bottom:14px;" placeholder="Add note for this order..."></textarea>
+        <button type="submit" class="btn primary" id="noteSaveBtn" style="width:100%;justify-content:center;padding:11px;">💾 Save Note</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Timeline Modal (📊) -->
+  <div class="modal-backdrop" id="medTimelineModal">
+    <div class="modal-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h3 id="medTlTitle">Order Timeline</h3>
+        <button onclick="document.getElementById('medTimelineModal').classList.remove('open')" style="background:none;border:none;color:var(--text-secondary);font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
+      <div id="medTlBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const medUser = SD.requireAuth('mediator');
+    let medOrders = [];
+    let filteredMedOrders = [];
+    let medView = 'table';
+    let medSortField = 'orderNo';
+    let medSortAsc = false;
+
+    function switchMedTab(id, btn) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.dash-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function renderMedPayload(data) {
+      if (!data || !data.success) return;
+      document.getElementById('medNameBadge').textContent = `🤝 ${data.user?.name || medUser.name}`;
+      medOrders = data.orders || [];
+      applyMedFilters();
+    }
+
+    function applyMedFilters() {
+      const q = document.getElementById('medSearch').value.trim().toLowerCase();
+      const st = document.getElementById('medStatusFilter').value;
+
+      filteredMedOrders = medOrders.filter(o => {
+        const lowSt = String(o.orderStatus || '').toLowerCase();
+        if (st === 'PENDING_REFUND') {
+          if (lowSt === 'got refund' || lowSt.includes('cancel')) return false;
+        } else if (st !== 'ALL' && lowSt !== st.toLowerCase()) {
+          return false;
+        }
+        if (q) {
+          const hay = `${o.orderNo} ${o.platformOrderId} ${o.productName} ${o.accountName} ${o.sellerName} ${o.notes}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      filteredMedOrders.sort((a, b) => {
+        let vA = a[medSortField], vB = b[medSortField];
+        if (['orderNo', 'pricePaid', 'less', 'toGet', 'actualGot'].includes(medSortField)) {
+          vA = Number(vA) || 0;
+          vB = Number(vB) || 0;
+        } else {
+          vA = String(vA || '').toLowerCase();
+          vB = String(vB || '').toLowerCase();
+        }
+        if (vA < vB) return medSortAsc ? -1 : 1;
+        if (vA > vB) return medSortAsc ? 1 : -1;
+        return 0;
+      });
+
+      computeMediatorKPIs(filteredMedOrders);
+      renderMedOrders();
+    }
+
+    function computeMediatorKPIs(list) {
+      let orderAmt = 0;
+      let totalLess = 0;
+      let totalRefund = 0;
+      let yetToReceive = 0;
+      let pendingCount = 0;
+      let gotCount = 0;
+      let diffSum = 0;
+
+      list.forEach(o => {
+        const isRefunded = String(o.orderStatus || '').toLowerCase() === 'got refund';
+        const price = Number(o.pricePaid) || 0;
+        const less = Number(o.less) || 0;
+        const toGet = Number(o.toGet) || 0;
+        const actualGot = o.actualGot !== null && o.actualGot !== undefined ? Number(o.actualGot) : toGet;
+
+        orderAmt += price;
+        totalLess += less;
+
+        if (isRefunded) {
+          gotCount++;
+          totalRefund += actualGot;
+          if (o.actualGot !== null && toGet !== actualGot) {
+            diffSum += Math.abs(toGet - actualGot);
+          }
+        } else {
+          pendingCount++;
+          yetToReceive += toGet;
+        }
+      });
+
+      document.getElementById('mKpiTotal').textContent = list.length.toLocaleString('en-IN');
+      document.getElementById('mKpiAmount').textContent = SD.formatCurrency(orderAmt);
+      document.getElementById('mKpiLess').textContent = SD.formatCurrency(totalLess);
+      document.getElementById('mKpiRefund').textContent = SD.formatCurrency(totalRefund);
+      document.getElementById('mKpiYetToReceive').textContent = SD.formatCurrency(yetToReceive);
+      document.getElementById('mKpiPendingCount').textContent = pendingCount.toLocaleString('en-IN');
+      document.getElementById('mKpiGotCount').textContent = gotCount.toLocaleString('en-IN');
+      document.getElementById('mKpiDiff').textContent = SD.formatCurrency(diffSum);
+    }
+
+    function sortMedTable(field) {
+      if (medSortField === field) medSortAsc = !medSortAsc;
+      else { medSortField = field; medSortAsc = true; }
+      applyMedFilters();
+    }
+
+    function renderMedOrders() {
+      const tbody = document.getElementById('medTableBody');
+      const cardWrap = document.getElementById('medCardWrap');
+
+      if (!filteredMedOrders.length) {
+        tbody.innerHTML = `<tr><td colspan="13" style="text-align:center;padding:36px;color:var(--text-secondary);">No matching orders found.</td></tr>`;
+        cardWrap.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:36px;color:var(--text-secondary);">No matching orders found.</div>`;
+        return;
+      }
+
+      tbody.innerHTML = filteredMedOrders.map(o => {
+        const days = o.refundFormDate ? SD.daysBetween(o.refundFormDate, o.refundDate || null) : null;
+        const daysTag = days !== null ? `<div style="font-size:0.68rem;color:var(--text-muted)">(${days}d)</div>` : '';
+
+        return `
+          <tr>
+            <td class="mono" style="font-weight:700;color:var(--accent);">#${o.orderNo}</td>
+            <td class="mono" onclick="SD.copyText('${SD.escapeHtml(o.platformOrderId)}')" style="cursor:pointer;">
+              ${SD.escapeHtml(o.platformOrderId)} 📋
+            </td>
+            <td style="color:var(--cyan);font-weight:600;">${SD.escapeHtml(o.accountName)}</td>
+            <td style="max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${SD.escapeHtml(o.productName)}">
+              ${SD.escapeHtml(o.productName)}
+            </td>
+            <td>${SD.escapeHtml(o.sellerName || '—')}</td>
+            <td class="mono">${SD.formatDate(o.orderDate)}</td>
+            <td class="mono">${SD.formatDate(o.refundFormDate)} ${daysTag}</td>
+            <td class="mono">${SD.formatCurrency(o.pricePaid)}</td>
+            <td class="mono" style="color:#dc2626;font-weight:700;">${SD.formatCurrency(o.less)}</td>
+            <td class="mono" style="color:#16a34a;font-weight:700;">${SD.formatCurrency(o.toGet)}</td>
+            <td>${SD.formatActualGotHtml(o.actualGot, o.toGet)}</td>
+            <td>${SD.statusBadge(o.orderStatus)}</td>
+            <td style="white-space:nowrap;">
+              <button class="btn" style="padding:5px 8px;" onclick="openMedTimeline(${o.orderNo})" title="View 6-Step Timeline">📊</button>
+              <button class="btn" style="padding:5px 8px;" onclick="openNoteModal(${o.orderNo})" title="${SD.escapeHtml(o.notes || 'Add Note')}">
+                📝 ${o.notes ? '•' : ''}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      cardWrap.innerHTML = filteredMedOrders.map(o => `
+        <div class="order-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="mono" style="font-weight:800;color:var(--accent);">#${o.orderNo} • ${SD.escapeHtml(o.platformOrderId)}</span>
+            ${SD.statusBadge(o.orderStatus)}
+          </div>
+          <div style="font-weight:700;font-size:0.92rem;">${SD.escapeHtml(o.productName)}</div>
+          <div style="font-size:0.8rem;color:var(--text-secondary);">
+            Account: <strong style="color:var(--cyan)">${SD.escapeHtml(o.accountName)}</strong> | Seller: ${SD.escapeHtml(o.sellerName || '—')}
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:var(--bg-primary);padding:8px;border-radius:8px;text-align:center;">
+            <div><small style="font-size:0.65rem;color:var(--text-muted);display:block;">Price</small><strong class="mono">${SD.formatCurrency(o.pricePaid)}</strong></div>
+            <div><small style="font-size:0.65rem;color:var(--text-muted);display:block;">Less</small><strong class="mono" style="color:#dc2626">${SD.formatCurrency(o.less)}</strong></div>
+            <div><small style="font-size:0.65rem;color:var(--text-muted);display:block;">ToGet</small><strong class="mono" style="color:#16a34a">${SD.formatCurrency(o.toGet)}</strong></div>
+            <div><small style="font-size:0.65rem;color:var(--text-muted);display:block;">Got</small>${SD.formatActualGotHtml(o.actualGot, o.toGet)}</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="mono" style="font-size:0.75rem;color:var(--text-muted)">Form: ${SD.formatDate(o.refundFormDate)}</span>
+            <div style="display:flex;gap:6px;">
+              <button class="btn" onclick="openMedTimeline(${o.orderNo})">📊 Timeline</button>
+              <button class="btn" onclick="openNoteModal(${o.orderNo})">📝 Note</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleMedView() {
+      const btn = document.getElementById('medViewBtn');
+      const tbl = document.getElementById('medTableWrap');
+      const crd = document.getElementById('medCardWrap');
+      if (medView === 'table') {
+        medView = 'card';
+        tbl.style.display = 'none';
+        crd.style.display = 'grid';
+        btn.textContent = '📋 Table View';
+      } else {
+        medView = 'table';
+        tbl.style.display = 'block';
+        crd.style.display = 'none';
+        btn.textContent = '🗂️ Card View';
+      }
+    }
+
+    function openNoteModal(orderNo) {
+      const o = medOrders.find(x => String(x.orderNo) === String(orderNo));
+      if (!o) return;
+      document.getElementById('noteModalTitle').textContent = `Note for Order #${o.orderNo} (${o.platformOrderId})`;
+      document.getElementById('noteOrderNo').value = o.orderNo;
+      document.getElementById('noteText').value = o.notes || '';
+      document.getElementById('noteModal').classList.add('open');
+    }
+
+    async function saveMedNote(e) {
+      e.preventDefault();
+      const btn = document.getElementById('noteSaveBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
+      const orderNo = document.getElementById('noteOrderNo').value;
+      const notes = document.getElementById('noteText').value.trim();
+
+      const res = await SD.api('updateMediatorNote', { orderNo, notes });
+      btn.disabled = false;
+      btn.textContent = '💾 Save Note';
+
+      if (res && res.success) {
+        SD.toast(res.message, 'success');
+        document.getElementById('noteModal').classList.remove('open');
+        const target = medOrders.find(x => String(x.orderNo) === String(orderNo));
+        if (target) target.notes = notes;
+        renderMedOrders();
+      } else {
+        SD.toast(res?.error || 'Could not save note.', 'error');
+      }
+    }
+
+    function openMedTimeline(orderNo) {
+      const o = medOrders.find(x => String(x.orderNo) === String(orderNo));
+      if (!o) return;
+      document.getElementById('medTlTitle').textContent = `Order #${o.orderNo} — ${o.platformOrderId}`;
+      const steps = [
+        { name: 'Order Placed',     date: o.orderDate },
+        { name: 'Product Received', date: o.deliveryDate },
+        { name: 'Reviewed',         date: o.reviewDate },
+        { name: 'Review Live',      date: o.reviewLiveDate },
+        { name: 'Refund Form',      date: o.refundFormDate },
+        { name: 'Got Refund',       date: o.refundDate }
+      ];
+      document.getElementById('medTlBody').innerHTML = `
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;">
+          ${steps.map(s => `
+            <div style="padding:10px;border-radius:10px;background:var(--bg-primary);border:1px solid ${s.date ? '#22c55e' : 'var(--border-color)'};">
+              <div style="font-size:0.78rem;font-weight:700;">${s.date ? '✅' : '⏳'} ${s.name}</div>
+              <div class="mono" style="font-size:0.75rem;color:var(--text-secondary);">${s.date ? SD.formatDate(s.date) : 'Pending'}</div>
+            </div>
+          `).join('')}
+        </div>
+        ${o.notes ? `<div style="padding:10px;background:var(--bg-primary);border-radius:8px;font-size:0.82rem;"><strong>Note:</strong> ${SD.escapeHtml(o.notes)}</div>` : ''}
+      `;
+      document.getElementById('medTimelineModal').classList.add('open');
+    }
+
+    async function submitMedQuery(e) {
+      e.preventDefault();
+      const btn = document.getElementById('mqBtn');
+      btn.disabled = true;
+      const res = await SD.api('submitQuery', {
+        orderId: document.getElementById('mqOrderId').value.trim(),
+        subject: 'Mediator Query',
+        message: document.getElementById('mqMessage').value.trim()
+      });
+      btn.disabled = false;
+      if (res && res.success) {
+        SD.toast(res.message, 'success');
+        document.getElementById('mqMessage').value = '';
+      } else {
+        SD.toast(res?.error || 'Error sending query.', 'error');
+      }
+    }
+
+    function exportMedOrders(format) {
+      const headers = ['Order No', 'Order ID', 'Account', 'Product', 'Seller', 'Order Date', 'Refund Form Date', 'Price', 'Less', 'ToGet', 'Got', 'Status', 'Notes'];
+      const rows = filteredMedOrders.map(o => [
+        o.orderNo, o.platformOrderId, o.accountName, o.productName, o.sellerName,
+        o.orderDate, o.refundFormDate, o.pricePaid, o.less, o.toGet, o.actualGot ?? '', o.orderStatus, o.notes
+      ]);
+      const fn = `SastaDeal_Mediator_${new Date().toISOString().slice(0,10)}`;
+      if (format === 'csv') SD.exportToCSV(fn, headers, rows);
+      else SD.exportToXLS(fn, headers, rows);
+    }
+
+    function refreshMediatorData() {
+      SD.api('getDashboardData', {}, {
+        useCache: true,
+        onCached: cached => renderMedPayload(cached)
+      }).then(fresh => renderMedPayload(fresh));
+    }
+
+    refreshMediatorData();
+  </script>
+</body>
+</html>
