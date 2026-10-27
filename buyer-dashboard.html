@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buyer Dashboard — SastaDeal</title>
+  <script src="_config.js"></script>
+  <style>
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-glass);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 800;
+      font-size: 1.15rem;
+    }
+    .brand-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--accent);
+      color: var(--accent-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+    .parent-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-glow);
+      border: 1px solid var(--border-hover);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s;
+    }
+    .btn:hover { border-color: var(--accent); }
+    .btn.primary {
+      background: var(--accent);
+      color: var(--accent-text);
+      border-color: transparent;
+      font-weight: 700;
+    }
+    .btn.danger {
+      background: var(--red-bg);
+      color: #ef4444;
+      border-color: rgba(220,38,38,0.3);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px 18px 64px;
+    }
+
+    /* Highlights Banner */
+    .highlight-bar {
+      background: linear-gradient(90deg, var(--accent-glow), rgba(30,41,59,0.5));
+      border: 1px solid var(--border-hover);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Navigation Tabs */
+    .dash-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .dash-tab {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .dash-tab.active {
+      background: var(--accent);
+      color: var(--accent-text);
+      font-weight: 700;
+    }
+
+    /* 6 KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .kpi-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .kpi-label {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      letter-spacing: 0.04em;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .kpi-val {
+      font-size: 1.45rem;
+      font-weight: 800;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+    .input-ctrl, .select-ctrl {
+      padding: 9px 12px;
+      border-radius: 9px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .input-ctrl:focus, .select-ctrl:focus { border-color: var(--accent); }
+
+    /* Table View */
+    .table-wrap {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.03em;
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+    }
+    thead th:hover { color: var(--accent); }
+    tbody tr {
+      border-bottom: 1px solid var(--border-color);
+      transition: background 0.15s;
+    }
+    tbody tr:hover { background: rgba(212, 165, 116, 0.05); }
+    tbody td {
+      padding: 11px 10px;
+      vertical-align: middle;
+    }
+
+    /* Card View Grid */
+    .cards-grid {
+      display: none;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 16px;
+    }
+    .order-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Forms (New Order & Query) */
+    .form-panel {
+      max-width: 760px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 9px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      width: 100%;
+      max-width: 580px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 22px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <a href="index.html" class="brand">
+        <div class="brand-badge">SD</div>
+        <span>Buyer Portal</span>
+      </a>
+      <span class="parent-pill" id="parentNavBadge">👤 Parent: Loading...</span>
+    </div>
+    <div class="nav-right">
+      <button class="btn" onclick="refreshBuyerData()">🔄 Sync</button>
+      <button class="btn" onclick="SD.toggleTheme()">🌓</button>
+      <button class="btn danger" onclick="SD.logout()">Logout</button>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- Announcements / Highlights -->
+    <div id="buyerHighlights"></div>
+
+    <!-- 4 Navigation Tabs -->
+    <div class="dash-tabs">
+      <button class="dash-tab active" onclick="switchTab('ordersTab', this)">📦 My Orders</button>
+      <button class="dash-tab" onclick="switchTab('dealsTab', this)">🔥 Active Deals</button>
+      <button class="dash-tab" onclick="switchTab('newOrderTab', this)">➕ Submit New Order</button>
+      <button class="dash-tab" onclick="switchTab('queryTab', this)">📩 Raise Query</button>
+    </div>
+
+    <!-- TAB 1: ORDERS -->
+    <section id="ordersTab" class="tab-pane active">
+      <!-- 6 KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Total Orders</span>
+          <div class="kpi-val mono" id="kpiTotalOrders">0</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Order Amount</span>
+          <div class="kpi-val mono" id="kpiOrderAmount">₹0</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Received (Paid Amount)</span>
+          <div class="kpi-val mono" style="color:#ef4444" id="kpiReceived">₹0</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Pending Refund Amount</span>
+          <div class="kpi-val mono" style="color:#f59e0b" id="kpiPendingAmt">₹0</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Pending Form Count</span>
+          <div class="kpi-val mono" style="color:#a855f7" id="kpiPendingForm">0</div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Paid Orders Count</span>
+          <div class="kpi-val mono" style="color:#22c55e" id="kpiPaidCount">0</div>
+        </div>
+      </div>
+
+      <!-- Filter & View Toolbar -->
+      <div class="toolbar">
+        <div class="filter-group">
+          <input
+            type="text"
+            id="orderSearch"
+            class="input-ctrl"
+            style="min-width:240px;"
+            placeholder="🔍 Search Order ID, Product, Account..."
+            oninput="applyOrderFilters()"
+          />
+          <select id="accountFilter" class="select-ctrl" onchange="applyOrderFilters()">
+            <option value="ALL">All Linked Accounts</option>
+          </select>
+          <select id="statusFilter" class="select-ctrl" onchange="applyOrderFilters()">
+            <option value="ALL">All Statuses</option>
+            <option value="PENDING_ONLY">⏳ Pending Refund Only</option>
+            <option value="Got Refund">✓ Got Refund</option>
+            <option value="Refund form filled">Refund form filled</option>
+            <option value="Product Received">Product Received</option>
+            <option value="Order Placed">Order Placed</option>
+          </select>
+          <select id="paymentFilter" class="select-ctrl" onchange="applyOrderFilters()">
+            <option value="ALL">All Payments</option>
+            <option value="Paid">Paid</option>
+            <option value="Pending">Unpaid / Pending</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn" id="viewToggleBtn" onclick="toggleOrderView()">🗂️ Card View</button>
+          <button class="btn" onclick="exportBuyerOrders('csv')">⬇️ CSV</button>
+          <button class="btn" onclick="exportBuyerOrders('xls')">📊 XLS</button>
+        </div>
+      </div>
+
+      <!-- 13-Column Table View -->
+      <div class="table-wrap" id="tableViewWrap">
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortBuyerTable('orderNo')"># ↕</th>
+              <th onclick="sortBuyerTable('orderDate')">Order Date ↕</th>
+              <th onclick="sortBuyerTable('paymentDate')">Payment Date ↕</th>
+              <th onclick="sortBuyerTable('platformOrderId')">Order ID ↕</th>
+              <th onclick="sortBuyerTable('productName')">Product ↕</th>
+              <th onclick="sortBuyerTable('accountName')">Account (For Whom) ↕</th>
+              <th onclick="sortBuyerTable('orderedPlatform')">Platform ↕</th>
+              <th onclick="sortBuyerTable('pricePaid')">Price ↕</th>
+              <th onclick="sortBuyerTable('buyerLess')">Less ↕</th>
+              <th onclick="sortBuyerTable('buyerToGet')">ToGet ↕</th>
+              <th onclick="sortBuyerTable('buyerActualGot')">Got ↕</th>
+              <th onclick="sortBuyerTable('orderStatus')">Status ↕</th>
+              <th onclick="sortBuyerTable('paymentStatus')">Payment ↕</th>
+            </tr>
+          </thead>
+          <tbody id="buyerTableBody">
+            <tr><td colspan="13" style="text-align:center;padding:36px;color:var(--text-secondary);">Loading your orders...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Card View -->
+      <div class="cards-grid" id="cardViewWrap"></div>
+    </section>
+
+    <!-- TAB 2: DEALS -->
+    <section id="dealsTab" class="tab-pane">
+      <div id="buyerDealsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px;"></div>
+    </section>
+
+    <!-- TAB 3: SUBMIT NEW ORDER -->
+    <section id="newOrderTab" class="tab-pane">
+      <div class="form-panel">
+        <h2 style="font-size:1.25rem;margin-bottom:6px;">➕ Submit New Order</h2>
+        <p style="font-size:0.84rem;color:var(--text-secondary);margin-bottom:16px;">
+          Paste your Amazon/Flipkart order confirmation snippet below to auto-fill, or enter the fields manually.
+        </p>
+
+        <!-- Smart OCR / Text Snippet Auto-Parser -->
+        <div style="background:var(--bg-primary);border:1px dashed var(--accent);border-radius:12px;padding:12px;margin-bottom:18px;">
+          <label style="font-size:0.76rem;font-weight:700;color:var(--accent);display:block;margin-bottom:6px;">
+            ⚡ Smart Order Text Paste (Auto-extracts Order ID & Price)
+          </label>
+          <textarea
+            id="smartPasteBox"
+            rows="2"
+            placeholder="Paste order confirmation text here (e.g. Order # 404-2759471-7602761 Total: ₹499)..."
+            oninput="parseSmartOrderText(this.value)"
+            style="width:100%;background:transparent;border:none;color:var(--text-primary);font-size:0.84rem;outline:none;"
+          ></textarea>
+        </div>
+
+        <form id="buyerAddOrderForm" onsubmit="submitBuyerNewOrder(event)">
+          <div class="form-grid">
+            <div class="field">
+              <label>Reviewer Account (Auto-fills UserID) *</label>
+              <select id="noAccountSelect" onchange="onAccountSelectChange()" required></select>
+            </div>
+            <div class="field">
+              <label>Linked UserID *</label>
+              <input type="text" id="noUserId" class="mono" readonly required />
+            </div>
+            <div class="field">
+              <label>Ordered Platform *</label>
+              <select id="noPlatform" required></select>
+            </div>
+            <div class="field">
+              <label>Platform Order ID *</label>
+              <input type="text" id="noPlatformOrderId" class="mono" placeholder="e.g. 404-1234567-8901234" required />
+            </div>
+            <div class="field" style="grid-column:1/-1;">
+              <label>Product Name *</label>
+              <input type="text" id="noProductName" placeholder="Full product title" required />
+            </div>
+            <div class="field">
+              <label>Product Link (Optional)</label>
+              <input type="url" id="noProductLink" placeholder="https://..." />
+            </div>
+            <div class="field">
+              <label>Seller Name (Optional)</label>
+              <input type="text" id="noSellerName" placeholder="e.g. Appario / Cloudtail" />
+            </div>
+            <div class="field">
+              <label>Price Paid (₹) *</label>
+              <input type="number" step="0.01" id="noPricePaid" class="mono" placeholder="499" oninput="calcBuyerToGetPreview()" required />
+            </div>
+            <div class="field">
+              <label>Buyer Less / Deduction (₹) *</label>
+              <input type="number" step="0.01" id="noBuyerLess" class="mono" value="0" oninput="calcBuyerToGetPreview()" required />
+            </div>
+            <div class="field">
+              <label>Refund You Will Get (₹)</label>
+              <input type="text" id="noToGetPreview" class="mono" style="color:#22c55e;font-weight:700;" readonly value="₹0" />
+            </div>
+            <div class="field">
+              <label>Order Date *</label>
+              <input type="date" id="noOrderDate" required />
+            </div>
+            <div class="field">
+              <label>For Whom *</label>
+              <select id="noForWhom">
+                <option value="Self">Self</option>
+                <option value="Buyer">Buyer</option>
+                <option value="Friend/Family">Friend/Family</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Deal Contact No</label>
+              <select id="noDealContact"></select>
+            </div>
+            <div class="field" style="grid-column:1/-1;">
+              <label>Order Screenshot (Auto-compressed ≤200KB)</label>
+              <input type="file" id="noScreenshotFile" accept="image/*" />
+            </div>
+            <div class="field" style="grid-column:1/-1;">
+              <label>Notes / Remarks</label>
+              <textarea id="noNotes" rows="2" placeholder="Any special note for Admin..."></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="btn primary" id="noSubmitBtn" style="margin-top:18px;width:100%;justify-content:center;padding:12px;">
+            🚀 Submit Order to SastaDeal
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 4: RAISE QUERY -->
+    <section id="queryTab" class="tab-pane">
+      <div class="form-panel">
+        <h2 style="font-size:1.25rem;margin-bottom:6px;">📩 Raise Support Query</h2>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:18px;">
+          Have a question regarding a refund delay or payment settlement? Send a direct ticket to Admin via Email & WhatsApp.
+        </p>
+        <form onsubmit="submitBuyerQuery(event)">
+          <div class="field" style="margin-bottom:14px;">
+            <label>Related Platform Order ID / Order No (Optional)</label>
+            <input type="text" id="qOrderId" class="mono" placeholder="e.g. #1194 or 404-2759471-7602761" />
+          </div>
+          <div class="field" style="margin-bottom:14px;">
+            <label>Subject *</label>
+            <select id="qSubject" required>
+              <option value="Refund Status Inquiry">Refund Status Inquiry</option>
+              <option value="Payment Settlement Delay">Payment Settlement Delay</option>
+              <option value="Amount Difference Issue">Amount Difference Issue</option>
+              <option value="Order Details Correction">Order Details Correction</option>
+              <option value="Other Support">Other Support</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:16px;">
+            <label>Message *</label>
+            <textarea id="qMessage" rows="4" placeholder="Describe your query clearly..." required></textarea>
+          </div>
+          <button type="submit" class="btn primary" id="qSubmitBtn" style="width:100%;justify-content:center;padding:12px;">
+            📨 Send Query to Admin
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- 6-Step Timeline Modal -->
+  <div class="modal-backdrop" id="timelineModal">
+    <div class="modal-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h3 id="tlTitle">Order Timeline</h3>
+        <button onclick="document.getElementById('timelineModal').classList.remove('open')" style="background:none;border:none;color:var(--text-secondary);font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
+      <div id="tlBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const currentUser = SD.requireAuth('buyer');
+    let buyerOrders = [];
+    let filteredOrders = [];
+    let linkedAccounts = [];
+    let buyerDeals = [];
+    let currentView = 'table';
+    let sortField = 'orderNo';
+    let sortAsc = false;
+
+    document.getElementById('noOrderDate').value = new Date().toISOString().split('T')[0];
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.dash-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function renderBuyerPayload(data) {
+      if (!data || !data.success) return;
+
+      const u = data.user || currentUser;
+      document.getElementById('parentNavBadge').textContent = `👤 Parent: ${u.parentName || u.name} (${u.parentUserId || u.userId})`;
+
+      buyerOrders = data.orders || [];
+      linkedAccounts = data.linkedAccounts || [];
+      buyerDeals = data.deals || [];
+
+      // Populate Highlights
+      const hlDiv = document.getElementById('buyerHighlights');
+      hlDiv.innerHTML = (data.highlights || []).map(h => `
+        <div class="highlight-bar">
+          <div><strong style="color:var(--accent)">${SD.escapeHtml(h.title)}:</strong> ${SD.escapeHtml(h.message)}</div>
+          <span class="mono" style="font-size:0.75rem;color:var(--text-muted)">${SD.escapeHtml(h.date)}</span>
+        </div>
+      `).join('');
+
+      // Populate Account Filter & New Order Account Dropdown
+      const accFilter = document.getElementById('accountFilter');
+      const noAccSelect = document.getElementById('noAccountSelect');
+      const uniqueAccounts = linkedAccounts.length ? linkedAccounts : [{ userId: u.userId, name: u.name, accountType: 'Main' }];
+
+      accFilter.innerHTML = `<option value="ALL">All Linked Accounts (${uniqueAccounts.length})</option>` +
+        uniqueAccounts.map(a => `<option value="${SD.escapeHtml(a.userId)}">${SD.escapeHtml(a.name)} (${SD.escapeHtml(a.userId)})</option>`).join('');
+
+      noAccSelect.innerHTML = uniqueAccounts.map(a =>
+        `<option value="${SD.escapeHtml(a.name)}" data-uid="${SD.escapeHtml(a.userId)}">${SD.escapeHtml(a.name)} — ${SD.escapeHtml(a.userId)} (${SD.escapeHtml(a.accountType || 'Sub')})</option>`
+      ).join('');
+      onAccountSelectChange();
+
+      // Populate Platforms & Deal Contacts
+      const plats = data.dropdowns?.platforms?.length ? data.dropdowns.platforms : SASTADEAL_CONFIG.PLATFORMS;
+      document.getElementById('noPlatform').innerHTML = plats.map(p => `<option value="${SD.escapeHtml(p)}">${SD.escapeHtml(p)}</option>`).join('');
+
+      const contacts = data.dropdowns?.dealContacts?.length ? data.dropdowns.dealContacts : ['7004984949', '8271066951', '8228953219', '8541902293'];
+      document.getElementById('noDealContact').innerHTML = contacts.map(c => `<option value="${SD.escapeHtml(c)}">${SD.escapeHtml(c)}</option>`).join('');
+
+      applyOrderFilters();
+      renderBuyerDeals();
+    }
+
+    function onAccountSelectChange() {
+      const sel = document.getElementById('noAccountSelect');
+      const opt = sel.options[sel.selectedIndex];
+      if (opt) {
+        document.getElementById('noUserId').value = opt.getAttribute('data-uid') || currentUser.userId;
+      }
+    }
+
+    function applyOrderFilters() {
+      const q = document.getElementById('orderSearch').value.trim().toLowerCase();
+      const accVal = document.getElementById('accountFilter').value;
+      const stVal = document.getElementById('statusFilter').value;
+      const payVal = document.getElementById('paymentFilter').value;
+
+      filteredOrders = buyerOrders.filter(o => {
+        if (accVal !== 'ALL' && String(o.userId).toLowerCase() !== accVal.toLowerCase()) return false;
+        if (stVal === 'PENDING_ONLY') {
+          const low = String(o.orderStatus || '').toLowerCase();
+          if (low === 'got refund' || low.includes('cancel')) return false;
+        } else if (stVal !== 'ALL' && String(o.orderStatus || '').toLowerCase() !== stVal.toLowerCase()) {
+          return false;
+        }
+        if (payVal === 'Paid' && String(o.paymentStatus || '').toLowerCase() !== 'paid') return false;
+        if (payVal === 'Pending' && String(o.paymentStatus || '').toLowerCase() === 'paid') return false;
+
+        if (q) {
+          const hay = `${o.orderNo} ${o.platformOrderId} ${o.productName} ${o.accountName} ${o.orderedPlatform} ${o.forWhom}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      // Sort
+      filteredOrders.sort((a, b) => {
+        let vA = a[sortField], vB = b[sortField];
+        if (['orderNo', 'pricePaid', 'buyerLess', 'buyerToGet', 'buyerActualGot'].includes(sortField)) {
+          vA = Number(vA) || 0;
+          vB = Number(vB) || 0;
+        } else {
+          vA = String(vA || '').toLowerCase();
+          vB = String(vB || '').toLowerCase();
+        }
+        if (vA < vB) return sortAsc ? -1 : 1;
+        if (vA > vB) return sortAsc ? 1 : -1;
+        return 0;
+      });
+
+      updateBuyerKPIs(filteredOrders);
+      renderBuyerOrders();
+    }
+
+    function updateBuyerKPIs(list) {
+      let totalAmt = 0;
+      let receivedAmt = 0;
+      let pendingAmt = 0;
+      let pendingFormCount = 0;
+      let paidCount = 0;
+
+      list.forEach(o => {
+        const isCancelled = String(o.orderStatus || '').toLowerCase().includes('cancel');
+        const isPaid = String(o.paymentStatus || '').toLowerCase() === 'paid';
+        totalAmt += Number(o.pricePaid) || 0;
+
+        if (isPaid) {
+          paidCount++;
+          receivedAmt += (o.buyerActualGot !== null ? Number(o.buyerActualGot) : Number(o.buyerToGet)) || 0;
+        } else if (!isCancelled) {
+          pendingAmt += Number(o.buyerToGet) || 0;
+        }
+
+        // Key Business Rule #3: Pending Form counter = orders where RefundFormDate is NOT set
+        if (!o.refundFormDate && !isCancelled && String(o.orderStatus || '').toLowerCase() !== 'got refund') {
+          pendingFormCount++;
+        }
+      });
+
+      document.getElementById('kpiTotalOrders').textContent = list.length.toLocaleString('en-IN');
+      document.getElementById('kpiOrderAmount').textContent = SD.formatCurrency(totalAmt);
+      document.getElementById('kpiReceived').textContent = SD.formatCurrency(receivedAmt);
+      document.getElementById('kpiPendingAmt').textContent = SD.formatCurrency(pendingAmt);
+      document.getElementById('kpiPendingForm').textContent = pendingFormCount.toLocaleString('en-IN');
+      document.getElementById('kpiPaidCount').textContent = paidCount.toLocaleString('en-IN');
+    }
+
+    function sortBuyerTable(field) {
+      if (sortField === field) {
+        sortAsc = !sortAsc;
+      } else {
+        sortField = field;
+        sortAsc = true;
+      }
+      applyOrderFilters();
+    }
+
+    function renderBuyerOrders() {
+      const tbody = document.getElementById('buyerTableBody');
+      const cardWrap = document.getElementById('cardViewWrap');
+
+      if (!filteredOrders.length) {
+        tbody.innerHTML = `<tr><td colspan="13" style="text-align:center;padding:36px;color:var(--text-secondary);">No matching orders found.</td></tr>`;
+        cardWrap.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:36px;color:var(--text-secondary);">No matching orders found.</div>`;
+        return;
+      }
+
+      tbody.innerHTML = filteredOrders.map(o => {
+        const isPaid = String(o.paymentStatus || '').toLowerCase() === 'paid';
+        const daysAgo = o.refundFormDate ? SD.daysBetween(o.refundFormDate, o.refundDate || null) : null;
+        const daysSub = daysAgo !== null ? `<div style="font-size:0.68rem;color:var(--text-muted)">${o.refundDate ? `Refunded in ${daysAgo}d` : `${daysAgo}d since form`}</div>` : '';
+
+        // Paid amount in bold red as per specification
+        const gotHtml = isPaid
+          ? `<strong class="mono" style="color:#dc2626;font-weight:800;">${SD.formatCurrency(o.buyerActualGot !== null ? o.buyerActualGot : o.buyerToGet)}</strong>`
+          : SD.formatActualGotHtml(o.buyerActualGot, o.buyerToGet);
+
+        return `
+          <tr onclick="openTimelineModal(${o.orderNo})" style="cursor:pointer;">
+            <td class="mono" style="font-weight:700;color:var(--accent);">#${o.orderNo}</td>
+            <td class="mono">${SD.formatDate(o.orderDate)}</td>
+            <td class="mono">${SD.formatDate(o.paymentDate)}</td>
+            <td class="mono" onclick="event.stopPropagation();SD.copyText('${SD.escapeHtml(o.platformOrderId)}')" title="Click to copy">
+              <span style="border-bottom:1px dotted var(--text-muted);">${SD.escapeHtml(o.platformOrderId)}</span> 📋
+            </td>
+            <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${SD.escapeHtml(o.productName)}">
+              ${SD.escapeHtml(o.productName)}
+            </td>
+            <td>
+              <span style="color:var(--cyan);font-weight:600;">${SD.escapeHtml(o.accountName)}</span>
+              <span style="font-size:0.72rem;color:var(--text-muted);">(${SD.escapeHtml(o.forWhom || 'Self')})</span>
+            </td>
+            <td>${SD.escapeHtml(o.orderedPlatform)}</td>
+            <td class="mono">${SD.formatCurrency(o.pricePaid)}</td>
+            <td class="mono" style="color:#dc2626;font-weight:700;">-${SD.formatCurrency(o.buyerLess)}</td>
+            <td class="mono" style="color:#16a34a;font-weight:700;">${SD.formatCurrency(o.buyerToGet)}</td>
+            <td>${gotHtml}</td>
+            <td>${SD.statusBadge(o.orderStatus)} ${daysSub}</td>
+            <td>${SD.paymentBadge(o.paymentStatus)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      cardWrap.innerHTML = filteredOrders.map(o => `
+        <div class="order-card" onclick="openTimelineModal(${o.orderNo})" style="cursor:pointer;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="mono" style="font-weight:800;color:var(--accent);">#${o.orderNo} • ${SD.escapeHtml(o.orderedPlatform)}</span>
+            ${SD.statusBadge(o.orderStatus)}
+          </div>
+          <div style="font-weight:700;font-size:0.92rem;">${SD.escapeHtml(o.productName)}</div>
+          <div class="mono" style="font-size:0.78rem;color:var(--text-secondary);">ID: ${SD.escapeHtml(o.platformOrderId)}</div>
+          <div style="display:flex;justify-content:space-between;font-size:0.8rem;">
+            <span>Account: <strong style="color:var(--cyan)">${SD.escapeHtml(o.accountName)}</strong> (${SD.escapeHtml(o.forWhom)})</span>
+            <span class="mono">${SD.formatDate(o.orderDate)}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--bg-primary);padding:8px;border-radius:8px;text-align:center;">
+            <div><small style="color:var(--text-muted);font-size:0.68rem;display:block;">Price</small><strong class="mono">${SD.formatCurrency(o.pricePaid)}</strong></div>
+            <div><small style="color:var(--text-muted);font-size:0.68rem;display:block;">Less</small><strong class="mono" style="color:#dc2626">-${SD.formatCurrency(o.buyerLess)}</strong></div>
+            <div><small style="color:var(--text-muted);font-size:0.68rem;display:block;">ToGet</small><strong class="mono" style="color:#16a34a">${SD.formatCurrency(o.buyerToGet)}</strong></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:4px;">
+            ${SD.paymentBadge(o.paymentStatus)}
+            <span class="mono" style="font-size:0.82rem;color:#dc2626;font-weight:800;">
+              Got: ${o.buyerActualGot !== null ? SD.formatCurrency(o.buyerActualGot) : '—'}
+            </span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleOrderView() {
+      const btn = document.getElementById('viewToggleBtn');
+      const tbl = document.getElementById('tableViewWrap');
+      const crd = document.getElementById('cardViewWrap');
+      if (currentView === 'table') {
+        currentView = 'card';
+        tbl.style.display = 'none';
+        crd.style.display = 'grid';
+        btn.textContent = '📋 Table View';
+      } else {
+        currentView = 'table';
+        tbl.style.display = 'block';
+        crd.style.display = 'none';
+        btn.textContent = '🗂️ Card View';
+      }
+    }
+
+    function openTimelineModal(orderNo) {
+      const o = buyerOrders.find(x => String(x.orderNo) === String(orderNo));
+      if (!o) return;
+      document.getElementById('tlTitle').textContent = `Order #${o.orderNo} — ${o.platformOrderId}`;
+      const steps = [
+        { name: '1. Order Placed',     date: o.orderDate },
+        { name: '2. Product Received', date: o.deliveryDate },
+        { name: '3. Reviewed',         date: o.reviewDate },
+        { name: '4. Review Live',      date: o.reviewLiveDate },
+        { name: '5. Refund Form',      date: o.refundFormDate },
+        { name: '6. Got Refund',       date: o.refundDate }
+      ];
+      document.getElementById('tlBody').innerHTML = `
+        <div style="margin-bottom:14px;font-size:0.88rem;color:var(--text-secondary);">${SD.escapeHtml(o.productName)}</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;">
+          ${steps.map(s => `
+            <div style="padding:10px;border-radius:10px;background:var(--bg-primary);border:1px solid ${s.date ? '#22c55e' : 'var(--border-color)'};">
+              <div style="font-size:0.78rem;font-weight:700;">${s.date ? '✅' : '⏳'} ${s.name}</div>
+              <div class="mono" style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">${s.date ? SD.formatDate(s.date) : 'Pending'}</div>
+            </div>
+          `).join('')}
+        </div>
+        ${o.notes ? `<div style="padding:10px;background:var(--bg-primary);border-radius:8px;font-size:0.82rem;margin-bottom:10px;"><strong>Notes:</strong> ${SD.escapeHtml(o.notes)}</div>` : ''}
+        <div style="display:flex;gap:10px;">
+          ${o.reviewLink ? `<a href="${SD.escapeHtml(o.reviewLink)}" target="_blank" class="btn">⭐ Review Link</a>` : ''}
+          ${o.orderScreenshot ? `<a href="${SD.escapeHtml(o.orderScreenshot)}" target="_blank" class="btn">🖼️ Order Screenshot</a>` : ''}
+        </div>
+      `;
+      document.getElementById('timelineModal').classList.add('open');
+    }
+
+    function renderBuyerDeals() {
+      const grid = document.getElementById('buyerDealsGrid');
+      if (!buyerDeals.length) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-secondary);">No active deals posted right now.</div>`;
+        return;
+      }
+      grid.innerHTML = buyerDeals.map(d => `
+        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:14px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;">
+          <div>
+            <span style="font-size:0.72rem;font-weight:700;color:var(--accent);text-transform:uppercase;">${SD.escapeHtml(d.platform)}</span>
+            <h3 style="font-size:0.98rem;margin:4px 0;">${SD.escapeHtml(d.title)}</h3>
+            <p style="font-size:0.8rem;color:var(--text-secondary);">${SD.escapeHtml(d.instructions || '')}</p>
+          </div>
+          <div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--bg-primary);padding:8px;border-radius:8px;margin-bottom:10px;text-align:center;">
+              <div><small style="font-size:0.68rem;color:var(--text-muted);display:block;">Price</small><strong class="mono">${SD.formatCurrency(d.price)}</strong></div>
+              <div><small style="font-size:0.68rem;color:var(--text-muted);display:block;">Less</small><strong class="mono" style="color:#dc2626">-${SD.formatCurrency(d.lessAmount)}</strong></div>
+              <div><small style="font-size:0.68rem;color:var(--text-muted);display:block;">You Get</small><strong class="mono" style="color:#16a34a">${SD.formatCurrency(d.youGet)}</strong></div>
+            </div>
+            <button class="btn primary" style="width:100%;justify-content:center;" onclick="requestDealFromDash('${SD.escapeHtml(d.dealId)}', '${SD.escapeHtml(d.title.replace(/'/g, "\\'"))}', this)">
+              ⚡ Request This Deal
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function requestDealFromDash(dealId, title, btn) {
+      btn.disabled = true;
+      btn.textContent = 'Requesting...';
+      const res = await SD.api('requestDeal', { dealId, dealTitle: title });
+      if (res && res.success) {
+        btn.textContent = '✓ Deal Requested';
+        SD.toast(res.message, 'success');
+      } else {
+        btn.disabled = false;
+        btn.textContent = '⚡ Request This Deal';
+        SD.toast(res?.error || 'Request failed.', 'error');
+      }
+    }
+
+    function parseSmartOrderText(raw) {
+      if (!raw) return;
+      // Match Amazon 404-xxxxxxx-xxxxxxx or Flipkart ODxxxxxxxxxxxx or Blinkit ORDxxxxxxx
+      const amzMatch = raw.match(/\b\d{3}-\d{7}-\d{7}\b/);
+      const fktMatch = raw.match(/\bOD\d{14,22}\b/i);
+      const blkMatch = raw.match(/\bORD\d{8,16}\b/i);
+      const id = amzMatch?.[0] || fktMatch?.[0] || blkMatch?.[0];
+      if (id) document.getElementById('noPlatformOrderId').value = id;
+
+      const priceMatch = raw.match(/(?:₹|Rs\.?|INR)\s*([\d,]+(?:\.\d{1,2})?)/i);
+      if (priceMatch && priceMatch[1]) {
+        document.getElementById('noPricePaid').value = priceMatch[1].replace(/,/g, '');
+        calcBuyerToGetPreview();
+      }
+    }
+
+    function calcBuyerToGetPreview() {
+      const p = parseFloat(document.getElementById('noPricePaid').value) || 0;
+      const l = parseFloat(document.getElementById('noBuyerLess').value) || 0;
+      document.getElementById('noToGetPreview').value = SD.formatCurrency(p - Math.abs(l));
+    }
+
+    async function submitBuyerNewOrder(e) {
+      e.preventDefault();
+      const btn = document.getElementById('noSubmitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Processing Order...';
+
+      let screenshotUrl = '';
+      const fileInput = document.getElementById('noScreenshotFile');
+      if (fileInput.files && fileInput.files[0]) {
+        btn.textContent = 'Compressing & Uploading Screenshot (≤200KB)...';
+        try {
+          const compressed = await SD.compressImageFile(fileInput.files[0], 200);
+          const upRes = await SD.api('uploadScreenshot', compressed);
+          if (upRes && upRes.success) screenshotUrl = upRes.url;
+        } catch (imgErr) {
+          SD.toast('Screenshot upload skipped, saving order details...', 'warning');
+        }
+      }
+
+      const payload = {
+        accountName: document.getElementById('noAccountSelect').value,
+        userId: document.getElementById('noUserId').value,
+        orderedPlatform: document.getElementById('noPlatform').value,
+        platformOrderId: document.getElementById('noPlatformOrderId').value.trim(),
+        productName: document.getElementById('noProductName').value.trim(),
+        productLink: document.getElementById('noProductLink').value.trim(),
+        sellerName: document.getElementById('noSellerName').value.trim(),
+        pricePaid: document.getElementById('noPricePaid').value,
+        buyerLess: document.getElementById('noBuyerLess').value,
+        orderDate: document.getElementById('noOrderDate').value,
+        forWhom: document.getElementById('noForWhom').value,
+        dealContactNo: document.getElementById('noDealContact').value,
+        orderScreenshot: screenshotUrl,
+        notes: document.getElementById('noNotes').value.trim()
+      };
+
+      const res = await SD.api('addOrder', payload);
+      btn.disabled = false;
+      btn.textContent = '🚀 Submit Order to SastaDeal';
+
+      if (!res || !res.success) {
+        SD.toast(res?.error || 'Could not submit order.', 'error');
+        return;
+      }
+
+      SD.toast(res.message, 'success');
+      document.getElementById('buyerAddOrderForm').reset();
+      document.getElementById('noOrderDate').value = new Date().toISOString().split('T')[0];
+      onAccountSelectChange();
+      refreshBuyerData();
+    }
+
+    async function submitBuyerQuery(e) {
+      e.preventDefault();
+      const btn = document.getElementById('qSubmitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      const res = await SD.api('submitQuery', {
+        orderId: document.getElementById('qOrderId').value.trim(),
+        subject: document.getElementById('qSubject').value,
+        message: document.getElementById('qMessage').value.trim()
+      });
+
+      btn.disabled = false;
+      btn.textContent = '📨 Send Query to Admin';
+
+      if (res && res.success) {
+        SD.toast(res.message, 'success');
+        document.getElementById('qMessage').value = '';
+      } else {
+        SD.toast(res?.error || 'Failed to send query.', 'error');
+      }
+    }
+
+    function exportBuyerOrders(format) {
+      const headers = ['#', 'Order Date', 'Payment Date', 'Order ID', 'Product', 'Account', 'For Whom', 'Platform', 'Price Paid', 'Buyer Less', 'ToGet', 'Got', 'Status', 'Payment'];
+      const rows = filteredOrders.map(o => [
+        o.orderNo, o.orderDate, o.paymentDate, o.platformOrderId, o.productName,
+        o.accountName, o.forWhom, o.orderedPlatform, o.pricePaid, o.buyerLess,
+        o.buyerToGet, o.buyerActualGot ?? '', o.orderStatus, o.paymentStatus
+      ]);
+      const fn = `SastaDeal_Buyer_Orders_${new Date().toISOString().slice(0,10)}`;
+      if (format === 'csv') SD.exportToCSV(fn, headers, rows);
+      else SD.exportToXLS(fn, headers, rows);
+    }
+
+    function refreshBuyerData() {
+      SD.api('getDashboardData', {}, {
+        useCache: true,
+        onCached: cached => renderBuyerPayload(cached)
+      }).then(fresh => renderBuyerPayload(fresh));
+    }
+
+    refreshBuyerData();
+  </script>
+</body>
+</html>
