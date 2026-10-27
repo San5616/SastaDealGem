@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — SastaDeal Portal</title>
+  <script src="_config.js"></script>
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at top right, var(--accent-glow), transparent 55%), var(--bg-primary);
+    }
+    .topbar {
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 800;
+      font-size: 1.15rem;
+    }
+    .brand-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--accent);
+      color: var(--accent-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+
+    .auth-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: var(--shadow-lg);
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .auth-header h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .auth-header p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* 3 Role Tabs */
+    .role-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--bg-primary);
+      padding: 5px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 24px;
+      gap: 4px;
+    }
+    .role-tab {
+      padding: 10px 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .role-tab.active {
+      background: var(--accent);
+      color: var(--accent-text);
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-wrap input {
+      width: 100%;
+      padding: 12px 42px 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-wrap input:focus {
+      border-color: var(--accent);
+    }
+    .eye-btn {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.05rem;
+      padding: 4px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 10px;
+      border: none;
+      background: var(--accent);
+      color: var(--accent-text);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+    .submit-btn:hover {
+      background: var(--accent-hover);
+    }
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .auth-footer-links {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.83rem;
+    }
+    .link-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .link-btn:hover {
+      text-decoration: underline;
+    }
+
+    /* Modals for Register & Forgot Password */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      padding: 16px;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+    .modal-box {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .modal-header h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a href="index.html" class="brand">
+      <div class="brand-badge">SD</div>
+      <span>SastaDeal</span>
+    </a>
+    <div style="display:flex;gap:10px;">
+      <a href="index.html" style="color:var(--text-secondary);text-decoration:none;font-size:0.85rem;padding:8px 12px;">← Home</a>
+      <button onclick="SD.toggleTheme()" style="background:var(--bg-secondary);border:1px solid var(--border-color);color:var(--text-primary);padding:6px 12px;border-radius:8px;cursor:pointer;">🌓</button>
+    </div>
+  </header>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1 id="authTitle">Welcome Back</h1>
+        <p id="authSubtitle">Sign in to track your orders, refunds & deals</p>
+      </div>
+
+      <!-- 3 Tabs: Buyer, Mediator, Admin -->
+      <div class="role-tabs">
+        <button type="button" class="role-tab active" data-role="buyer" onclick="switchRole('buyer')">👤 Buyer</button>
+        <button type="button" class="role-tab" data-role="mediator" onclick="switchRole('mediator')">🤝 Mediator</button>
+        <button type="button" class="role-tab" data-role="admin" onclick="switchRole('admin')">🛡️ Admin</button>
+      </div>
+
+      <form id="loginForm" onsubmit="submitLogin(event)">
+        <!-- Identifier Field (Hidden for Admin) -->
+        <div class="form-group" id="identifierGroup">
+          <label id="identifierLabel">Mobile Number / Email / UserID</label>
+          <div class="input-wrap">
+            <input
+              type="text"
+              id="loginIdentifier"
+              placeholder="e.g. 9430244797 or An_Mayank"
+              autocomplete="username"
+            />
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label id="passwordLabel">Password</label>
+          <div class="input-wrap">
+            <input
+              type="password"
+              id="loginPassword"
+              placeholder="Enter your password"
+              required
+              autocomplete="current-password"
+            />
+            <button type="button" class="eye-btn" onclick="togglePass('loginPassword', this)" title="Show/Hide Password">👁️</button>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="loginBtn">Sign In as Buyer →</button>
+      </form>
+
+      <!-- Buyer & Mediator Links (Hidden for Admin) -->
+      <div class="auth-footer-links" id="extraAuthLinks">
+        <button type="button" class="link-btn" onclick="openModal('registerModal')">✨ Create Account</button>
+        <button type="button" class="link-btn" onclick="openModal('forgotModal')">Forgot Password?</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Account Modal -->
+  <div class="modal-backdrop" id="registerModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="regModalTitle">Create Buyer Account</h3>
+        <button onclick="closeModal('registerModal')" style="background:none;border:none;color:var(--text-secondary);font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
+      <form onsubmit="submitRegister(event)">
+        <div class="form-group">
+          <label>Account Role</label>
+          <div class="input-wrap">
+            <select id="regRole" style="width:100%;padding:11px;border-radius:10px;background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border-color);">
+              <option value="buyer">Buyer</option>
+              <option value="mediator">Mediator</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Full Name / Mediator Group Name *</label>
+          <div class="input-wrap">
+            <input type="text" id="regName" placeholder="Enter your full name" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>10-Digit Mobile / WhatsApp Number *</label>
+          <div class="input-wrap">
+            <input type="tel" id="regMobile" placeholder="e.g. 9876543210" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address (for Password Recovery & Alerts)</label>
+          <div class="input-wrap">
+            <input type="email" id="regEmail" placeholder="you@example.com" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Amazon Profile Link (Optional for Buyers)</label>
+          <div class="input-wrap">
+            <input type="url" id="regProfileLink" placeholder="https://www.amazon.in/gp/profile/..." />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Create Password *</label>
+          <div class="input-wrap">
+            <input type="password" id="regPassword" placeholder="Minimum 6 characters" required />
+            <button type="button" class="eye-btn" onclick="togglePass('regPassword', this)">👁️</button>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn" id="regSubmitBtn">Register Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div class="modal-backdrop" id="forgotModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Recover Password</h3>
+        <button onclick="closeModal('forgotModal')" style="background:none;border:none;color:var(--text-secondary);font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
+      <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">
+        Enter your registered Mobile Number, Email, or UserID. We will email your password or alert Admin on WhatsApp to send it to you.
+      </p>
+      <form onsubmit="submitForgot(event)">
+        <div class="form-group">
+          <label>Registered Mobile / Email / UserID *</label>
+          <div class="input-wrap">
+            <input type="text" id="forgotIdentifier" placeholder="Enter mobile, email, or UserID" required />
+          </div>
+        </div>
+        <button type="submit" class="submit-btn" id="forgotSubmitBtn">Send Recovery Details</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let currentRole = 'buyer';
+
+    // Pre-select role from URL query (?role=mediator or ?role=admin)
+    (function initRoleFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const r = (params.get('role') || '').toLowerCase();
+      if (['buyer', 'mediator', 'admin'].includes(r)) {
+        switchRole(r);
+      }
+    })();
+
+    function switchRole(role) {
+      currentRole = role;
+      document.querySelectorAll('.role-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.role === role);
+      });
+
+      const idGroup = document.getElementById('identifierGroup');
+      const idLabel = document.getElementById('identifierLabel');
+      const idInput = document.getElementById('loginIdentifier');
+      const extraLinks = document.getElementById('extraAuthLinks');
+      const loginBtn = document.getElementById('loginBtn');
+      const regRoleSelect = document.getElementById('regRole');
+
+      if (role === 'admin') {
+        idGroup.style.display = 'none';
+        idInput.required = false;
+        extraLinks.style.display = 'none';
+        loginBtn.textContent = 'Sign In to Admin Panel →';
+      } else if (role === 'mediator') {
+        idGroup.style.display = 'block';
+        idInput.required = true;
+        idLabel.textContent = 'Mediator Name / Mobile / Email';
+        idInput.placeholder = 'e.g. Nitesh or 7470948527';
+        extraLinks.style.display = 'flex';
+        loginBtn.textContent = 'Sign In as Mediator →';
+        if (regRoleSelect) regRoleSelect.value = 'mediator';
+      } else {
+        idGroup.style.display = 'block';
+        idInput.required = true;
+        idLabel.textContent = 'Mobile Number / Email / UserID';
+        idInput.placeholder = 'e.g. 8210974937 or An_Mukesh_937';
+        extraLinks.style.display = 'flex';
+        loginBtn.textContent = 'Sign In as Buyer →';
+        if (regRoleSelect) regRoleSelect.value = 'buyer';
+      }
+    }
+
+    function togglePass(inputId, btn) {
+      const el = document.getElementById(inputId);
+      if (el.type === 'password') {
+        el.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        el.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    async function submitLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      const identifier = document.getElementById('loginIdentifier').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      btn.disabled = true;
+      const origText = btn.textContent;
+      btn.textContent = 'Verifying Credentials...';
+
+      const res = await SD.api('login', {
+        role: currentRole,
+        identifier: identifier,
+        password: password
+      });
+
+      btn.disabled = false;
+      btn.textContent = origText;
+
+      if (!res || !res.success) {
+        SD.toast(res?.error || 'Login failed. Please check your credentials.', 'error');
+        return;
+      }
+
+      SD.saveSession(res.token, res.user, true);
+      SD.toast(`Welcome, ${res.user.name}!`, 'success');
+
+      const redirectParams = new URLSearchParams(window.location.search);
+      const nextUrl = redirectParams.get('next');
+      if (nextUrl) {
+        window.location.href = nextUrl;
+        return;
+      }
+
+      if (res.user.role === 'admin') {
+        window.location.href = 'admin-dashboard.html';
+      } else if (res.user.role === 'mediator') {
+        window.location.href = 'mediator-dashboard.html';
+      } else {
+        window.location.href = 'buyer-dashboard.html';
+      }
+    }
+
+    async function submitRegister(e) {
+      e.preventDefault();
+      const btn = document.getElementById('regSubmitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Creating Account...';
+
+      const res = await SD.api('registerAccount', {
+        role: document.getElementById('regRole').value,
+        name: document.getElementById('regName').value.trim(),
+        mobile: document.getElementById('regMobile').value.trim(),
+        email: document.getElementById('regEmail').value.trim(),
+        profileLink: document.getElementById('regProfileLink').value.trim(),
+        password: document.getElementById('regPassword').value.trim()
+      });
+
+      btn.disabled = false;
+      btn.textContent = 'Register Account';
+
+      if (!res || !res.success) {
+        SD.toast(res?.error || 'Registration failed.', 'error');
+        return;
+      }
+
+      SD.toast(res.message, 'success', 6000);
+      closeModal('registerModal');
+      document.getElementById('loginIdentifier').value = document.getElementById('regMobile').value.trim();
+    }
+
+    async function submitForgot(e) {
+      e.preventDefault();
+      const btn = document.getElementById('forgotSubmitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+
+      const res = await SD.api('forgotPassword', {
+        identifier: document.getElementById('forgotIdentifier').value.trim()
+      });
+
+      btn.disabled = false;
+      btn.textContent = 'Send Recovery Details';
+
+      if (!res || !res.success) {
+        SD.toast(res?.error || 'Account not found.', 'error');
+        return;
+      }
+
+      SD.toast(res.message, 'success', 6000);
+      closeModal('forgotModal');
+    }
+  </script>
+</body>
+</html>
