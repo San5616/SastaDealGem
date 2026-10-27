@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Deals — SastaDeal</title>
+  <script src="_config.js"></script>
+  <style>
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-glass);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+    .brand-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--accent);
+      color: var(--accent-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+    }
+    .btn.primary {
+      background: var(--accent);
+      color: var(--accent-text);
+      border-color: transparent;
+      font-weight: 700;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+
+    .page-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-size: 1.65rem;
+      font-weight: 800;
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .platform-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+    .pill.active {
+      background: var(--accent);
+      color: var(--accent-text);
+      border-color: transparent;
+      font-weight: 700;
+    }
+    .search-input {
+      min-width: 260px;
+      flex: 1;
+      max-width: 360px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    /* Horizontal Deal Card Grid */
+    .deals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
+      gap: 18px;
+    }
+    .deal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      gap: 16px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .deal-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-lg);
+    }
+    .deal-img-wrap {
+      width: 130px;
+      height: 145px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .deal-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .platform-tag {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .deal-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+    }
+    .deal-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .deal-inst {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Price Row: Price | Less (Red) | You Get (Green) */
+    .price-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: var(--bg-primary);
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 12px;
+    }
+    .price-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .price-item small {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .price-item strong {
+      font-size: 0.92rem;
+    }
+    .blurred-price {
+      filter: blur(5px);
+      user-select: none;
+    }
+
+    .deal-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .deal-btn {
+      flex: 1;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+    .deal-btn.request {
+      background: var(--accent);
+      color: var(--accent-text);
+    }
+    .deal-btn.login-lock {
+      background: var(--bg-tertiary);
+      color: var(--accent);
+      border: 1px dashed var(--accent);
+    }
+
+    @media (max-width: 560px) {
+      .deals-grid { grid-template-columns: 1fr; }
+      .deal-card { flex-direction: column; }
+      .deal-img-wrap { width: 100%; height: 170px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand">
+      <div class="brand-badge">SD</div>
+      <span>SastaDeal</span>
+    </a>
+    <div class="nav-actions">
+      <a href="index.html" class="btn">🏠 Home</a>
+      <a href="track.html" class="btn">📦 Track Order</a>
+      <button class="btn" onclick="SD.toggleTheme()">🌓</button>
+      <a href="login.html?next=deals.html" id="navLoginBtn" class="btn primary">🔓 Login to Unlock Prices</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <div>
+        <h1>🔥 Exclusive Live Deals</h1>
+        <p style="color:var(--text-secondary);font-size:0.9rem;" id="dealSubtitle">
+          Login to view real deal prices, less amounts, and request deals directly.
+        </p>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="platform-pills" id="platformPills">
+        <button class="pill active" onclick="setPlatformFilter('ALL', this)">All Platforms</button>
+        <button class="pill" onclick="setPlatformFilter('Amazon', this)">Amazon</button>
+        <button class="pill" onclick="setPlatformFilter('Flipkart', this)">Flipkart</button>
+        <button class="pill" onclick="setPlatformFilter('Blinkit', this)">Blinkit</button>
+        <button class="pill" onclick="setPlatformFilter('Myntra', this)">Myntra</button>
+        <button class="pill" onclick="setPlatformFilter('Meesho', this)">Meesho</button>
+      </div>
+      <input
+        type="text"
+        id="dealSearchInput"
+        class="search-input"
+        placeholder="🔍 Search deal title or instructions..."
+        oninput="renderDeals()"
+      />
+    </div>
+
+    <div id="dealsGrid" class="deals-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--text-secondary);">
+        Loading active deals...
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let allDeals = [];
+    let isUserLoggedIn = false;
+    let activePlatform = 'ALL';
+
+    (function initAuthHeader() {
+      const user = SD.getUser();
+      const btn = document.getElementById('navLoginBtn');
+      if (user && SD.getToken()) {
+        isUserLoggedIn = true;
+        btn.href = user.role === 'admin' ? 'admin-dashboard.html' : 'buyer-dashboard.html';
+        btn.textContent = `⚡ ${user.name.split(' ')[0]}'s Panel`;
+        document.getElementById('dealSubtitle').textContent = 'Real prices unlocked! Click "Request Deal" to notify Admin immediately.';
+      }
+    })();
+
+    function setPlatformFilter(plat, btn) {
+      activePlatform = plat;
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      renderDeals();
+    }
+
+    function renderDeals() {
+      const grid = document.getElementById('dealsGrid');
+      const query = document.getElementById('dealSearchInput').value.trim().toLowerCase();
+
+      const filtered = allDeals.filter(d => {
+        const matchPlat = activePlatform === 'ALL' || d.platform.toLowerCase().includes(activePlatform.toLowerCase());
+        const matchText = !query ||
+          d.title.toLowerCase().includes(query) ||
+          (d.instructions || '').toLowerCase().includes(query) ||
+          d.platform.toLowerCase().includes(query);
+        return matchPlat && matchText;
+      });
+
+      if (!filtered.length) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;padding:56px 20px;background:var(--bg-secondary);border-radius:16px;border:1px solid var(--border-color);">
+            <div style="font-size:2rem;margin-bottom:8px;">🛍️</div>
+            <h3>No Active Deals Found</h3>
+            <p style="color:var(--text-secondary);font-size:0.88rem;margin-top:4px;">Check back soon or clear your search filters.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(d => {
+        const imgHtml = d.imageUrl
+          ? `<img src="${SD.escapeHtml(d.imageUrl)}" alt="${SD.escapeHtml(d.title)}" onerror="this.style.display='none'" />`
+          : `<span style="font-size:2rem;">📦</span>`;
+
+        if (!isUserLoggedIn) {
+          return `
+            <div class="deal-card">
+              <div class="deal-img-wrap">
+                <span class="platform-tag">${SD.escapeHtml(d.platform)}</span>
+                ${imgHtml}
+              </div>
+              <div class="deal-body">
+                <div>
+                  <div class="deal-title">${SD.escapeHtml(d.title)}</div>
+                  <div class="deal-inst">${SD.escapeHtml(d.instructions || 'Full deal instructions visible after login.')}</div>
+                </div>
+                <div>
+                  <div class="price-strip">
+                    <div class="price-item">
+                      <small>Price</small>
+                      <strong class="mono blurred-price">₹999</strong>
+                    </div>
+                    <div class="price-item">
+                      <small>Less</small>
+                      <strong class="mono blurred-price" style="color:#ef4444">-₹250</strong>
+                    </div>
+                    <div class="price-item">
+                      <small>You Get</small>
+                      <strong class="mono blurred-price" style="color:#22c55e">₹749</strong>
+                    </div>
+                  </div>
+                  <div class="deal-actions">
+                    <a href="login.html?next=deals.html" class="deal-btn login-lock">🔒 Login to View Price & Request Deal</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="deal-card">
+            <div class="deal-img-wrap">
+              <span class="platform-tag">${SD.escapeHtml(d.platform)}</span>
+              ${imgHtml}
+            </div>
+            <div class="deal-body">
+              <div>
+                <div class="deal-title" title="${SD.escapeHtml(d.title)}">${SD.escapeHtml(d.title)}</div>
+                <div class="deal-inst">${SD.escapeHtml(d.instructions || 'Standard review/rating guidelines apply.')}</div>
+              </div>
+              <div>
+                <div class="price-strip">
+                  <div class="price-item">
+                    <small>Price</small>
+                    <strong class="mono">${SD.formatCurrency(d.price)}</strong>
+                  </div>
+                  <div class="price-item">
+                    <small>Less</small>
+                    <strong class="mono" style="color:#ef4444">-${SD.formatCurrency(d.lessAmount)}</strong>
+                  </div>
+                  <div class="price-item">
+                    <small>You Get</small>
+                    <strong class="mono" style="color:#22c55e">${SD.formatCurrency(d.youGet)}</strong>
+                  </div>
+                </div>
+                <div class="deal-actions">
+                  ${d.productUrl ? `<a href="${SD.escapeHtml(d.productUrl)}" target="_blank" rel="noopener" class="btn" style="padding:9px 12px;">🔗 Product</a>` : ''}
+                  <button class="deal-btn request" onclick="requestDealNow('${SD.escapeHtml(d.dealId)}', '${SD.escapeHtml(d.title.replace(/'/g, "\\'"))}', this)">
+                    ⚡ Request Deal
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function requestDealNow(dealId, dealTitle, btnEl) {
+      const user = SD.getUser();
+      if (!user) {
+        window.location.href = 'login.html?next=deals.html';
+        return;
+      }
+      btnEl.disabled = true;
+      btnEl.textContent = 'Sending...';
+
+      const res = await SD.api('requestDeal', {
+        dealId: dealId,
+        dealTitle: dealTitle,
+        buyerName: user.name,
+        buyerMobile: user.mobile
+      });
+
+      if (res && res.success) {
+        btnEl.textContent = '✓ Requested';
+        btnEl.style.background = '#16a34a';
+        btnEl.style.color = '#ffffff';
+        SD.toast(res.message, 'success');
+      } else {
+        btnEl.disabled = false;
+        btnEl.textContent = '⚡ Request Deal';
+        SD.toast(res?.error || 'Could not request deal.', 'error');
+      }
+    }
+
+    // Load Deals
+    SD.api('getPublicDeals', {}, {
+      useCache: true,
+      onCached: cached => {
+        if (cached && cached.deals) {
+          allDeals = cached.deals;
+          isUserLoggedIn = Boolean(cached.isLoggedIn);
+          renderDeals();
+        }
+      }
+    }).then(fresh => {
+      if (fresh && fresh.success) {
+        allDeals = fresh.deals || [];
+        isUserLoggedIn = Boolean(fresh.isLoggedIn);
+        renderDeals();
+      }
+    });
+  </script>
+</body>
+</html>
