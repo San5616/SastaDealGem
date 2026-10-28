@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Buyer Dashboard — SastaDeal</title>
+  <title>Buyer Portal — SastaDeal</title>
   <script src="_config.js"></script>
   <style>
     .navbar {
@@ -13,67 +13,62 @@
       background: var(--bg-glass);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border-color);
-      padding: 12px 24px;
+      padding: 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 8px;
     }
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       text-decoration: none;
       color: var(--text-primary);
       font-weight: 800;
-      font-size: 1.15rem;
+      font-size: 0.98rem;
     }
     .brand-badge {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
       background: var(--accent);
       color: var(--accent-text);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
+      font-size: 0.82rem;
     }
     .parent-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
       background: var(--accent-glow);
       border: 1px solid var(--border-hover);
       color: var(--accent);
-      padding: 4px 12px;
+      padding: 3px 10px;
       border-radius: 999px;
-      font-size: 0.78rem;
+      font-size: 0.7rem;
       font-weight: 700;
-    }
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .btn {
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 0.82rem;
+      padding: 6px 10px;
+      border-radius: 7px;
+      font-size: 0.75rem;
       font-weight: 600;
       border: 1px solid var(--border-color);
       background: var(--bg-secondary);
       color: var(--text-primary);
       cursor: pointer;
-      text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      transition: all 0.18s;
+      gap: 5px;
+      text-decoration: none;
+      white-space: nowrap;
     }
-    .btn:hover { border-color: var(--accent); }
     .btn.primary {
       background: var(--accent);
       color: var(--accent-text);
@@ -87,235 +82,283 @@
     }
 
     .container {
-      max-width: 1400px;
+      max-width: 1440px;
       margin: 0 auto;
-      padding: 20px 18px 64px;
+      padding: 10px 10px 70px;
     }
 
-    /* Highlights Banner */
+    /* Compact Highlight Banner */
     .highlight-bar {
       background: linear-gradient(90deg, var(--accent-glow), rgba(30,41,59,0.5));
       border: 1px solid var(--border-hover);
-      border-left: 4px solid var(--accent);
-      border-radius: 10px;
-      padding: 10px 16px;
-      margin-bottom: 16px;
-      font-size: 0.85rem;
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 6px 10px;
+      margin-bottom: 8px;
+      font-size: 0.74rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
-    /* Navigation Tabs */
+    /* Compact Tabs */
     .dash-tabs {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       overflow-x: auto;
-      padding-bottom: 8px;
-      margin-bottom: 20px;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
       border-bottom: 1px solid var(--border-color);
+      scrollbar-width: none;
     }
+    .dash-tabs::-webkit-scrollbar { display: none; }
     .dash-tab {
-      padding: 10px 18px;
-      border-radius: 10px;
-      border: 1px solid transparent;
-      background: transparent;
+      padding: 6px 12px;
+      border-radius: 7px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
       color: var(--text-secondary);
       font-weight: 600;
-      font-size: 0.88rem;
+      font-size: 0.76rem;
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.2s;
     }
     .dash-tab.active {
       background: var(--accent);
       color: var(--accent-text);
+      border-color: transparent;
       font-weight: 700;
     }
 
-    /* 6 KPI Cards */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 14px;
-      margin-bottom: 22px;
+    /* Ultra-Compact Horizontal Swipe KPI Strip */
+    .kpi-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-size: 0.68rem;
+      color: var(--text-secondary);
     }
+    .kpi-grid {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      scroll-snap-type: x mandatory;
+    }
+    .kpi-grid.grid-mode {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+      overflow-x: visible;
+    }
+    .kpi-grid.hidden-mode { display: none; }
     .kpi-card {
+      flex: 0 0 auto;
+      min-width: 112px;
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 16px;
+      border-radius: 9px;
+      padding: 7px 10px;
+      scroll-snap-align: start;
     }
     .kpi-label {
-      font-size: 0.74rem;
+      font-size: 0.58rem;
       font-weight: 700;
       text-transform: uppercase;
       color: var(--text-secondary);
-      letter-spacing: 0.04em;
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 2px;
+      white-space: nowrap;
     }
     .kpi-val {
-      font-size: 1.45rem;
+      font-size: 0.9rem;
       font-weight: 800;
+      line-height: 1.2;
+      white-space: nowrap;
     }
 
-    /* Toolbar */
-    .toolbar {
+    /* Compact Search & Quick Pills Bar */
+    .search-strip {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 14px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
+      border-radius: 10px;
+      padding: 8px;
+      margin-bottom: 8px;
     }
-    .filter-group {
+    .search-row {
       display: flex;
-      flex-wrap: wrap;
+      gap: 6px;
       align-items: center;
-      gap: 10px;
-      flex: 1;
+      flex-wrap: wrap;
     }
     .input-ctrl, .select-ctrl {
-      padding: 9px 12px;
-      border-radius: 9px;
+      padding: 7px 10px;
+      border-radius: 7px;
       border: 1px solid var(--border-color);
       background: var(--bg-primary);
       color: var(--text-primary);
-      font-size: 0.85rem;
+      font-size: 0.78rem;
       outline: none;
     }
     .input-ctrl:focus, .select-ctrl:focus { border-color: var(--accent); }
 
-    /* Table View */
+    .quick-pills {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-top: 7px;
+      margin-top: 7px;
+      border-top: 1px solid var(--border-color);
+      scrollbar-width: none;
+    }
+    .quick-pills::-webkit-scrollbar { display: none; }
+    .q-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .q-pill.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .filter-drawer {
+      display: none;
+      padding-top: 8px;
+      margin-top: 8px;
+      border-top: 1px dashed var(--border-color);
+    }
+    .filter-drawer.open {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    /* Compact Table */
     .table-wrap {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
+      border-radius: 10px;
       overflow-x: auto;
-      box-shadow: var(--shadow-sm);
+      max-height: 70vh;
+      -webkit-overflow-scrolling: touch;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.83rem;
+      font-size: 0.75rem;
     }
     thead th {
       position: sticky;
       top: 0;
+      z-index: 10;
       background: var(--bg-tertiary);
       color: var(--text-secondary);
       font-weight: 700;
       text-transform: uppercase;
-      font-size: 0.72rem;
-      letter-spacing: 0.03em;
-      padding: 12px 10px;
+      font-size: 0.65rem;
+      padding: 9px 7px;
       text-align: left;
       border-bottom: 1px solid var(--border-color);
       cursor: pointer;
       white-space: nowrap;
-      user-select: none;
     }
-    thead th:hover { color: var(--accent); }
-    tbody tr {
-      border-bottom: 1px solid var(--border-color);
-      transition: background 0.15s;
-    }
+    tbody tr { border-bottom: 1px solid var(--border-color); }
     tbody tr:hover { background: rgba(212, 165, 116, 0.05); }
-    tbody td {
-      padding: 11px 10px;
-      vertical-align: middle;
-    }
+    tbody td { padding: 7px; vertical-align: middle; white-space: nowrap; }
 
-    /* Card View Grid */
     .cards-grid {
       display: none;
-      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 10px;
     }
     .order-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 16px;
+      border-radius: 11px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 6px;
     }
 
-    /* Forms (New Order & Query) */
+    /* Forms */
     .form-panel {
-      max-width: 760px;
+      max-width: 720px;
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 24px;
+      border-radius: 14px;
+      padding: 16px;
     }
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
     }
     .field label {
       display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
+      font-size: 0.73rem;
+      font-weight: 700;
       color: var(--text-secondary);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .field input, .field select, .field textarea {
       width: 100%;
-      padding: 10px 12px;
-      border-radius: 9px;
+      padding: 8px 10px;
+      border-radius: 7px;
       border: 1px solid var(--border-color);
       background: var(--bg-primary);
       color: var(--text-primary);
-      font-size: 0.88rem;
+      font-size: 0.8rem;
       outline: none;
     }
 
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
 
-    /* Modal */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.72);
+      background: rgba(0,0,0,0.75);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 500;
-      padding: 16px;
+      padding: 14px;
     }
     .modal-backdrop.open { display: flex; }
     .modal-box {
       width: 100%;
-      max-width: 580px;
+      max-width: 500px;
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 22px;
+      border-radius: 14px;
+      padding: 18px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Navbar -->
+  <!-- Compact Navbar -->
   <nav class="navbar">
-    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
       <a href="index.html" class="brand">
         <div class="brand-badge">SD</div>
-        <span>Buyer Portal</span>
+        <span>Buyer</span>
       </a>
-      <span class="parent-pill" id="parentNavBadge">👤 Parent: Loading...</span>
+      <span class="parent-pill" id="parentNavBadge">👤 Loading...</span>
     </div>
-    <div class="nav-right">
+    <div style="display:flex;gap:5px;align-items:center;">
       <button class="btn" onclick="refreshBuyerData()">🔄 Sync</button>
       <button class="btn" onclick="SD.toggleTheme()">🌓</button>
       <button class="btn danger" onclick="SD.logout()">Logout</button>
@@ -323,58 +366,62 @@
   </nav>
 
   <main class="container">
-    <!-- Announcements / Highlights -->
     <div id="buyerHighlights"></div>
 
     <!-- 4 Navigation Tabs -->
     <div class="dash-tabs">
       <button class="dash-tab active" onclick="switchTab('ordersTab', this)">📦 My Orders</button>
       <button class="dash-tab" onclick="switchTab('dealsTab', this)">🔥 Active Deals</button>
-      <button class="dash-tab" onclick="switchTab('newOrderTab', this)">➕ Submit New Order</button>
+      <button class="dash-tab" onclick="switchTab('newOrderTab', this)">➕ Submit Order</button>
       <button class="dash-tab" onclick="switchTab('queryTab', this)">📩 Raise Query</button>
     </div>
 
     <!-- TAB 1: ORDERS -->
     <section id="ordersTab" class="tab-pane active">
-      <!-- 6 KPI Cards -->
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <span class="kpi-label">Total Orders</span>
-          <div class="kpi-val mono" id="kpiTotalOrders">0</div>
-        </div>
-        <div class="kpi-card">
-          <span class="kpi-label">Order Amount</span>
-          <div class="kpi-val mono" id="kpiOrderAmount">₹0</div>
-        </div>
-        <div class="kpi-card">
-          <span class="kpi-label">Received (Paid Amount)</span>
-          <div class="kpi-val mono" style="color:#ef4444" id="kpiReceived">₹0</div>
-        </div>
-        <div class="kpi-card">
-          <span class="kpi-label">Pending Refund Amount</span>
-          <div class="kpi-val mono" style="color:#f59e0b" id="kpiPendingAmt">₹0</div>
-        </div>
-        <div class="kpi-card">
-          <span class="kpi-label">Pending Form Count</span>
-          <div class="kpi-val mono" style="color:#a855f7" id="kpiPendingForm">0</div>
-        </div>
-        <div class="kpi-card">
-          <span class="kpi-label">Paid Orders Count</span>
-          <div class="kpi-val mono" style="color:#22c55e" id="kpiPaidCount">0</div>
+      <div class="kpi-header-bar">
+        <span>👈 Swipe KPIs left/right</span>
+        <div style="display:flex;gap:5px;">
+          <button class="btn" style="padding:2px 7px;font-size:0.65rem;" onclick="document.getElementById('buyerKpiStrip').classList.toggle('grid-mode')">📐 Grid/Swipe</button>
+          <button class="btn" style="padding:2px 7px;font-size:0.65rem;" onclick="document.getElementById('buyerKpiStrip').classList.toggle('hidden-mode')">👁️ Hide/Show</button>
         </div>
       </div>
 
-      <!-- Filter & View Toolbar -->
-      <div class="toolbar">
-        <div class="filter-group">
+      <!-- 6 Ultra-Compact KPI Cards -->
+      <div class="kpi-grid" id="buyerKpiStrip">
+        <div class="kpi-card"><span class="kpi-label">Total Orders</span><div class="kpi-val mono" id="kpiTotalOrders">0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Order Amount</span><div class="kpi-val mono" id="kpiOrderAmount">₹0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Received (Paid)</span><div class="kpi-val mono" style="color:#ef4444" id="kpiReceived">₹0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Pending Refund</span><div class="kpi-val mono" style="color:#f59e0b" id="kpiPendingAmt">₹0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Pending Form</span><div class="kpi-val mono" style="color:#a855f7" id="kpiPendingForm">0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Paid Count</span><div class="kpi-val mono" style="color:#22c55e" id="kpiPaidCount">0</div></div>
+      </div>
+
+      <!-- Compact Search + Quick Pills + Collapsible Filter Drawer -->
+      <div class="search-strip">
+        <div class="search-row">
           <input
             type="text"
             id="orderSearch"
             class="input-ctrl"
-            style="min-width:240px;"
-            placeholder="🔍 Search Order ID, Product, Account..."
+            style="flex:1;min-width:150px;"
+            placeholder="🔍 Search Order ID, #No, Product, Account..."
             oninput="applyOrderFilters()"
           />
+          <button class="btn primary" onclick="document.getElementById('buyerFilterDrawer').classList.toggle('open')" id="buyerFilterBtn">🎛️ Filters</button>
+          <button class="btn" id="viewToggleBtn" onclick="toggleOrderView()">🗂️ Cards</button>
+          <button class="btn" onclick="resetBuyerFilters()" title="Reset">↺</button>
+        </div>
+
+        <div class="quick-pills">
+          <button class="q-pill active" onclick="setBuyerQuickPreset('ALL', this)">All Orders</button>
+          <button class="q-pill" onclick="setBuyerQuickPreset('PENDING_ONLY', this)">⏳ Pending Refund</button>
+          <button class="q-pill" onclick="setBuyerQuickPreset('Got Refund', this)">✓ Got Refund</button>
+          <button class="q-pill" onclick="setBuyerQuickPreset('PAID_ONLY', this)">💸 Paid</button>
+          <button class="q-pill" onclick="setBuyerQuickPreset('UNPAID_ONLY', this)">⏳ Unpaid</button>
+          <button class="q-pill" onclick="setBuyerQuickPreset('Refund form filled', this)">📋 Form Filled</button>
+        </div>
+
+        <div class="filter-drawer" id="buyerFilterDrawer">
           <select id="accountFilter" class="select-ctrl" onchange="applyOrderFilters()">
             <option value="ALL">All Linked Accounts</option>
           </select>
@@ -391,11 +438,23 @@
             <option value="Paid">Paid</option>
             <option value="Pending">Unpaid / Pending</option>
           </select>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="btn" id="viewToggleBtn" onclick="toggleOrderView()">🗂️ Card View</button>
           <button class="btn" onclick="exportBuyerOrders('csv')">⬇️ CSV</button>
           <button class="btn" onclick="exportBuyerOrders('xls')">📊 XLS</button>
+        </div>
+      </div>
+
+      <!-- Pagination Bar -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:0.72rem;color:var(--text-secondary);">
+        <span id="buyerPageInfo">Showing orders</span>
+        <div style="display:flex;gap:5px;align-items:center;">
+          <select id="buyerPageSize" class="select-ctrl" style="padding:3px 6px;font-size:0.72rem;" onchange="buyerPage=1;renderBuyerOrders()">
+            <option value="100">100</option>
+            <option value="250">250</option>
+            <option value="99999">All</option>
+          </select>
+          <button class="btn" style="padding:3px 7px;" onclick="if(buyerPage>1){buyerPage--;renderBuyerOrders();}">◀</button>
+          <span class="mono" id="buyerPageNum">1</span>
+          <button class="btn" style="padding:3px 7px;" onclick="buyerPage++;renderBuyerOrders();">▶</button>
         </div>
       </div>
 
@@ -406,10 +465,10 @@
             <tr>
               <th onclick="sortBuyerTable('orderNo')"># ↕</th>
               <th onclick="sortBuyerTable('orderDate')">Order Date ↕</th>
-              <th onclick="sortBuyerTable('paymentDate')">Payment Date ↕</th>
+              <th onclick="sortBuyerTable('paymentDate')">Pay Date ↕</th>
               <th onclick="sortBuyerTable('platformOrderId')">Order ID ↕</th>
               <th onclick="sortBuyerTable('productName')">Product ↕</th>
-              <th onclick="sortBuyerTable('accountName')">Account (For Whom) ↕</th>
+              <th onclick="sortBuyerTable('accountName')">Account ↕</th>
               <th onclick="sortBuyerTable('orderedPlatform')">Platform ↕</th>
               <th onclick="sortBuyerTable('pricePaid')">Price ↕</th>
               <th onclick="sortBuyerTable('buyerLess')">Less ↕</th>
@@ -420,130 +479,80 @@
             </tr>
           </thead>
           <tbody id="buyerTableBody">
-            <tr><td colspan="13" style="text-align:center;padding:36px;color:var(--text-secondary);">Loading your orders...</td></tr>
+            <tr><td colspan="13" style="text-align:center;padding:30px;color:var(--text-secondary);">Loading your orders...</td></tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Card View -->
       <div class="cards-grid" id="cardViewWrap"></div>
     </section>
 
     <!-- TAB 2: DEALS -->
     <section id="dealsTab" class="tab-pane">
-      <div id="buyerDealsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px;"></div>
+      <div id="buyerDealsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;"></div>
     </section>
 
     <!-- TAB 3: SUBMIT NEW ORDER -->
     <section id="newOrderTab" class="tab-pane">
       <div class="form-panel">
-        <h2 style="font-size:1.25rem;margin-bottom:6px;">➕ Submit New Order</h2>
-        <p style="font-size:0.84rem;color:var(--text-secondary);margin-bottom:16px;">
-          Paste your Amazon/Flipkart order confirmation snippet below to auto-fill, or enter the fields manually.
-        </p>
-
-        <!-- Smart OCR / Text Snippet Auto-Parser -->
-        <div style="background:var(--bg-primary);border:1px dashed var(--accent);border-radius:12px;padding:12px;margin-bottom:18px;">
-          <label style="font-size:0.76rem;font-weight:700;color:var(--accent);display:block;margin-bottom:6px;">
+        <h3 style="font-size:1rem;margin-bottom:4px;">➕ Submit New Order</h3>
+        <div style="background:var(--bg-primary);border:1px dashed var(--accent);border-radius:9px;padding:8px;margin-bottom:12px;">
+          <label style="font-size:0.7rem;font-weight:700;color:var(--accent);display:block;margin-bottom:3px;">
             ⚡ Smart Order Text Paste (Auto-extracts Order ID & Price)
           </label>
           <textarea
             id="smartPasteBox"
             rows="2"
-            placeholder="Paste order confirmation text here (e.g. Order # 404-2759471-7602761 Total: ₹499)..."
+            placeholder="Paste order confirmation text here (e.g. 404-2759471-7602761 ₹499)..."
             oninput="parseSmartOrderText(this.value)"
-            style="width:100%;background:transparent;border:none;color:var(--text-primary);font-size:0.84rem;outline:none;"
+            style="width:100%;background:transparent;border:none;color:var(--text-primary);font-size:0.78rem;outline:none;"
           ></textarea>
         </div>
 
         <form id="buyerAddOrderForm" onsubmit="submitBuyerNewOrder(event)">
           <div class="form-grid">
-            <div class="field">
-              <label>Reviewer Account (Auto-fills UserID) *</label>
-              <select id="noAccountSelect" onchange="onAccountSelectChange()" required></select>
-            </div>
-            <div class="field">
-              <label>Linked UserID *</label>
-              <input type="text" id="noUserId" class="mono" readonly required />
-            </div>
-            <div class="field">
-              <label>Ordered Platform *</label>
-              <select id="noPlatform" required></select>
-            </div>
-            <div class="field">
-              <label>Platform Order ID *</label>
-              <input type="text" id="noPlatformOrderId" class="mono" placeholder="e.g. 404-1234567-8901234" required />
-            </div>
-            <div class="field" style="grid-column:1/-1;">
-              <label>Product Name *</label>
-              <input type="text" id="noProductName" placeholder="Full product title" required />
-            </div>
-            <div class="field">
-              <label>Product Link (Optional)</label>
-              <input type="url" id="noProductLink" placeholder="https://..." />
-            </div>
-            <div class="field">
-              <label>Seller Name (Optional)</label>
-              <input type="text" id="noSellerName" placeholder="e.g. Appario / Cloudtail" />
-            </div>
-            <div class="field">
-              <label>Price Paid (₹) *</label>
-              <input type="number" step="0.01" id="noPricePaid" class="mono" placeholder="499" oninput="calcBuyerToGetPreview()" required />
-            </div>
-            <div class="field">
-              <label>Buyer Less / Deduction (₹) *</label>
-              <input type="number" step="0.01" id="noBuyerLess" class="mono" value="0" oninput="calcBuyerToGetPreview()" required />
-            </div>
-            <div class="field">
-              <label>Refund You Will Get (₹)</label>
-              <input type="text" id="noToGetPreview" class="mono" style="color:#22c55e;font-weight:700;" readonly value="₹0" />
-            </div>
-            <div class="field">
-              <label>Order Date *</label>
-              <input type="date" id="noOrderDate" required />
-            </div>
-            <div class="field">
-              <label>For Whom *</label>
-              <select id="noForWhom">
-                <option value="Self">Self</option>
-                <option value="Buyer">Buyer</option>
-                <option value="Friend/Family">Friend/Family</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Deal Contact No</label>
-              <select id="noDealContact"></select>
-            </div>
-            <div class="field" style="grid-column:1/-1;">
-              <label>Order Screenshot (Auto-compressed ≤200KB)</label>
-              <input type="file" id="noScreenshotFile" accept="image/*" />
-            </div>
-            <div class="field" style="grid-column:1/-1;">
-              <label>Notes / Remarks</label>
-              <textarea id="noNotes" rows="2" placeholder="Any special note for Admin..."></textarea>
-            </div>
+            <div class="field"><label>Reviewer Account *</label><select id="noAccountSelect" onchange="onAccountSelectChange()" required></select></div>
+            <div class="field"><label>Linked UserID *</label><input type="text" id="noUserId" class="mono" readonly required /></div>
+            <div class="field"><label>Platform *</label><select id="noPlatform" required></select></div>
+            <div class="field"><label>Platform Order ID *</label><input type="text" id="noPlatformOrderId" class="mono" placeholder="404-xxxxxxx-xxxxxxx" required /></div>
+            <div class="field" style="grid-column:1/-1;"><label>Product Name *</label><input type="text" id="noProductName" required /></div>
+            <div class="field"><label>Product Link</label><input type="url" id="noProductLink" /></div>
+            <div class="field"><label>Seller Name</label><input type="text" id="noSellerName" /></div>
+            <div class="field"><label>Price Paid (₹) *</label><input type="number" step="0.01" id="noPricePaid" class="mono" oninput="calcBuyerToGetPreview()" required /></div>
+            <div class="field"><label>Buyer Less (₹) *</label><input type="number" step="0.01" id="noBuyerLess" class="mono" value="0" oninput="calcBuyerToGetPreview()" required /></div>
+            <div class="field"><label>Refund You Get (₹)</label><input type="text" id="noToGetPreview" class="mono" style="color:#22c55e;font-weight:700;" readonly value="₹0" /></div>
+            <div class="field"><label>Order Date *</label><input type="date" id="noOrderDate" required /></div>
+            <div class="field"><label>For Whom</label><select id="noForWhom"><option value="Self">Self</option><option value="Buyer">Buyer</option></select></div>
+            <div class="field"><label>Deal Contact No</label><select id="noDealContact"></select></div>
+            <div class="field" style="grid-column:1/-1;"><label>Order Screenshot (≤200KB)</label><input type="file" id="noScreenshotFile" accept="image/*" /></div>
+            <div class="field" style="grid-column:1/-1;"><label>Notes</label><textarea id="noNotes" rows="2"></textarea></div>
           </div>
-
-          <button type="submit" class="btn primary" id="noSubmitBtn" style="margin-top:18px;width:100%;justify-content:center;padding:12px;">
-            🚀 Submit Order to SastaDeal
+          <button type="submit" class="btn primary" id="noSubmitBtn" style="margin-top:14px;width:100%;justify-content:center;padding:10px;">
+            🚀 Submit Order
           </button>
         </form>
       </div>
     </section>
 
-    <!-- TAB 4: RAISE QUERY -->
+    <!-- TAB 4: RAISE QUERY (WITH BUYER'S OWN ORDER ID DROPDOWN) -->
     <section id="queryTab" class="tab-pane">
       <div class="form-panel">
-        <h2 style="font-size:1.25rem;margin-bottom:6px;">📩 Raise Support Query</h2>
-        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:18px;">
-          Have a question regarding a refund delay or payment settlement? Send a direct ticket to Admin via Email & WhatsApp.
+        <h3 style="font-size:1rem;margin-bottom:4px;">📩 Raise Support Query</h3>
+        <p style="font-size:0.76rem;color:var(--text-secondary);margin-bottom:12px;">
+          Select your Order ID from the dropdown below to ask Admin about refund or payment status.
         </p>
         <form onsubmit="submitBuyerQuery(event)">
-          <div class="field" style="margin-bottom:14px;">
-            <label>Related Platform Order ID / Order No (Optional)</label>
+          <div class="field" style="margin-bottom:10px;">
+            <label>Select Your Order ID *</label>
+            <select id="qOrderSelect" class="mono" onchange="onBuyerQueryOrderSelect(this.value)">
+              <option value="General Query">-- Select Order from Your List --</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:10px;">
+            <label>Order Reference (Auto-filled or Type Manually)</label>
             <input type="text" id="qOrderId" class="mono" placeholder="e.g. #1194 or 404-2759471-7602761" />
           </div>
-          <div class="field" style="margin-bottom:14px;">
+          <div class="field" style="margin-bottom:10px;">
             <label>Subject *</label>
             <select id="qSubject" required>
               <option value="Refund Status Inquiry">Refund Status Inquiry</option>
@@ -553,11 +562,11 @@
               <option value="Other Support">Other Support</option>
             </select>
           </div>
-          <div class="field" style="margin-bottom:16px;">
+          <div class="field" style="margin-bottom:14px;">
             <label>Message *</label>
-            <textarea id="qMessage" rows="4" placeholder="Describe your query clearly..." required></textarea>
+            <textarea id="qMessage" rows="4" placeholder="Write your message for Admin..." required></textarea>
           </div>
-          <button type="submit" class="btn primary" id="qSubmitBtn" style="width:100%;justify-content:center;padding:12px;">
+          <button type="submit" class="btn primary" id="qSubmitBtn" style="width:100%;justify-content:center;padding:10px;">
             📨 Send Query to Admin
           </button>
         </form>
@@ -568,9 +577,9 @@
   <!-- 6-Step Timeline Modal -->
   <div class="modal-backdrop" id="timelineModal">
     <div class="modal-box">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-        <h3 id="tlTitle">Order Timeline</h3>
-        <button onclick="document.getElementById('timelineModal').classList.remove('open')" style="background:none;border:none;color:var(--text-secondary);font-size:1.2rem;cursor:pointer;">✕</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <h3 id="tlTitle" style="font-size:0.95rem;">Order Timeline</h3>
+        <button onclick="document.getElementById('timelineModal').classList.remove('open')" style="background:none;border:none;color:var(--text-secondary);font-size:1.1rem;cursor:pointer;">✕</button>
       </div>
       <div id="tlBody"></div>
     </div>
@@ -585,8 +594,37 @@
     let currentView = 'table';
     let sortField = 'orderNo';
     let sortAsc = false;
+    let buyerPage = 1;
 
     document.getElementById('noOrderDate').value = new Date().toISOString().split('T')[0];
+
+    // IndexedDB Fast Cache for Buyer
+    const BUYER_IDB = {
+      open() {
+        return new Promise((res, rej) => {
+          const r = indexedDB.open('SastaDeal_BuyerDB', 1);
+          r.onupgradeneeded = e => e.target.result.createObjectStore('store');
+          r.onsuccess = e => res(e.target.result);
+          r.onerror = e => rej(e);
+        });
+      },
+      async get(k) {
+        try {
+          const db = await this.open();
+          return new Promise(res => {
+            const g = db.transaction('store', 'readonly').objectStore('store').get(k);
+            g.onsuccess = () => res(g.result || null);
+            g.onerror = () => res(null);
+          });
+        } catch (e) { return null; }
+      },
+      async set(k, v) {
+        try {
+          const db = await this.open();
+          db.transaction('store', 'readwrite').objectStore('store').put(v, k);
+        } catch (e) {}
+      }
+    };
 
     function switchTab(tabId, btn) {
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
@@ -595,39 +633,74 @@
       btn.classList.add('active');
     }
 
+    function setBuyerQuickPreset(preset, btn) {
+      document.querySelectorAll('.q-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const stSel = document.getElementById('statusFilter');
+      const paySel = document.getElementById('paymentFilter');
+      stSel.value = 'ALL';
+      paySel.value = 'ALL';
+
+      if (preset === 'PAID_ONLY') paySel.value = 'Paid';
+      else if (preset === 'UNPAID_ONLY') paySel.value = 'Pending';
+      else if (preset !== 'ALL') stSel.value = preset;
+
+      applyOrderFilters();
+    }
+
+    function resetBuyerFilters() {
+      document.getElementById('orderSearch').value = '';
+      document.getElementById('accountFilter').value = 'ALL';
+      document.getElementById('statusFilter').value = 'ALL';
+      document.getElementById('paymentFilter').value = 'ALL';
+      document.querySelectorAll('.q-pill').forEach((b, i) => b.classList.toggle('active', i === 0));
+      applyOrderFilters();
+    }
+
+    function onBuyerQueryOrderSelect(val) {
+      document.getElementById('qOrderId').value = val === 'General Query' ? '' : val;
+    }
+
     function renderBuyerPayload(data) {
       if (!data || !data.success) return;
 
       const u = data.user || currentUser;
-      document.getElementById('parentNavBadge').textContent = `👤 Parent: ${u.parentName || u.name} (${u.parentUserId || u.userId})`;
+      document.getElementById('parentNavBadge').textContent = `👤 ${u.parentName || u.name} (${u.parentUserId || u.userId})`;
 
       buyerOrders = data.orders || [];
       linkedAccounts = data.linkedAccounts || [];
       buyerDeals = data.deals || [];
 
-      // Populate Highlights
       const hlDiv = document.getElementById('buyerHighlights');
       hlDiv.innerHTML = (data.highlights || []).map(h => `
         <div class="highlight-bar">
           <div><strong style="color:var(--accent)">${SD.escapeHtml(h.title)}:</strong> ${SD.escapeHtml(h.message)}</div>
-          <span class="mono" style="font-size:0.75rem;color:var(--text-muted)">${SD.escapeHtml(h.date)}</span>
+          <span class="mono" style="font-size:0.66rem;color:var(--text-muted)">${SD.escapeHtml(h.date)}</span>
         </div>
       `).join('');
 
-      // Populate Account Filter & New Order Account Dropdown
       const accFilter = document.getElementById('accountFilter');
       const noAccSelect = document.getElementById('noAccountSelect');
       const uniqueAccounts = linkedAccounts.length ? linkedAccounts : [{ userId: u.userId, name: u.name, accountType: 'Main' }];
 
+      const currAccVal = accFilter.value || 'ALL';
       accFilter.innerHTML = `<option value="ALL">All Linked Accounts (${uniqueAccounts.length})</option>` +
         uniqueAccounts.map(a => `<option value="${SD.escapeHtml(a.userId)}">${SD.escapeHtml(a.name)} (${SD.escapeHtml(a.userId)})</option>`).join('');
+      accFilter.value = currAccVal;
 
       noAccSelect.innerHTML = uniqueAccounts.map(a =>
-        `<option value="${SD.escapeHtml(a.name)}" data-uid="${SD.escapeHtml(a.userId)}">${SD.escapeHtml(a.name)} — ${SD.escapeHtml(a.userId)} (${SD.escapeHtml(a.accountType || 'Sub')})</option>`
+        `<option value="${SD.escapeHtml(a.name)}" data-uid="${SD.escapeHtml(a.userId)}">${SD.escapeHtml(a.name)} — ${SD.escapeHtml(a.userId)}</option>`
       ).join('');
       onAccountSelectChange();
 
-      // Populate Platforms & Deal Contacts
+      // Populate Buyer's Own Orders into Query Dropdown
+      const qSel = document.getElementById('qOrderSelect');
+      qSel.innerHTML = `<option value="General Query">-- Select Order (${buyerOrders.length} Orders) --</option>` +
+        buyerOrders.map(o =>
+          `<option value="#${o.orderNo} (${SD.escapeHtml(o.platformOrderId)})">#${o.orderNo} | ${SD.escapeHtml(o.platformOrderId)} | ${SD.escapeHtml((o.productName || '').slice(0, 26))} | ₹${o.buyerToGet}</option>`
+        ).join('');
+
       const plats = data.dropdowns?.platforms?.length ? data.dropdowns.platforms : SASTADEAL_CONFIG.PLATFORMS;
       document.getElementById('noPlatform').innerHTML = plats.map(p => `<option value="${SD.escapeHtml(p)}">${SD.escapeHtml(p)}</option>`).join('');
 
@@ -641,9 +714,7 @@
     function onAccountSelectChange() {
       const sel = document.getElementById('noAccountSelect');
       const opt = sel.options[sel.selectedIndex];
-      if (opt) {
-        document.getElementById('noUserId').value = opt.getAttribute('data-uid') || currentUser.userId;
-      }
+      if (opt) document.getElementById('noUserId').value = opt.getAttribute('data-uid') || currentUser.userId;
     }
 
     function applyOrderFilters() {
@@ -670,15 +741,12 @@
         return true;
       });
 
-      // Sort
       filteredOrders.sort((a, b) => {
         let vA = a[sortField], vB = b[sortField];
         if (['orderNo', 'pricePaid', 'buyerLess', 'buyerToGet', 'buyerActualGot'].includes(sortField)) {
-          vA = Number(vA) || 0;
-          vB = Number(vB) || 0;
+          vA = Number(vA) || 0; vB = Number(vB) || 0;
         } else {
-          vA = String(vA || '').toLowerCase();
-          vB = String(vB || '').toLowerCase();
+          vA = String(vA || '').toLowerCase(); vB = String(vB || '').toLowerCase();
         }
         if (vA < vB) return sortAsc ? -1 : 1;
         if (vA > vB) return sortAsc ? 1 : -1;
@@ -686,15 +754,12 @@
       });
 
       updateBuyerKPIs(filteredOrders);
+      buyerPage = 1;
       renderBuyerOrders();
     }
 
     function updateBuyerKPIs(list) {
-      let totalAmt = 0;
-      let receivedAmt = 0;
-      let pendingAmt = 0;
-      let pendingFormCount = 0;
-      let paidCount = 0;
+      let totalAmt = 0, receivedAmt = 0, pendingAmt = 0, pendingFormCount = 0, paidCount = 0;
 
       list.forEach(o => {
         const isCancelled = String(o.orderStatus || '').toLowerCase().includes('cancel');
@@ -708,7 +773,6 @@
           pendingAmt += Number(o.buyerToGet) || 0;
         }
 
-        // Key Business Rule #3: Pending Form counter = orders where RefundFormDate is NOT set
         if (!o.refundFormDate && !isCancelled && String(o.orderStatus || '').toLowerCase() !== 'got refund') {
           pendingFormCount++;
         }
@@ -723,31 +787,37 @@
     }
 
     function sortBuyerTable(field) {
-      if (sortField === field) {
-        sortAsc = !sortAsc;
-      } else {
-        sortField = field;
-        sortAsc = true;
-      }
+      if (sortField === field) sortAsc = !sortAsc;
+      else { sortField = field; sortAsc = true; }
       applyOrderFilters();
     }
 
     function renderBuyerOrders() {
       const tbody = document.getElementById('buyerTableBody');
       const cardWrap = document.getElementById('cardViewWrap');
+      const pageSize = Number(document.getElementById('buyerPageSize').value) || 100;
 
-      if (!filteredOrders.length) {
-        tbody.innerHTML = `<tr><td colspan="13" style="text-align:center;padding:36px;color:var(--text-secondary);">No matching orders found.</td></tr>`;
-        cardWrap.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:36px;color:var(--text-secondary);">No matching orders found.</div>`;
+      const total = filteredOrders.length;
+      const maxPage = Math.max(1, Math.ceil(total / pageSize));
+      if (buyerPage > maxPage) buyerPage = maxPage;
+
+      const startIdx = (buyerPage - 1) * pageSize;
+      const pageSlice = filteredOrders.slice(startIdx, startIdx + pageSize);
+
+      document.getElementById('buyerPageInfo').textContent = `${total ? startIdx + 1 : 0}–${Math.min(startIdx + pageSize, total)} of ${total}`;
+      document.getElementById('buyerPageNum').textContent = `${buyerPage}/${maxPage}`;
+
+      if (!pageSlice.length) {
+        tbody.innerHTML = `<tr><td colspan="13" style="text-align:center;padding:30px;color:var(--text-secondary);">No matching orders found.</td></tr>`;
+        cardWrap.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text-secondary);">No matching orders found.</div>`;
         return;
       }
 
-      tbody.innerHTML = filteredOrders.map(o => {
+      tbody.innerHTML = pageSlice.map(o => {
         const isPaid = String(o.paymentStatus || '').toLowerCase() === 'paid';
         const daysAgo = o.refundFormDate ? SD.daysBetween(o.refundFormDate, o.refundDate || null) : null;
-        const daysSub = daysAgo !== null ? `<div style="font-size:0.68rem;color:var(--text-muted)">${o.refundDate ? `Refunded in ${daysAgo}d` : `${daysAgo}d since form`}</div>` : '';
+        const daysSub = daysAgo !== null ? `<span style="font-size:0.64rem;color:var(--text-muted)">(${daysAgo}d)</span>` : '';
 
-        // Paid amount in bold red as per specification
         const gotHtml = isPaid
           ? `<strong class="mono" style="color:#dc2626;font-weight:800;">${SD.formatCurrency(o.buyerActualGot !== null ? o.buyerActualGot : o.buyerToGet)}</strong>`
           : SD.formatActualGotHtml(o.buyerActualGot, o.buyerToGet);
@@ -757,15 +827,15 @@
             <td class="mono" style="font-weight:700;color:var(--accent);">#${o.orderNo}</td>
             <td class="mono">${SD.formatDate(o.orderDate)}</td>
             <td class="mono">${SD.formatDate(o.paymentDate)}</td>
-            <td class="mono" onclick="event.stopPropagation();SD.copyText('${SD.escapeHtml(o.platformOrderId)}')" title="Click to copy">
-              <span style="border-bottom:1px dotted var(--text-muted);">${SD.escapeHtml(o.platformOrderId)}</span> 📋
+            <td class="mono" onclick="event.stopPropagation();SD.copyText('${SD.escapeHtml(o.platformOrderId)}')">
+              ${SD.escapeHtml(o.platformOrderId)} 📋
             </td>
-            <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${SD.escapeHtml(o.productName)}">
+            <td style="max-width:170px;overflow:hidden;text-overflow:ellipsis;" title="${SD.escapeHtml(o.productName)}">
               ${SD.escapeHtml(o.productName)}
             </td>
             <td>
               <span style="color:var(--cyan);font-weight:600;">${SD.escapeHtml(o.accountName)}</span>
-              <span style="font-size:0.72rem;color:var(--text-muted);">(${SD.escapeHtml(o.forWhom || 'Self')})</span>
+              <span style="font-size:0.66rem;color:var(--text-muted);">(${SD.escapeHtml(o.forWhom || 'Self')})</span>
             </td>
             <td>${SD.escapeHtml(o.orderedPlatform)}</td>
             <td class="mono">${SD.formatCurrency(o.pricePaid)}</td>
@@ -778,26 +848,26 @@
         `;
       }).join('');
 
-      cardWrap.innerHTML = filteredOrders.map(o => `
+      cardWrap.innerHTML = pageSlice.map(o => `
         <div class="order-card" onclick="openTimelineModal(${o.orderNo})" style="cursor:pointer;">
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span class="mono" style="font-weight:800;color:var(--accent);">#${o.orderNo} • ${SD.escapeHtml(o.orderedPlatform)}</span>
+            <span class="mono" style="font-weight:800;color:var(--accent);font-size:0.8rem;">#${o.orderNo} • ${SD.escapeHtml(o.orderedPlatform)}</span>
             ${SD.statusBadge(o.orderStatus)}
           </div>
-          <div style="font-weight:700;font-size:0.92rem;">${SD.escapeHtml(o.productName)}</div>
-          <div class="mono" style="font-size:0.78rem;color:var(--text-secondary);">ID: ${SD.escapeHtml(o.platformOrderId)}</div>
-          <div style="display:flex;justify-content:space-between;font-size:0.8rem;">
-            <span>Account: <strong style="color:var(--cyan)">${SD.escapeHtml(o.accountName)}</strong> (${SD.escapeHtml(o.forWhom)})</span>
+          <div style="font-weight:700;font-size:0.82rem;">${SD.escapeHtml(o.productName)}</div>
+          <div class="mono" style="font-size:0.72rem;color:var(--text-secondary);">ID: ${SD.escapeHtml(o.platformOrderId)}</div>
+          <div style="display:flex;justify-content:space-between;font-size:0.74rem;">
+            <span><strong style="color:var(--cyan)">${SD.escapeHtml(o.accountName)}</strong> (${SD.escapeHtml(o.forWhom)})</span>
             <span class="mono">${SD.formatDate(o.orderDate)}</span>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--bg-primary);padding:8px;border-radius:8px;text-align:center;">
-            <div><small style="color:var(--text-muted);font-size:0.68rem;display:block;">Price</small><strong class="mono">${SD.formatCurrency(o.pricePaid)}</strong></div>
-            <div><small style="color:var(--text-muted);font-size:0.68rem;display:block;">Less</small><strong class="mono" style="color:#dc2626">-${SD.formatCurrency(o.buyerLess)}</strong></div>
-            <div><small style="color:var(--text-muted);font-size:0.68rem;display:block;">ToGet</small><strong class="mono" style="color:#16a34a">${SD.formatCurrency(o.buyerToGet)}</strong></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--bg-primary);padding:6px;border-radius:7px;text-align:center;font-size:0.74rem;">
+            <div><small style="color:var(--text-muted);font-size:0.6rem;display:block;">Price</small><strong class="mono">${SD.formatCurrency(o.pricePaid)}</strong></div>
+            <div><small style="color:var(--text-muted);font-size:0.6rem;display:block;">Less</small><strong class="mono" style="color:#dc2626">-${SD.formatCurrency(o.buyerLess)}</strong></div>
+            <div><small style="color:var(--text-muted);font-size:0.6rem;display:block;">ToGet</small><strong class="mono" style="color:#16a34a">${SD.formatCurrency(o.buyerToGet)}</strong></div>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:4px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
             ${SD.paymentBadge(o.paymentStatus)}
-            <span class="mono" style="font-size:0.82rem;color:#dc2626;font-weight:800;">
+            <span class="mono" style="font-size:0.76rem;color:#dc2626;font-weight:800;">
               Got: ${o.buyerActualGot !== null ? SD.formatCurrency(o.buyerActualGot) : '—'}
             </span>
           </div>
@@ -810,15 +880,9 @@
       const tbl = document.getElementById('tableViewWrap');
       const crd = document.getElementById('cardViewWrap');
       if (currentView === 'table') {
-        currentView = 'card';
-        tbl.style.display = 'none';
-        crd.style.display = 'grid';
-        btn.textContent = '📋 Table View';
+        currentView = 'card'; tbl.style.display = 'none'; crd.style.display = 'grid'; btn.textContent = '📋 Table';
       } else {
-        currentView = 'table';
-        tbl.style.display = 'block';
-        crd.style.display = 'none';
-        btn.textContent = '🗂️ Card View';
+        currentView = 'table'; tbl.style.display = 'block'; crd.style.display = 'none'; btn.textContent = '🗂️ Cards';
       }
     }
 
@@ -835,19 +899,19 @@
         { name: '6. Got Refund',       date: o.refundDate }
       ];
       document.getElementById('tlBody').innerHTML = `
-        <div style="margin-bottom:14px;font-size:0.88rem;color:var(--text-secondary);">${SD.escapeHtml(o.productName)}</div>
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;">
+        <div style="margin-bottom:10px;font-size:0.8rem;color:var(--text-secondary);">${SD.escapeHtml(o.productName)}</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;">
           ${steps.map(s => `
-            <div style="padding:10px;border-radius:10px;background:var(--bg-primary);border:1px solid ${s.date ? '#22c55e' : 'var(--border-color)'};">
-              <div style="font-size:0.78rem;font-weight:700;">${s.date ? '✅' : '⏳'} ${s.name}</div>
-              <div class="mono" style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">${s.date ? SD.formatDate(s.date) : 'Pending'}</div>
+            <div style="padding:8px;border-radius:8px;background:var(--bg-primary);border:1px solid ${s.date ? '#22c55e' : 'var(--border-color)'};">
+              <div style="font-size:0.74rem;font-weight:700;">${s.date ? '✅' : '⏳'} ${s.name}</div>
+              <div class="mono" style="font-size:0.7rem;color:var(--text-secondary);">${s.date ? SD.formatDate(s.date) : 'Pending'}</div>
             </div>
           `).join('')}
         </div>
-        ${o.notes ? `<div style="padding:10px;background:var(--bg-primary);border-radius:8px;font-size:0.82rem;margin-bottom:10px;"><strong>Notes:</strong> ${SD.escapeHtml(o.notes)}</div>` : ''}
-        <div style="display:flex;gap:10px;">
+        ${o.notes ? `<div style="padding:8px;background:var(--bg-primary);border-radius:7px;font-size:0.76rem;margin-bottom:8px;"><strong>Notes:</strong> ${SD.escapeHtml(o.notes)}</div>` : ''}
+        <div style="display:flex;gap:8px;">
           ${o.reviewLink ? `<a href="${SD.escapeHtml(o.reviewLink)}" target="_blank" class="btn">⭐ Review Link</a>` : ''}
-          ${o.orderScreenshot ? `<a href="${SD.escapeHtml(o.orderScreenshot)}" target="_blank" class="btn">🖼️ Order Screenshot</a>` : ''}
+          ${o.orderScreenshot ? `<a href="${SD.escapeHtml(o.orderScreenshot)}" target="_blank" class="btn">🖼️ Screenshot</a>` : ''}
         </div>
       `;
       document.getElementById('timelineModal').classList.add('open');
@@ -856,21 +920,21 @@
     function renderBuyerDeals() {
       const grid = document.getElementById('buyerDealsGrid');
       if (!buyerDeals.length) {
-        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-secondary);">No active deals posted right now.</div>`;
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text-secondary);">No active deals posted right now.</div>`;
         return;
       }
       grid.innerHTML = buyerDeals.map(d => `
-        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:14px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;">
+        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;gap:10px;">
           <div>
-            <span style="font-size:0.72rem;font-weight:700;color:var(--accent);text-transform:uppercase;">${SD.escapeHtml(d.platform)}</span>
-            <h3 style="font-size:0.98rem;margin:4px 0;">${SD.escapeHtml(d.title)}</h3>
-            <p style="font-size:0.8rem;color:var(--text-secondary);">${SD.escapeHtml(d.instructions || '')}</p>
+            <span style="font-size:0.68rem;font-weight:700;color:var(--accent);text-transform:uppercase;">${SD.escapeHtml(d.platform)}</span>
+            <h3 style="font-size:0.9rem;margin:3px 0;">${SD.escapeHtml(d.title)}</h3>
+            <p style="font-size:0.75rem;color:var(--text-secondary);">${SD.escapeHtml(d.instructions || '')}</p>
           </div>
           <div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--bg-primary);padding:8px;border-radius:8px;margin-bottom:10px;text-align:center;">
-              <div><small style="font-size:0.68rem;color:var(--text-muted);display:block;">Price</small><strong class="mono">${SD.formatCurrency(d.price)}</strong></div>
-              <div><small style="font-size:0.68rem;color:var(--text-muted);display:block;">Less</small><strong class="mono" style="color:#dc2626">-${SD.formatCurrency(d.lessAmount)}</strong></div>
-              <div><small style="font-size:0.68rem;color:var(--text-muted);display:block;">You Get</small><strong class="mono" style="color:#16a34a">${SD.formatCurrency(d.youGet)}</strong></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--bg-primary);padding:6px;border-radius:7px;margin-bottom:8px;text-align:center;font-size:0.75rem;">
+              <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">Price</small><strong class="mono">${SD.formatCurrency(d.price)}</strong></div>
+              <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">Less</small><strong class="mono" style="color:#dc2626">-${SD.formatCurrency(d.lessAmount)}</strong></div>
+              <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">You Get</small><strong class="mono" style="color:#16a34a">${SD.formatCurrency(d.youGet)}</strong></div>
             </div>
             <button class="btn primary" style="width:100%;justify-content:center;" onclick="requestDealFromDash('${SD.escapeHtml(d.dealId)}', '${SD.escapeHtml(d.title.replace(/'/g, "\\'"))}', this)">
               ⚡ Request This Deal
@@ -881,33 +945,18 @@
     }
 
     async function requestDealFromDash(dealId, title, btn) {
-      btn.disabled = true;
-      btn.textContent = 'Requesting...';
+      btn.disabled = true; btn.textContent = 'Requesting...';
       const res = await SD.api('requestDeal', { dealId, dealTitle: title });
-      if (res && res.success) {
-        btn.textContent = '✓ Deal Requested';
-        SD.toast(res.message, 'success');
-      } else {
-        btn.disabled = false;
-        btn.textContent = '⚡ Request This Deal';
-        SD.toast(res?.error || 'Request failed.', 'error');
-      }
+      if (res?.success) { btn.textContent = '✓ Requested'; SD.toast(res.message, 'success'); }
+      else { btn.disabled = false; btn.textContent = '⚡ Request This Deal'; SD.toast(res?.error || 'Failed', 'error'); }
     }
 
     function parseSmartOrderText(raw) {
       if (!raw) return;
-      // Match Amazon 404-xxxxxxx-xxxxxxx or Flipkart ODxxxxxxxxxxxx or Blinkit ORDxxxxxxx
-      const amzMatch = raw.match(/\b\d{3}-\d{7}-\d{7}\b/);
-      const fktMatch = raw.match(/\bOD\d{14,22}\b/i);
-      const blkMatch = raw.match(/\bORD\d{8,16}\b/i);
-      const id = amzMatch?.[0] || fktMatch?.[0] || blkMatch?.[0];
+      const id = (raw.match(/\b\d{3}-\d{7}-\d{7}\b/) || raw.match(/\bOD\d{14,22}\b/i) || raw.match(/\bORD\d{8,16}\b/i) || [])[0];
       if (id) document.getElementById('noPlatformOrderId').value = id;
-
-      const priceMatch = raw.match(/(?:₹|Rs\.?|INR)\s*([\d,]+(?:\.\d{1,2})?)/i);
-      if (priceMatch && priceMatch[1]) {
-        document.getElementById('noPricePaid').value = priceMatch[1].replace(/,/g, '');
-        calcBuyerToGetPreview();
-      }
+      const pm = raw.match(/(?:₹|Rs\.?|INR)\s*([\d,]+(?:\.\d{1,2})?)/i);
+      if (pm && pm[1]) { document.getElementById('noPricePaid').value = pm[1].replace(/,/g, ''); calcBuyerToGetPreview(); }
     }
 
     function calcBuyerToGetPreview() {
@@ -918,24 +967,17 @@
 
     async function submitBuyerNewOrder(e) {
       e.preventDefault();
-      const btn = document.getElementById('noSubmitBtn');
-      btn.disabled = true;
-      btn.textContent = 'Processing Order...';
-
+      const btn = document.getElementById('noSubmitBtn'); btn.disabled = true; btn.textContent = 'Submitting...';
       let screenshotUrl = '';
-      const fileInput = document.getElementById('noScreenshotFile');
-      if (fileInput.files && fileInput.files[0]) {
-        btn.textContent = 'Compressing & Uploading Screenshot (≤200KB)...';
+      const f = document.getElementById('noScreenshotFile');
+      if (f.files && f.files[0]) {
         try {
-          const compressed = await SD.compressImageFile(fileInput.files[0], 200);
-          const upRes = await SD.api('uploadScreenshot', compressed);
-          if (upRes && upRes.success) screenshotUrl = upRes.url;
-        } catch (imgErr) {
-          SD.toast('Screenshot upload skipped, saving order details...', 'warning');
-        }
+          const comp = await SD.compressImageFile(f.files[0], 200);
+          const up = await SD.api('uploadScreenshot', comp);
+          if (up?.success) screenshotUrl = up.url;
+        } catch (err) {}
       }
-
-      const payload = {
+      const res = await SD.api('addOrder', {
         accountName: document.getElementById('noAccountSelect').value,
         userId: document.getElementById('noUserId').value,
         orderedPlatform: document.getElementById('noPlatform').value,
@@ -950,45 +992,31 @@
         dealContactNo: document.getElementById('noDealContact').value,
         orderScreenshot: screenshotUrl,
         notes: document.getElementById('noNotes').value.trim()
-      };
-
-      const res = await SD.api('addOrder', payload);
-      btn.disabled = false;
-      btn.textContent = '🚀 Submit Order to SastaDeal';
-
-      if (!res || !res.success) {
-        SD.toast(res?.error || 'Could not submit order.', 'error');
-        return;
-      }
-
-      SD.toast(res.message, 'success');
-      document.getElementById('buyerAddOrderForm').reset();
-      document.getElementById('noOrderDate').value = new Date().toISOString().split('T')[0];
-      onAccountSelectChange();
-      refreshBuyerData();
+      });
+      btn.disabled = false; btn.textContent = '🚀 Submit Order';
+      if (res?.success) {
+        SD.toast(res.message, 'success');
+        document.getElementById('buyerAddOrderForm').reset();
+        document.getElementById('noOrderDate').value = new Date().toISOString().split('T')[0];
+        onAccountSelectChange();
+        refreshBuyerData();
+      } else SD.toast(res?.error || 'Could not submit order.', 'error');
     }
 
     async function submitBuyerQuery(e) {
       e.preventDefault();
-      const btn = document.getElementById('qSubmitBtn');
-      btn.disabled = true;
-      btn.textContent = 'Sending...';
-
+      const btn = document.getElementById('qSubmitBtn'); btn.disabled = true;
+      const orderRef = document.getElementById('qOrderId').value.trim() || document.getElementById('qOrderSelect').value;
       const res = await SD.api('submitQuery', {
-        orderId: document.getElementById('qOrderId').value.trim(),
+        orderId: orderRef,
         subject: document.getElementById('qSubject').value,
         message: document.getElementById('qMessage').value.trim()
       });
-
       btn.disabled = false;
-      btn.textContent = '📨 Send Query to Admin';
-
-      if (res && res.success) {
+      if (res?.success) {
         SD.toast(res.message, 'success');
         document.getElementById('qMessage').value = '';
-      } else {
-        SD.toast(res?.error || 'Failed to send query.', 'error');
-      }
+      } else SD.toast(res?.error || 'Failed to send query.', 'error');
     }
 
     function exportBuyerOrders(format) {
@@ -1003,11 +1031,17 @@
       else SD.exportToXLS(fn, headers, rows);
     }
 
-    function refreshBuyerData() {
-      SD.api('getDashboardData', {}, {
-        useCache: true,
-        onCached: cached => renderBuyerPayload(cached)
-      }).then(fresh => renderBuyerPayload(fresh));
+    async function refreshBuyerData() {
+      const cacheKey = 'buyer_dash_' + (currentUser?.userId || 'me');
+      const cached = await BUYER_IDB.get(cacheKey);
+      if (cached && cached.success && !buyerOrders.length) {
+        renderBuyerPayload(cached);
+      }
+      const fresh = await SD.api('getDashboardData');
+      if (fresh && fresh.success) {
+        renderBuyerPayload(fresh);
+        BUYER_IDB.set(cacheKey, fresh);
+      }
     }
 
     refreshBuyerData();
