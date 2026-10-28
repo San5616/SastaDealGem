@@ -6,20 +6,41 @@
   <title>Buyer Portal — SastaDeal</title>
   <script src="_config.js"></script>
   <style>
+    /* ─── 1. ULTRA-COMPACT TOP NAVBAR & AVATAR DROPDOWN (DIGIPULL STYLE) ─── */
     .navbar {
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 150;
       background: var(--bg-glass);
-      backdrop-filter: blur(14px);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-color);
       padding: 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
       gap: 8px;
     }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.18s;
+      text-decoration: none;
+    }
+    .icon-btn:hover { border-color: var(--accent); transform: translateY(-1px); }
     .brand {
       display: flex;
       align-items: center;
@@ -33,89 +54,251 @@
       width: 28px;
       height: 28px;
       border-radius: 7px;
-      background: var(--accent);
-      color: var(--accent-text);
+      background: linear-gradient(135deg, var(--accent), #9f6e3d);
+      color: #0b1120;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
     }
-    .parent-pill {
-      background: var(--accent-glow);
-      border: 1px solid var(--border-hover);
-      color: var(--accent);
-      padding: 3px 10px;
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      position: relative;
+    }
+    .avatar-btn {
+      height: 34px;
+      padding: 0 10px 0 4px;
       border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      max-width: 200px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .btn {
-      padding: 6px 10px;
-      border-radius: 7px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--border-hover);
       background: var(--bg-secondary);
       color: var(--text-primary);
-      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-    .btn.primary {
-      background: var(--accent);
-      color: var(--accent-text);
-      border-color: transparent;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
       font-weight: 700;
     }
-    .btn.danger {
-      background: var(--red-bg);
-      color: #ef4444;
-      border-color: rgba(220,38,38,0.3);
+    .avatar-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f59e0b, #ea580c);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.72rem;
+    }
+
+    /* Top-Right Profile Dropdown Menu */
+    .profile-menu {
+      position: absolute;
+      top: 44px;
+      right: 0;
+      width: 250px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 300;
+    }
+    .profile-menu.open { display: flex; }
+    .pm-item {
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      background: transparent;
+      border: none;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .pm-item:hover { background: var(--bg-tertiary); }
+
+    /* Slide-Out Left Sidebar Drawer */
+    .side-drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(3px);
+      z-index: 400;
+      display: none;
+    }
+    .side-drawer-backdrop.open { display: block; }
+    .side-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 270px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      z-index: 410;
+      padding: 16px;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+    }
+    .side-drawer.open { transform: translateX(0); }
+    .drawer-link {
+      padding: 10px 12px;
+      border-radius: 9px;
+      color: var(--text-primary);
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      text-decoration: none;
+      margin-bottom: 4px;
+    }
+    .drawer-link:hover, .drawer-link.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+    }
+
+    /* Privacy Blur Mode */
+    body.privacy-blur .mono-amt {
+      filter: blur(6px);
+      user-select: none;
     }
 
     .container {
-      max-width: 1440px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 10px 10px 70px;
+      padding: 12px 10px 80px;
     }
 
-    /* Compact Highlight Banner */
-    .highlight-bar {
-      background: linear-gradient(90deg, var(--accent-glow), rgba(30,41,59,0.5));
-      border: 1px solid var(--border-hover);
-      border-left: 3px solid var(--accent);
-      border-radius: 8px;
-      padding: 6px 10px;
-      margin-bottom: 8px;
-      font-size: 0.74rem;
+    /* ─── 2. SHOPFLUENCER LIVE DEALS CAROUSEL & GREETING BANNER ─── */
+    .live-deals-box {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.14), rgba(30, 41, 59, 0.7));
+      border: 1px solid rgba(168, 85, 247, 0.28);
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+    }
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      display: inline-block;
+      box-shadow: 0 0 8px #ef4444;
+      animation: pulseDot 1.4s infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.25); }
+    }
+    .deals-carousel {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
+      gap: 10px;
+      overflow-x: auto;
+      padding-top: 8px;
+      padding-bottom: 4px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
     }
+    .deals-carousel::-webkit-scrollbar { display: none; }
+    .mini-deal-card {
+      flex: 0 0 185px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 11px;
+      padding: 8px;
+      scroll-snap-align: start;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .mini-deal-card:hover { border-color: var(--accent); }
+    .mini-deal-img {
+      width: 100%;
+      height: 82px;
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .mini-deal-img img { width: 100%; height: 100%; object-fit: contain; }
 
-    /* Compact Tabs */
+    /* Personal Greeting Card */
+    .greeting-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    /* 3 Quick Action Colorful Buttons (Order Form | Pending Forms | Track Order) */
+    .quick-actions-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .qa-btn {
+      padding: 10px 8px;
+      border-radius: 11px;
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.76rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      box-shadow: var(--shadow-sm);
+      text-decoration: none;
+    }
+    .qa-btn.blue { background: linear-gradient(135deg, #4f46e5, #3b82f6); }
+    .qa-btn.purple { background: linear-gradient(135deg, #9333ea, #ec4899); }
+    .qa-btn.green { background: linear-gradient(135deg, #10b981, #059669); }
+
+    /* Navigation Tabs */
     .dash-tabs {
       display: flex;
       gap: 6px;
       overflow-x: auto;
       padding-bottom: 6px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       border-bottom: 1px solid var(--border-color);
       scrollbar-width: none;
     }
     .dash-tabs::-webkit-scrollbar { display: none; }
     .dash-tab {
       padding: 6px 12px;
-      border-radius: 7px;
+      border-radius: 8px;
       border: 1px solid var(--border-color);
       background: var(--bg-secondary);
       color: var(--text-secondary);
@@ -132,20 +315,12 @@
     }
 
     /* Ultra-Compact Horizontal Swipe KPI Strip */
-    .kpi-header-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 5px;
-      font-size: 0.68rem;
-      color: var(--text-secondary);
-    }
     .kpi-grid {
       display: flex;
       gap: 7px;
       overflow-x: auto;
       padding-bottom: 6px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       scroll-snap-type: x mandatory;
     }
     .kpi-grid.grid-mode {
@@ -159,9 +334,10 @@
       min-width: 112px;
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: 9px;
-      padding: 7px 10px;
+      border-radius: 10px;
+      padding: 8px 10px;
       scroll-snap-align: start;
+      cursor: pointer;
     }
     .kpi-label {
       font-size: 0.58rem;
@@ -170,28 +346,70 @@
       color: var(--text-secondary);
       display: block;
       margin-bottom: 2px;
-      white-space: nowrap;
     }
-    .kpi-val {
-      font-size: 0.9rem;
+    .kpi-val { font-size: 0.92rem; font-weight: 800; }
+
+    /* ─── 3. DIGIPULL CUSTOMER ANALYTICS CARDS ─── */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .an-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .pulse-ring {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-weight: 800;
-      line-height: 1.2;
-      white-space: nowrap;
+      font-size: 1rem;
+      color: #22c55e;
+      background: conic-gradient(#22c55e var(--pct, 80%), rgba(255,255,255,0.08) 0);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .pulse-ring::after {
+      content: attr(data-score);
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tier-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .tier-box {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 9px 10px;
+    }
+    .tier-box.current {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.07);
     }
 
-    /* Compact Search & Quick Pills Bar */
+    /* Compact Search & Table */
     .search-strip {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: 10px;
       padding: 8px;
       margin-bottom: 8px;
-    }
-    .search-row {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      flex-wrap: wrap;
     }
     .input-ctrl, .select-ctrl {
       padding: 7px 10px;
@@ -202,8 +420,6 @@
       font-size: 0.78rem;
       outline: none;
     }
-    .input-ctrl:focus, .select-ctrl:focus { border-color: var(--accent); }
-
     .quick-pills {
       display: flex;
       gap: 6px;
@@ -230,21 +446,14 @@
       color: var(--accent);
       border-color: var(--accent);
     }
-
     .filter-drawer {
       display: none;
       padding-top: 8px;
       margin-top: 8px;
       border-top: 1px dashed var(--border-color);
     }
-    .filter-drawer.open {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
-    }
+    .filter-drawer.open { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 
-    /* Compact Table */
     .table-wrap {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
@@ -253,11 +462,7 @@
       max-height: 70vh;
       -webkit-overflow-scrolling: touch;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.75rem;
-    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.74rem; }
     thead th {
       position: sticky;
       top: 0;
@@ -266,7 +471,7 @@
       color: var(--text-secondary);
       font-weight: 700;
       text-transform: uppercase;
-      font-size: 0.65rem;
+      font-size: 0.64rem;
       padding: 9px 7px;
       text-align: left;
       border-bottom: 1px solid var(--border-color);
@@ -276,6 +481,21 @@
     tbody tr { border-bottom: 1px solid var(--border-color); }
     tbody tr:hover { background: rgba(212, 165, 116, 0.05); }
     tbody td { padding: 7px; vertical-align: middle; white-space: nowrap; }
+
+    .wa-btn {
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(34, 197, 94, 0.16);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .wa-btn:hover { background: #22c55e; color: #0b1120; }
 
     .cards-grid {
       display: none;
@@ -292,7 +512,6 @@
       gap: 6px;
     }
 
-    /* Forms */
     .form-panel {
       max-width: 720px;
       background: var(--bg-secondary);
@@ -300,105 +519,198 @@
       border-radius: 14px;
       padding: 16px;
     }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 10px;
-    }
-    .field label {
-      display: block;
-      font-size: 0.73rem;
-      font-weight: 700;
-      color: var(--text-secondary);
-      margin-bottom: 4px;
-    }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+    .field label { display: block; font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 3px; }
     .field input, .field select, .field textarea {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 7px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      font-size: 0.8rem;
-      outline: none;
+      width: 100%; padding: 8px 10px; border-radius: 7px; border: 1px solid var(--border-color);
+      background: var(--bg-primary); color: var(--text-primary); font-size: 0.8rem; outline: none;
     }
 
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
 
     .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.75);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 500;
-      padding: 14px;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(3px);
+      display: none; align-items: center; justify-content: center; z-index: 500; padding: 14px;
     }
     .modal-backdrop.open { display: flex; }
     .modal-box {
-      width: 100%;
-      max-width: 500px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 18px;
+      width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+      background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 16px; padding: 18px;
+    }
+
+    /* Floating WhatsApp Support Button */
+    .fab-wa {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 250;
+      background: #22c55e;
+      color: #0b1120;
+      border-radius: 999px;
+      padding: 10px 15px;
+      font-weight: 800;
+      font-size: 0.78rem;
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Compact Navbar -->
+  <!-- Slide-Out Left Navigation Drawer (ShopFluencer + Digipull Style) -->
+  <div class="side-drawer-backdrop" id="drawerBackdrop" onclick="toggleSideDrawer(false)"></div>
+  <aside class="side-drawer" id="sideDrawer">
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--border-color);">
+        <div class="brand">
+          <div class="brand-badge">SD</div>
+          <div>
+            <div id="drawerUserName" style="font-size:0.88rem;">Buyer Portal</div>
+            <div id="drawerUserId" class="mono" style="font-size:0.68rem;color:var(--accent);">Buyer</div>
+          </div>
+        </div>
+        <button class="icon-btn" onclick="toggleSideDrawer(false)">✕</button>
+      </div>
+
+      <div style="font-size:0.65rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin:8px 0 4px 8px;">Main Menu</div>
+      <button class="drawer-link active" onclick="switchTab('ordersTab');toggleSideDrawer(false)">📦 Orders Dashboard</button>
+      <button class="drawer-link" onclick="switchTab('analyticsTab');toggleSideDrawer(false)">📊 Customer Analytics <span style="font-size:0.6rem;background:var(--accent);color:#000;padding:1px 5px;border-radius:4px;margin-left:auto;">NEW</span></button>
+      <button class="drawer-link" onclick="switchTab('dealsTab');toggleSideDrawer(false)">🔥 Browse Active Deals</button>
+
+      <div style="font-size:0.65rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin:12px 0 4px 8px;">Forms & Tracking</div>
+      <button class="drawer-link" onclick="switchTab('newOrderTab');toggleSideDrawer(false)">➕ Submit Order Form</button>
+      <button class="drawer-link" onclick="setBuyerQuickPreset('NO_FORM_ONLY');switchTab('ordersTab');toggleSideDrawer(false)">📋 Pending Refund Forms</button>
+      <a href="track.html" class="drawer-link">🔍 Public Order Tracker</a>
+
+      <div style="font-size:0.65rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin:12px 0 4px 8px;">Account & Support</div>
+      <button class="drawer-link" onclick="openProfileModal();toggleSideDrawer(false)">💳 My Profile & UPI Details</button>
+      <button class="drawer-link" onclick="switchTab('queryTab');toggleSideDrawer(false)">📩 Raise Support Ticket</button>
+      <button class="drawer-link" onclick="contactAdminWhatsAppGeneral()">🟢 Chat with Admin on WhatsApp</button>
+      <button class="drawer-link" onclick="exportBuyerOrders('xls');toggleSideDrawer(false)">📊 Full Excel Export</button>
+    </div>
+
+    <button class="drawer-link" style="color:#ef4444;border-top:1px solid var(--border-color);padding-top:12px;" onclick="SD.logout()">🚪 Sign Out</button>
+  </aside>
+
+  <!-- Compact Top Navbar -->
   <nav class="navbar">
-    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+    <div class="nav-left">
+      <button class="icon-btn" onclick="toggleSideDrawer(true)" title="Open Menu">☰</button>
       <a href="index.html" class="brand">
         <div class="brand-badge">SD</div>
-        <span>Buyer</span>
+        <span>SastaDeal</span>
       </a>
-      <span class="parent-pill" id="parentNavBadge">👤 Loading...</span>
     </div>
-    <div style="display:flex;gap:5px;align-items:center;">
-      <button class="btn" onclick="refreshBuyerData()">🔄 Sync</button>
-      <button class="btn" onclick="SD.toggleTheme()">🌓</button>
-      <button class="btn danger" onclick="SD.logout()">Logout</button>
+
+    <div class="nav-right">
+      <button class="icon-btn" onclick="refreshBuyerData()" title="Sync Latest Data">🔄</button>
+      <button class="icon-btn" onclick="togglePrivacyMode()" id="privacyBtn" title="Privacy Blur Mode (Hide Amounts)">👁️</button>
+      <button class="icon-btn" onclick="SD.toggleTheme()" title="Dark / Light Mode">🌓</button>
+      <button class="icon-btn" style="color:#22c55e;border-color:rgba(34,197,94,0.35);" onclick="contactAdminWhatsAppGeneral()" title="WhatsApp Admin">💬</button>
+
+      <!-- SK Avatar Button -->
+      <button class="avatar-btn" onclick="toggleProfileDropdown(event)">
+        <div class="avatar-circle" id="navAvatarInitials">B</div>
+        <span id="navShortName">Account</span>
+        <span style="font-size:0.6rem;color:var(--text-secondary);">▼</span>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div class="profile-menu" id="profileDropdownMenu">
+        <div style="padding:6px 8px;border-bottom:1px solid var(--border-color);margin-bottom:4px;">
+          <div style="font-weight:800;font-size:0.85rem;" id="pmFullName">Buyer</div>
+          <div class="mono" style="font-size:0.68rem;color:var(--accent);" id="pmParentBadge">Parent ID</div>
+        </div>
+        <button class="pm-item" onclick="openProfileModal()"><span>👤 My Profile & UPI ID</span><span>→</span></button>
+        <button class="pm-item" onclick="switchTab('analyticsTab');closeProfileDropdown()"><span>📊 Customer Analytics</span><span>→</span></button>
+        <button class="pm-item" onclick="togglePrivacyMode()"><span>🙈 Privacy Blur Mode</span><span id="pmPrivacyState" class="mono" style="font-size:0.68rem;color:var(--text-secondary);">OFF</span></button>
+        <button class="pm-item" onclick="SD.toggleTheme()"><span>🌓 Toggle Theme</span><span>⚡</span></button>
+        <button class="pm-item" onclick="contactAdminWhatsAppGeneral()"><span style="color:#22c55e;">🟢 WhatsApp Support</span><span>💬</span></button>
+        <button class="pm-item" style="color:#ef4444;border-top:1px solid var(--border-color);margin-top:4px;padding-top:8px;" onclick="SD.logout()"><span>🚪 Sign Out</span><span>✕</span></button>
+      </div>
     </div>
   </nav>
 
   <main class="container">
+    <!-- Dynamic Announcements -->
     <div id="buyerHighlights"></div>
 
-    <!-- 4 Navigation Tabs -->
-    <div class="dash-tabs">
-      <button class="dash-tab active" onclick="switchTab('ordersTab', this)">📦 My Orders</button>
-      <button class="dash-tab" onclick="switchTab('dealsTab', this)">🔥 Active Deals</button>
-      <button class="dash-tab" onclick="switchTab('newOrderTab', this)">➕ Submit Order</button>
-      <button class="dash-tab" onclick="switchTab('queryTab', this)">📩 Raise Query</button>
+    <!-- ShopFluencer Style LIVE DEALS Top Carousel -->
+    <div class="live-deals-box" id="topLiveDealsBox" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:0.74rem;font-weight:800;letter-spacing:0.04em;">
+          <span class="live-dot"></span>
+          <span>LIVE DEALS</span>
+        </div>
+        <button onclick="switchTab('dealsTab')" style="background:none;border:none;color:var(--accent);font-size:0.74rem;font-weight:700;cursor:pointer;">View all →</button>
+      </div>
+      <div class="deals-carousel" id="topDealsCarousel"></div>
     </div>
 
-    <!-- TAB 1: ORDERS -->
+    <!-- ShopFluencer Style Greeting Card + Saved UPI Strip -->
+    <div class="greeting-card">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="avatar-circle" style="width:38px;height:38px;font-size:0.9rem;" id="greetInitials">S</div>
+        <div>
+          <div style="font-weight:800;font-size:0.92rem;" id="greetingTitle">Welcome Back!</div>
+          <div style="font-size:0.72rem;color:var(--text-secondary);" id="greetingSub">Loading your account summary...</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="icon-btn" style="width:auto;padding:0 10px;font-size:0.74rem;font-weight:700;" onclick="openProfileModal()" id="upiStatusBtn">
+          💳 Set UPI ID
+        </button>
+        <button class="icon-btn" style="width:auto;padding:0 12px;background:var(--accent);color:#0b1120;border:none;font-size:0.74rem;font-weight:800;" onclick="switchTab('dealsTab')">
+          ✨ Browse Deals
+        </button>
+      </div>
+    </div>
+
+    <!-- 3 Colorful Quick Action Buttons -->
+    <div class="quick-actions-3">
+      <button class="qa-btn blue" onclick="switchTab('newOrderTab')">➕ Order Form</button>
+      <button class="qa-btn purple" onclick="setBuyerQuickPreset('NO_FORM_ONLY');switchTab('ordersTab')">📋 Pending Forms</button>
+      <a href="track.html" class="qa-btn green">🔍 Track Order</a>
+    </div>
+
+    <!-- 5 Navigation Tabs -->
+    <div class="dash-tabs" id="mainDashTabs">
+      <button class="dash-tab active" data-tab="ordersTab" onclick="switchTab('ordersTab')">📦 My Orders</button>
+      <button class="dash-tab" data-tab="analyticsTab" onclick="switchTab('analyticsTab')">📊 Customer Analytics</button>
+      <button class="dash-tab" data-tab="dealsTab" onclick="switchTab('dealsTab')">🔥 Active Deals</button>
+      <button class="dash-tab" data-tab="newOrderTab" onclick="switchTab('newOrderTab')">➕ Submit Order</button>
+      <button class="dash-tab" data-tab="queryTab" onclick="switchTab('queryTab')">📩 Raise Query</button>
+    </div>
+    <!-- =====================================================================
+         TAB 1: ORDERS DASHBOARD (COMPACT KPI + DIRECT WHATSAPP SHARE)
+         ===================================================================== -->
     <section id="ordersTab" class="tab-pane active">
-      <div class="kpi-header-bar">
-        <span>👈 Swipe KPIs left/right</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;font-size:0.68rem;color:var(--text-secondary);">
+        <span>👈 Swipe KPIs (Tap any card to filter)</span>
         <div style="display:flex;gap:5px;">
-          <button class="btn" style="padding:2px 7px;font-size:0.65rem;" onclick="document.getElementById('buyerKpiStrip').classList.toggle('grid-mode')">📐 Grid/Swipe</button>
-          <button class="btn" style="padding:2px 7px;font-size:0.65rem;" onclick="document.getElementById('buyerKpiStrip').classList.toggle('hidden-mode')">👁️ Hide/Show</button>
+          <button class="icon-btn" style="width:auto;height:22px;padding:0 7px;font-size:0.65rem;" onclick="document.getElementById('buyerKpiStrip').classList.toggle('grid-mode')">📐 Grid/Swipe</button>
+          <button class="icon-btn" style="width:auto;height:22px;padding:0 7px;font-size:0.65rem;" onclick="document.getElementById('buyerKpiStrip').classList.toggle('hidden-mode')">👁️ Hide</button>
         </div>
       </div>
 
-      <!-- 6 Ultra-Compact KPI Cards -->
+      <!-- 6 Ultra-Compact Interactive KPI Cards -->
       <div class="kpi-grid" id="buyerKpiStrip">
-        <div class="kpi-card"><span class="kpi-label">Total Orders</span><div class="kpi-val mono" id="kpiTotalOrders">0</div></div>
-        <div class="kpi-card"><span class="kpi-label">Order Amount</span><div class="kpi-val mono" id="kpiOrderAmount">₹0</div></div>
-        <div class="kpi-card"><span class="kpi-label">Received (Paid)</span><div class="kpi-val mono" style="color:#ef4444" id="kpiReceived">₹0</div></div>
-        <div class="kpi-card"><span class="kpi-label">Pending Refund</span><div class="kpi-val mono" style="color:#f59e0b" id="kpiPendingAmt">₹0</div></div>
-        <div class="kpi-card"><span class="kpi-label">Pending Form</span><div class="kpi-val mono" style="color:#a855f7" id="kpiPendingForm">0</div></div>
-        <div class="kpi-card"><span class="kpi-label">Paid Count</span><div class="kpi-val mono" style="color:#22c55e" id="kpiPaidCount">0</div></div>
+        <div class="kpi-card" onclick="setBuyerQuickPreset('ALL')"><span class="kpi-label">Total Orders</span><div class="kpi-val mono" id="kpiTotalOrders">0</div></div>
+        <div class="kpi-card" onclick="setBuyerQuickPreset('ALL')"><span class="kpi-label">Order Amount</span><div class="kpi-val mono mono-amt" id="kpiOrderAmount">₹0</div></div>
+        <div class="kpi-card" onclick="setBuyerQuickPreset('PAID_ONLY')"><span class="kpi-label">Received (Paid)</span><div class="kpi-val mono mono-amt" style="color:#ef4444" id="kpiReceived">₹0</div></div>
+        <div class="kpi-card" onclick="setBuyerQuickPreset('PENDING_ONLY')"><span class="kpi-label">Pending Refund</span><div class="kpi-val mono mono-amt" style="color:#f59e0b" id="kpiPendingAmt">₹0</div></div>
+        <div class="kpi-card" onclick="setBuyerQuickPreset('NO_FORM_ONLY')"><span class="kpi-label">Pending Form</span><div class="kpi-val mono" style="color:#a855f7" id="kpiPendingForm">0</div></div>
+        <div class="kpi-card" onclick="setBuyerQuickPreset('PAID_ONLY')"><span class="kpi-label">Paid Count</span><div class="kpi-val mono" style="color:#22c55e" id="kpiPaidCount">0</div></div>
       </div>
 
       <!-- Compact Search + Quick Pills + Collapsible Filter Drawer -->
       <div class="search-strip">
-        <div class="search-row">
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
           <input
             type="text"
             id="orderSearch"
@@ -407,18 +719,18 @@
             placeholder="🔍 Search Order ID, #No, Product, Account..."
             oninput="applyOrderFilters()"
           />
-          <button class="btn primary" onclick="document.getElementById('buyerFilterDrawer').classList.toggle('open')" id="buyerFilterBtn">🎛️ Filters</button>
-          <button class="btn" id="viewToggleBtn" onclick="toggleOrderView()">🗂️ Cards</button>
-          <button class="btn" onclick="resetBuyerFilters()" title="Reset">↺</button>
+          <button class="icon-btn" style="width:auto;padding:0 10px;font-size:0.74rem;font-weight:700;background:var(--accent);color:#0b1120;border:none;" onclick="document.getElementById('buyerFilterDrawer').classList.toggle('open')">🎛️ Filters</button>
+          <button class="icon-btn" style="width:auto;padding:0 10px;font-size:0.74rem;font-weight:600;" id="viewToggleBtn" onclick="toggleOrderView()">🗂️ Cards</button>
+          <button class="icon-btn" style="width:30px;" onclick="resetBuyerFilters()" title="Reset">↺</button>
         </div>
 
         <div class="quick-pills">
-          <button class="q-pill active" onclick="setBuyerQuickPreset('ALL', this)">All Orders</button>
-          <button class="q-pill" onclick="setBuyerQuickPreset('PENDING_ONLY', this)">⏳ Pending Refund</button>
-          <button class="q-pill" onclick="setBuyerQuickPreset('Got Refund', this)">✓ Got Refund</button>
-          <button class="q-pill" onclick="setBuyerQuickPreset('PAID_ONLY', this)">💸 Paid</button>
-          <button class="q-pill" onclick="setBuyerQuickPreset('UNPAID_ONLY', this)">⏳ Unpaid</button>
-          <button class="q-pill" onclick="setBuyerQuickPreset('Refund form filled', this)">📋 Form Filled</button>
+          <button class="q-pill active" data-preset="ALL" onclick="setBuyerQuickPreset('ALL', this)">All Orders</button>
+          <button class="q-pill" data-preset="PENDING_ONLY" onclick="setBuyerQuickPreset('PENDING_ONLY', this)">⏳ Pending Refund</button>
+          <button class="q-pill" data-preset="NO_FORM_ONLY" onclick="setBuyerQuickPreset('NO_FORM_ONLY', this)">📋 Pending Form</button>
+          <button class="q-pill" data-preset="Got Refund" onclick="setBuyerQuickPreset('Got Refund', this)">✓ Got Refund</button>
+          <button class="q-pill" data-preset="PAID_ONLY" onclick="setBuyerQuickPreset('PAID_ONLY', this)">💸 Paid</button>
+          <button class="q-pill" data-preset="UNPAID_ONLY" onclick="setBuyerQuickPreset('UNPAID_ONLY', this)">⏳ Unpaid</button>
         </div>
 
         <div class="filter-drawer" id="buyerFilterDrawer">
@@ -428,6 +740,7 @@
           <select id="statusFilter" class="select-ctrl" onchange="applyOrderFilters()">
             <option value="ALL">All Statuses</option>
             <option value="PENDING_ONLY">⏳ Pending Refund Only</option>
+            <option value="NO_FORM_ONLY">📋 Missing Refund Form Date</option>
             <option value="Got Refund">✓ Got Refund</option>
             <option value="Refund form filled">Refund form filled</option>
             <option value="Product Received">Product Received</option>
@@ -438,8 +751,8 @@
             <option value="Paid">Paid</option>
             <option value="Pending">Unpaid / Pending</option>
           </select>
-          <button class="btn" onclick="exportBuyerOrders('csv')">⬇️ CSV</button>
-          <button class="btn" onclick="exportBuyerOrders('xls')">📊 XLS</button>
+          <button class="icon-btn" style="width:auto;padding:0 10px;font-size:0.72rem;" onclick="exportBuyerOrders('csv')">⬇️ CSV</button>
+          <button class="icon-btn" style="width:auto;padding:0 10px;font-size:0.72rem;" onclick="exportBuyerOrders('xls')">📊 XLS</button>
         </div>
       </div>
 
@@ -452,13 +765,13 @@
             <option value="250">250</option>
             <option value="99999">All</option>
           </select>
-          <button class="btn" style="padding:3px 7px;" onclick="if(buyerPage>1){buyerPage--;renderBuyerOrders();}">◀</button>
+          <button class="icon-btn" style="width:26px;height:26px;" onclick="if(buyerPage>1){buyerPage--;renderBuyerOrders();}">◀</button>
           <span class="mono" id="buyerPageNum">1</span>
-          <button class="btn" style="padding:3px 7px;" onclick="buyerPage++;renderBuyerOrders();">▶</button>
+          <button class="icon-btn" style="width:26px;height:26px;" onclick="buyerPage++;renderBuyerOrders();">▶</button>
         </div>
       </div>
 
-      <!-- 13-Column Table View -->
+      <!-- 14-Column Table View (With Direct WhatsApp Share Action) -->
       <div class="table-wrap" id="tableViewWrap">
         <table>
           <thead>
@@ -474,12 +787,13 @@
               <th onclick="sortBuyerTable('buyerLess')">Less ↕</th>
               <th onclick="sortBuyerTable('buyerToGet')">ToGet ↕</th>
               <th onclick="sortBuyerTable('buyerActualGot')">Got ↕</th>
-              <th onclick="sortBuyerTable('orderStatus')">Status ↕</th>
+              <th onclick="sortBuyerTable('orderStatus')">Status / Due ↕</th>
               <th onclick="sortBuyerTable('paymentStatus')">Payment ↕</th>
+              <th>WhatsApp</th>
             </tr>
           </thead>
           <tbody id="buyerTableBody">
-            <tr><td colspan="13" style="text-align:center;padding:30px;color:var(--text-secondary);">Loading your orders...</td></tr>
+            <tr><td colspan="14" style="text-align:center;padding:30px;color:var(--text-secondary);">Loading your orders...</td></tr>
           </tbody>
         </table>
       </div>
@@ -487,12 +801,95 @@
       <div class="cards-grid" id="cardViewWrap"></div>
     </section>
 
-    <!-- TAB 2: DEALS -->
-    <section id="dealsTab" class="tab-pane">
-      <div id="buyerDealsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;"></div>
+    <!-- =====================================================================
+         TAB 2: DIGIPULL-STYLE CUSTOMER ANALYTICS & ACCOUNT PULSE
+         ===================================================================== -->
+    <section id="analyticsTab" class="tab-pane">
+      <div class="analytics-grid">
+        <!-- Card 1: Account Pulse & Score -->
+        <div class="an-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:0.75rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;">Account Pulse</span>
+            <span class="mono" style="font-size:0.7rem;padding:2px 8px;border-radius:999px;background:var(--accent-glow);color:var(--accent);" id="anTierBadge">⭐ Tier</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">
+            <div class="pulse-ring" id="anPulseRing" data-score="85" style="--pct:85%;"></div>
+            <div style="flex:1;">
+              <div style="font-weight:800;font-size:0.95rem;" id="anMomentumLabel">Strong Momentum</div>
+              <div style="font-size:0.72rem;color:var(--text-secondary);margin-top:2px;" id="anPulseDesc">High completion & settlement rate</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;background:var(--bg-primary);padding:10px;border-radius:10px;">
+            <div>
+              <small style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;display:block;">Valid Order Value</small>
+              <strong class="mono mono-amt" style="font-size:1.05rem;color:var(--text-primary);" id="anValidValue">₹0</strong>
+            </div>
+            <div>
+              <small style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;display:block;">Avg Order Value</small>
+              <strong class="mono mono-amt" style="font-size:1.05rem;color:var(--accent);" id="anAvgValue">₹0</strong>
+            </div>
+            <div>
+              <small style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;display:block;">Total Paid Out</small>
+              <strong class="mono mono-amt" style="font-size:1.05rem;color:#22c55e;" id="anLifetimePaid">₹0</strong>
+            </div>
+            <div>
+              <small style="font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;display:block;">Avg Refund Days</small>
+              <strong class="mono" style="font-size:1.05rem;color:var(--cyan);" id="anAvgDays">— days</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Account Standing & Tier Progress (Bronze -> Silver -> Gold -> Platinum) -->
+        <div class="an-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-size:0.75rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;">Account Standing</span>
+            <span style="font-size:0.68rem;color:#22c55e;font-weight:700;">● Active Member</span>
+          </div>
+          <div class="tier-grid" id="anTierBoxes"></div>
+          <div style="margin-top:8px;">
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;margin-bottom:4px;">
+              <span id="anNextTierText" style="font-weight:700;">Progress to next tier</span>
+              <span class="mono" id="anNextTierCount">0 orders</span>
+            </div>
+            <div style="height:8px;background:var(--bg-primary);border-radius:999px;overflow:hidden;">
+              <div id="anTierProgressBar" style="height:100%;width:50%;background:linear-gradient(90deg,#22c55e,var(--accent));"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Order Momentum (6-Month SVG Area Graph) -->
+        <div class="an-card" style="grid-column: 1 / -1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:0.78rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;">📈 Order Momentum (Last 6 Months)</span>
+            <span class="mono" style="font-size:0.7rem;color:var(--text-muted);">Order Volume & Value</span>
+          </div>
+          <div id="anMomentumChartWrap" style="width:100%;overflow-x:auto;"></div>
+        </div>
+
+        <!-- Card 4: Platform Mix & Top Accounts -->
+        <div class="an-card">
+          <span style="font-size:0.75rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;display:block;margin-bottom:10px;">🌐 Platform Mix</span>
+          <div id="anPlatformMixList"></div>
+        </div>
+
+        <!-- Card 5: Recent 5 Settled Payments -->
+        <div class="an-card">
+          <span style="font-size:0.75rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;display:block;margin-bottom:10px;">💸 Recent Settled Payments</span>
+          <div id="anRecentPaymentsList"></div>
+        </div>
+      </div>
     </section>
 
-    <!-- TAB 3: SUBMIT NEW ORDER -->
+    <!-- =====================================================================
+         TAB 3: ACTIVE DEALS GRID (WITH WHATSAPP SHARE)
+         ===================================================================== -->
+    <section id="dealsTab" class="tab-pane">
+      <div id="buyerDealsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;"></div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 4: SUBMIT NEW ORDER FORM
+         ===================================================================== -->
     <section id="newOrderTab" class="tab-pane">
       <div class="form-panel">
         <h3 style="font-size:1rem;margin-bottom:4px;">➕ Submit New Order</h3>
@@ -527,19 +924,21 @@
             <div class="field" style="grid-column:1/-1;"><label>Order Screenshot (≤200KB)</label><input type="file" id="noScreenshotFile" accept="image/*" /></div>
             <div class="field" style="grid-column:1/-1;"><label>Notes</label><textarea id="noNotes" rows="2"></textarea></div>
           </div>
-          <button type="submit" class="btn primary" id="noSubmitBtn" style="margin-top:14px;width:100%;justify-content:center;padding:10px;">
+          <button type="submit" class="btn primary" id="noSubmitBtn" style="margin-top:14px;width:100%;justify-content:center;padding:10px;background:var(--accent);color:#0b1120;border:none;border-radius:8px;font-weight:800;cursor:pointer;">
             🚀 Submit Order
           </button>
         </form>
       </div>
     </section>
 
-    <!-- TAB 4: RAISE QUERY (WITH BUYER'S OWN ORDER ID DROPDOWN) -->
+    <!-- =====================================================================
+         TAB 5: RAISE QUERY (WITH BUYER'S OWN ORDER ID DROPDOWN + WHATSAPP)
+         ===================================================================== -->
     <section id="queryTab" class="tab-pane">
       <div class="form-panel">
         <h3 style="font-size:1rem;margin-bottom:4px;">📩 Raise Support Query</h3>
-        <p style="font-size:0.76rem;color:var(--text-secondary);margin-bottom:12px;">
-          Select your Order ID from the dropdown below to ask Admin about refund or payment status.
+        <p style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:12px;">
+          Select your Order ID from the dropdown below to send an email ticket or direct WhatsApp message to Admin.
         </p>
         <form onsubmit="submitBuyerQuery(event)">
           <div class="field" style="margin-bottom:10px;">
@@ -549,7 +948,7 @@
             </select>
           </div>
           <div class="field" style="margin-bottom:10px;">
-            <label>Order Reference (Auto-filled or Type Manually)</label>
+            <label>Order Reference</label>
             <input type="text" id="qOrderId" class="mono" placeholder="e.g. #1194 or 404-2759471-7602761" />
           </div>
           <div class="field" style="margin-bottom:10px;">
@@ -566,15 +965,26 @@
             <label>Message *</label>
             <textarea id="qMessage" rows="4" placeholder="Write your message for Admin..." required></textarea>
           </div>
-          <button type="submit" class="btn primary" id="qSubmitBtn" style="width:100%;justify-content:center;padding:10px;">
-            📨 Send Query to Admin
-          </button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="submit" id="qSubmitBtn" style="flex:1;padding:10px;border-radius:8px;border:none;background:var(--accent);color:#0b1120;font-weight:800;cursor:pointer;">
+              📨 Send Ticket
+            </button>
+            <button type="button" onclick="sendQueryViaWhatsAppDirect()" style="flex:1;padding:10px;border-radius:8px;border:1px solid #22c55e;background:rgba(34,197,94,0.15);color:#22c55e;font-weight:800;cursor:pointer;">
+              🟢 Send via WhatsApp
+            </button>
+          </div>
         </form>
       </div>
     </section>
   </main>
 
-  <!-- 6-Step Timeline Modal -->
+  <!-- Floating WhatsApp Admin Button -->
+  <button class="fab-wa" onclick="contactAdminWhatsAppGeneral()">
+    <span>💬</span>
+    <span>WhatsApp Admin</span>
+  </button>
+
+  <!-- 1. 6-Step Order Timeline & WhatsApp Share Modal -->
   <div class="modal-backdrop" id="timelineModal">
     <div class="modal-box">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -585,8 +995,57 @@
     </div>
   </div>
 
+  <!-- 2. Profile & Payment Details (UPI ID) Modal (Digipull + ShopFluencer Style) -->
+  <div class="modal-backdrop" id="profileModal">
+    <div class="modal-box" style="max-width:420px;text-align:center;">
+      <div style="display:flex;justify-content:flex-end;">
+        <button onclick="document.getElementById('profileModal').classList.remove('open')" style="background:none;border:none;color:var(--text-secondary);font-size:1.1rem;cursor:pointer;">✕</button>
+      </div>
+      <div class="avatar-circle" style="width:62px;height:62px;font-size:1.35rem;margin:0 auto 10px;" id="profModalAvatar">SK</div>
+      <h3 id="profModalName" style="font-size:1.1rem;font-weight:800;">Buyer Name</h3>
+      <div class="mono" style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:8px;" id="profModalUid">UserID</div>
+      <div style="display:inline-flex;gap:6px;margin-bottom:14px;">
+        <span style="font-size:0.68rem;padding:2px 8px;border-radius:999px;background:var(--accent-glow);color:var(--accent);font-weight:700;">Buyer</span>
+        <span style="font-size:0.68rem;padding:2px 8px;border-radius:999px;background:var(--green-bg);color:#22c55e;font-weight:700;">✓ Verified</span>
+      </div>
+
+      <div style="text-align:left;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:12px;padding:12px;margin-bottom:14px;font-size:0.78rem;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <span style="color:var(--text-secondary);">Parent Account:</span>
+          <strong class="mono" id="profModalParent">—</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <span style="color:var(--text-secondary);">Mobile Number:</span>
+          <strong class="mono" id="profModalMobile">—</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;">
+          <span style="color:var(--text-secondary);">Linked Accounts:</span>
+          <strong class="mono" id="profModalSubCount">1</strong>
+        </div>
+      </div>
+
+      <div style="text-align:left;margin-bottom:14px;">
+        <label style="font-size:0.72rem;font-weight:700;color:var(--accent);display:block;margin-bottom:4px;">💳 Saved UPI ID / Bank Detail (For Refund Payouts)</label>
+        <div style="display:flex;gap:6px;">
+          <input type="text" id="profUpiInput" class="input-ctrl mono" style="flex:1;" placeholder="e.g. yourname@okaxis or 9876543210@ybl" />
+          <button type="button" onclick="saveBuyerUpiId()" style="padding:8px 14px;border-radius:7px;border:none;background:var(--accent);color:#0b1120;font-weight:800;font-size:0.76rem;cursor:pointer;">Save</button>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;">
+        <button type="button" onclick="contactAdminWhatsAppGeneral()" style="flex:1;padding:9px;border-radius:8px;border:1px solid #22c55e;background:rgba(34,197,94,0.14);color:#22c55e;font-weight:700;font-size:0.76rem;cursor:pointer;">
+          🟢 Contact Support
+        </button>
+        <button type="button" onclick="SD.logout()" style="flex:1;padding:9px;border-radius:8px;border:1px solid rgba(239,68,68,0.4);background:var(--red-bg);color:#ef4444;font-weight:700;font-size:0.76rem;cursor:pointer;">
+          🚪 Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
   <script>
     const currentUser = SD.requireAuth('buyer');
+    const ADMIN_WA_NUMBER = '917004984949';
+
     let buyerOrders = [];
     let filteredOrders = [];
     let linkedAccounts = [];
@@ -598,11 +1057,11 @@
 
     document.getElementById('noOrderDate').value = new Date().toISOString().split('T')[0];
 
-    // IndexedDB Fast Cache for Buyer
+    // IndexedDB Fast Cache for 0.1s Instant Load
     const BUYER_IDB = {
       open() {
         return new Promise((res, rej) => {
-          const r = indexedDB.open('SastaDeal_BuyerDB', 1);
+          const r = indexedDB.open('SastaDeal_BuyerDB_V4', 1);
           r.onupgradeneeded = e => e.target.result.createObjectStore('store');
           r.onsuccess = e => res(e.target.result);
           r.onerror = e => rej(e);
@@ -626,16 +1085,235 @@
       }
     };
 
-    function switchTab(tabId, btn) {
+    // ─── NAVIGATION, DRAWER, PROFILE & PRIVACY BLUR ─────────────────────────
+
+    function switchTab(tabId) {
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.dash-tab').forEach(b => b.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      btn.classList.add('active');
+      document.querySelectorAll('.dash-tab').forEach(b => {
+        b.classList.toggle('active', b.dataset.tab === tabId);
+      });
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
     }
 
-    function setBuyerQuickPreset(preset, btn) {
-      document.querySelectorAll('.q-pill').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+    function toggleSideDrawer(openState) {
+      document.getElementById('drawerBackdrop').classList.toggle('open', openState);
+      document.getElementById('sideDrawer').classList.toggle('open', openState);
+    }
+
+    function toggleProfileDropdown(e) {
+      e.stopPropagation();
+      document.getElementById('profileDropdownMenu').classList.toggle('open');
+    }
+
+    function closeProfileDropdown() {
+      document.getElementById('profileDropdownMenu').classList.remove('open');
+    }
+
+    document.addEventListener('click', () => closeProfileDropdown());
+
+    function togglePrivacyMode() {
+      const isBlurred = document.body.classList.toggle('privacy-blur');
+      document.getElementById('pmPrivacyState').textContent = isBlurred ? 'ON' : 'OFF';
+      document.getElementById('privacyBtn').textContent = isBlurred ? '🙈' : '👁️';
+      SD.toast(isBlurred ? 'Privacy Mode ON: Amounts hidden' : 'Privacy Mode OFF: Amounts visible', 'info', 1800);
+    }
+
+    function getInitials(nameStr) {
+      const parts = String(nameStr || 'Buyer').trim().split(/\s+/);
+      return parts.length > 1
+        ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+        : parts[0].slice(0, 2).toUpperCase();
+    }
+
+    function initUserHeaderUI(u) {
+      const name = u.parentName || u.name || 'Buyer';
+      const initials = getInitials(name);
+      const hr = new Date().getHours();
+      const greetWord = hr < 12 ? 'Good Morning' : (hr < 17 ? 'Good Afternoon' : 'Good Evening');
+      const dateFormatted = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
+
+      document.getElementById('navAvatarInitials').textContent = initials;
+      document.getElementById('greetInitials').textContent = initials;
+      document.getElementById('profModalAvatar').textContent = initials;
+      document.getElementById('navShortName').textContent = name.split(' ')[0];
+
+      document.getElementById('pmFullName').textContent = name;
+      document.getElementById('pmParentBadge').textContent = `Parent: ${u.parentUserId || u.userId}`;
+      document.getElementById('drawerUserName').textContent = name;
+      document.getElementById('drawerUserId').textContent = u.parentUserId || u.userId;
+
+      document.getElementById('greetingTitle').textContent = `${greetWord}, ${name.split(' ')[0]}! 👋`;
+      document.getElementById('greetingSub').textContent = `${dateFormatted} • Parent ID: ${u.parentUserId || u.userId}`;
+
+      document.getElementById('profModalName').textContent = name;
+      document.getElementById('profModalUid').textContent = `UserID: ${u.userId}`;
+      document.getElementById('profModalParent').textContent = u.parentUserId || u.userId;
+      document.getElementById('profModalMobile').textContent = u.mobile || '—';
+
+      const savedUpi = localStorage.getItem('sd_buyer_upi_' + (u.parentUserId || u.userId)) || '';
+      document.getElementById('profUpiInput').value = savedUpi;
+      updateUpiButtonText(savedUpi);
+    }
+
+    function updateUpiButtonText(upi) {
+      const btn = document.getElementById('upiStatusBtn');
+      if (upi) {
+        btn.innerHTML = `✅ UPI: <span class="mono">${SD.escapeHtml(upi)}</span>`;
+        btn.style.borderColor = 'rgba(34,197,94,0.45)';
+      } else {
+        btn.innerHTML = `💳 Set UPI ID`;
+      }
+    }
+
+    function openProfileModal() {
+      closeProfileDropdown();
+      document.getElementById('profModalSubCount').textContent = `${linkedAccounts.length || 1} Account(s)`;
+      document.getElementById('profileModal').classList.add('open');
+    }
+
+    async function saveBuyerUpiId() {
+      const u = currentUser;
+      const upi = document.getElementById('profUpiInput').value.trim();
+      if (!upi) { SD.toast('Please enter a valid UPI ID', 'warning'); return; }
+      localStorage.setItem('sd_buyer_upi_' + (u.parentUserId || u.userId), upi);
+      updateUpiButtonText(upi);
+      SD.toast(`UPI ID (${upi}) saved! Notifying Admin...`, 'success');
+      await SD.api('submitQuery', {
+        orderId: 'UPI_UPDATE',
+        subject: 'Buyer Saved UPI ID for Payouts',
+        message: `Buyer ${u.name} (${u.parentUserId || u.userId}) updated their payout UPI ID to: ${upi}`
+      });
+    }
+
+    // ─── DIRECT WHATSAPP CONNECT & SHARE FUNCTIONS ──────────────────────────
+
+    function shareOrderWhatsAppToAdmin(orderNo) {
+      const o = buyerOrders.find(x => String(x.orderNo) === String(orderNo));
+      if (!o) return;
+      const u = currentUser;
+      const savedUpi = localStorage.getItem('sd_buyer_upi_' + (u.parentUserId || u.userId)) || '';
+      const msg = [
+        `👋 *Hi Admin, Order Inquiry — SastaDeal*`,
+        `🔢 *Order No:* #${o.orderNo}`,
+        `🆔 *Platform Order ID:* ${o.platformOrderId}`,
+        `📦 *Product:* ${o.productName}`,
+        `👤 *Account:* ${o.accountName} (${o.userId})`,
+        `🌐 *Platform:* ${o.orderedPlatform}`,
+        `💵 *Price:* ₹${o.pricePaid} | *Less:* -₹${o.buyerLess}`,
+        `💰 *Refund To Get:* ₹${o.buyerToGet}`,
+        `📊 *Status:* ${o.orderStatus} | *Payment:* ${o.paymentStatus}`,
+        savedUpi ? `💳 *My UPI ID:* ${savedUpi}` : '',
+        `────────────────────`,
+        `Please check & update on this order.`
+      ].filter(Boolean).join('\n');
+      SD.openWhatsApp(ADMIN_WA_NUMBER, msg);
+    }
+
+    function contactAdminWhatsAppGeneral() {
+      const u = currentUser;
+      const msg = `👋 *Hi Admin (SastaDeal)*\n👤 Buyer: ${u.name}\n🆔 Parent ID: ${u.parentUserId || u.userId}\n📱 Mobile: ${u.mobile || ''}\n\nI need assistance regarding my account/orders.`;
+      SD.openWhatsApp(ADMIN_WA_NUMBER, msg);
+    }
+
+    function sendQueryViaWhatsAppDirect() {
+      const orderRef = document.getElementById('qOrderId').value.trim() || document.getElementById('qOrderSelect').value;
+      const subj = document.getElementById('qSubject').value;
+      const body = document.getElementById('qMessage').value.trim();
+      const u = currentUser;
+      const msg = [
+        `📩 *SastaDeal Buyer Support Query*`,
+        `👤 *Buyer:* ${u.name} (${u.parentUserId || u.userId})`,
+        `📦 *Order Ref:* ${orderRef}`,
+        `📌 *Subject:* ${subj}`,
+        `💬 *Message:* ${body || 'Please check this order.'}`
+      ].join('\n');
+      SD.openWhatsApp(ADMIN_WA_NUMBER, msg);
+    }
+
+    function shareDealOnWhatsApp(dealId) {
+      const d = buyerDeals.find(x => String(x.dealId) === String(dealId));
+      if (!d) return;
+      const msg = [
+        `🔥 *Hot Deal on SastaDeal!*`,
+        `🛍️ *Product:* ${d.title}`,
+        `🌐 *Platform:* ${d.platform}`,
+        `💵 *Price:* ₹${d.price} | *Less:* -₹${d.lessAmount}`,
+        `✅ *Effective Price (You Get):* ₹${d.youGet}`,
+        d.productUrl ? `🔗 *Link:* ${d.productUrl}` : ''
+      ].filter(Boolean).join('\n');
+      SD.openWhatsApp('', msg);
+    }
+
+    // ─── PAYLOAD RENDERER & FILTERS ─────────────────────────────────────────
+
+    function renderBuyerPayload(data) {
+      if (!data || !data.success) return;
+
+      const u = data.user || currentUser;
+      initUserHeaderUI(u);
+
+      buyerOrders = data.orders || [];
+      linkedAccounts = data.linkedAccounts || [];
+      buyerDeals = data.deals || [];
+
+      // Highlights
+      const hlDiv = document.getElementById('buyerHighlights');
+      hlDiv.innerHTML = (data.highlights || []).map(h => `
+        <div style="background:linear-gradient(90deg,var(--accent-glow),rgba(30,41,59,0.5));border:1px solid var(--border-hover);border-left:3px solid var(--accent);border-radius:9px;padding:7px 11px;margin-bottom:8px;font-size:0.74rem;display:flex;justify-content:space-between;align-items:center;gap:8px;">
+          <div><strong style="color:var(--accent)">${SD.escapeHtml(h.title)}:</strong> ${SD.escapeHtml(h.message)}</div>
+          <span class="mono" style="font-size:0.65rem;color:var(--text-muted)">${SD.escapeHtml(h.date)}</span>
+        </div>
+      `).join('');
+
+      // Linked Accounts
+      const accFilter = document.getElementById('accountFilter');
+      const noAccSelect = document.getElementById('noAccountSelect');
+      const uniqueAccounts = linkedAccounts.length ? linkedAccounts : [{ userId: u.userId, name: u.name, accountType: 'Main' }];
+
+      const currAccVal = accFilter.value || 'ALL';
+      accFilter.innerHTML = `<option value="ALL">All Linked Accounts (${uniqueAccounts.length})</option>` +
+        uniqueAccounts.map(a => `<option value="${SD.escapeHtml(a.userId)}">${SD.escapeHtml(a.name)} (${SD.escapeHtml(a.userId)})</option>`).join('');
+      accFilter.value = currAccVal;
+
+      noAccSelect.innerHTML = uniqueAccounts.map(a =>
+        `<option value="${SD.escapeHtml(a.name)}" data-uid="${SD.escapeHtml(a.userId)}">${SD.escapeHtml(a.name)} — ${SD.escapeHtml(a.userId)}</option>`
+      ).join('');
+      onAccountSelectChange();
+
+      // Buyer's Own Orders in Query Dropdown
+      const qSel = document.getElementById('qOrderSelect');
+      qSel.innerHTML = `<option value="General Query">-- Select Order (${buyerOrders.length} Orders) --</option>` +
+        buyerOrders.map(o =>
+          `<option value="#${o.orderNo} (${SD.escapeHtml(o.platformOrderId)})">#${o.orderNo} | ${SD.escapeHtml(o.platformOrderId)} | ${SD.escapeHtml((o.productName || '').slice(0, 26))} | ₹${o.buyerToGet}</option>`
+        ).join('');
+
+      const plats = data.dropdowns?.platforms?.length ? data.dropdowns.platforms : SASTADEAL_CONFIG.PLATFORMS;
+      document.getElementById('noPlatform').innerHTML = plats.map(p => `<option value="${SD.escapeHtml(p)}">${SD.escapeHtml(p)}</option>`).join('');
+
+      const contacts = data.dropdowns?.dealContacts?.length ? data.dropdowns.dealContacts : ['7004984949', '8271066951', '8228953219', '8541902293'];
+      document.getElementById('noDealContact').innerHTML = contacts.map(c => `<option value="${SD.escapeHtml(c)}">${SD.escapeHtml(c)}</option>`).join('');
+
+      applyOrderFilters();
+      renderTopLiveDealsCarousel();
+      renderBuyerDeals();
+      renderCustomerAnalyticsTab();
+    }
+
+    function onAccountSelectChange() {
+      const sel = document.getElementById('noAccountSelect');
+      const opt = sel.options[sel.selectedIndex];
+      if (opt) document.getElementById('noUserId').value = opt.getAttribute('data-uid') || currentUser.userId;
+    }
+
+    function onBuyerQueryOrderSelect(val) {
+      document.getElementById('qOrderId').value = val === 'General Query' ? '' : val;
+    }
+
+    function setBuyerQuickPreset(preset, btnEl) {
+      document.querySelectorAll('.q-pill').forEach(b => {
+        b.classList.toggle('active', b === btnEl || b.dataset.preset === preset);
+      });
 
       const stSel = document.getElementById('statusFilter');
       const paySel = document.getElementById('paymentFilter');
@@ -658,65 +1336,6 @@
       applyOrderFilters();
     }
 
-    function onBuyerQueryOrderSelect(val) {
-      document.getElementById('qOrderId').value = val === 'General Query' ? '' : val;
-    }
-
-    function renderBuyerPayload(data) {
-      if (!data || !data.success) return;
-
-      const u = data.user || currentUser;
-      document.getElementById('parentNavBadge').textContent = `👤 ${u.parentName || u.name} (${u.parentUserId || u.userId})`;
-
-      buyerOrders = data.orders || [];
-      linkedAccounts = data.linkedAccounts || [];
-      buyerDeals = data.deals || [];
-
-      const hlDiv = document.getElementById('buyerHighlights');
-      hlDiv.innerHTML = (data.highlights || []).map(h => `
-        <div class="highlight-bar">
-          <div><strong style="color:var(--accent)">${SD.escapeHtml(h.title)}:</strong> ${SD.escapeHtml(h.message)}</div>
-          <span class="mono" style="font-size:0.66rem;color:var(--text-muted)">${SD.escapeHtml(h.date)}</span>
-        </div>
-      `).join('');
-
-      const accFilter = document.getElementById('accountFilter');
-      const noAccSelect = document.getElementById('noAccountSelect');
-      const uniqueAccounts = linkedAccounts.length ? linkedAccounts : [{ userId: u.userId, name: u.name, accountType: 'Main' }];
-
-      const currAccVal = accFilter.value || 'ALL';
-      accFilter.innerHTML = `<option value="ALL">All Linked Accounts (${uniqueAccounts.length})</option>` +
-        uniqueAccounts.map(a => `<option value="${SD.escapeHtml(a.userId)}">${SD.escapeHtml(a.name)} (${SD.escapeHtml(a.userId)})</option>`).join('');
-      accFilter.value = currAccVal;
-
-      noAccSelect.innerHTML = uniqueAccounts.map(a =>
-        `<option value="${SD.escapeHtml(a.name)}" data-uid="${SD.escapeHtml(a.userId)}">${SD.escapeHtml(a.name)} — ${SD.escapeHtml(a.userId)}</option>`
-      ).join('');
-      onAccountSelectChange();
-
-      // Populate Buyer's Own Orders into Query Dropdown
-      const qSel = document.getElementById('qOrderSelect');
-      qSel.innerHTML = `<option value="General Query">-- Select Order (${buyerOrders.length} Orders) --</option>` +
-        buyerOrders.map(o =>
-          `<option value="#${o.orderNo} (${SD.escapeHtml(o.platformOrderId)})">#${o.orderNo} | ${SD.escapeHtml(o.platformOrderId)} | ${SD.escapeHtml((o.productName || '').slice(0, 26))} | ₹${o.buyerToGet}</option>`
-        ).join('');
-
-      const plats = data.dropdowns?.platforms?.length ? data.dropdowns.platforms : SASTADEAL_CONFIG.PLATFORMS;
-      document.getElementById('noPlatform').innerHTML = plats.map(p => `<option value="${SD.escapeHtml(p)}">${SD.escapeHtml(p)}</option>`).join('');
-
-      const contacts = data.dropdowns?.dealContacts?.length ? data.dropdowns.dealContacts : ['7004984949', '8271066951', '8228953219', '8541902293'];
-      document.getElementById('noDealContact').innerHTML = contacts.map(c => `<option value="${SD.escapeHtml(c)}">${SD.escapeHtml(c)}</option>`).join('');
-
-      applyOrderFilters();
-      renderBuyerDeals();
-    }
-
-    function onAccountSelectChange() {
-      const sel = document.getElementById('noAccountSelect');
-      const opt = sel.options[sel.selectedIndex];
-      if (opt) document.getElementById('noUserId').value = opt.getAttribute('data-uid') || currentUser.userId;
-    }
-
     function applyOrderFilters() {
       const q = document.getElementById('orderSearch').value.trim().toLowerCase();
       const accVal = document.getElementById('accountFilter').value;
@@ -724,15 +1343,19 @@
       const payVal = document.getElementById('paymentFilter').value;
 
       filteredOrders = buyerOrders.filter(o => {
+        const lowSt = String(o.orderStatus || '').toLowerCase();
+        const lowPay = String(o.paymentStatus || '').toLowerCase();
+
         if (accVal !== 'ALL' && String(o.userId).toLowerCase() !== accVal.toLowerCase()) return false;
         if (stVal === 'PENDING_ONLY') {
-          const low = String(o.orderStatus || '').toLowerCase();
-          if (low === 'got refund' || low.includes('cancel')) return false;
-        } else if (stVal !== 'ALL' && String(o.orderStatus || '').toLowerCase() !== stVal.toLowerCase()) {
+          if (lowSt === 'got refund' || lowSt.includes('cancel')) return false;
+        } else if (stVal === 'NO_FORM_ONLY') {
+          if (o.refundFormDate || lowSt === 'got refund' || lowSt.includes('cancel')) return false;
+        } else if (stVal !== 'ALL' && lowSt !== stVal.toLowerCase()) {
           return false;
         }
-        if (payVal === 'Paid' && String(o.paymentStatus || '').toLowerCase() !== 'paid') return false;
-        if (payVal === 'Pending' && String(o.paymentStatus || '').toLowerCase() === 'paid') return false;
+        if (payVal === 'Paid' && lowPay !== 'paid') return false;
+        if (payVal === 'Pending' && lowPay === 'paid') return false;
 
         if (q) {
           const hay = `${o.orderNo} ${o.platformOrderId} ${o.productName} ${o.accountName} ${o.orderedPlatform} ${o.forWhom}`.toLowerCase();
@@ -762,7 +1385,8 @@
       let totalAmt = 0, receivedAmt = 0, pendingAmt = 0, pendingFormCount = 0, paidCount = 0;
 
       list.forEach(o => {
-        const isCancelled = String(o.orderStatus || '').toLowerCase().includes('cancel');
+        const lowSt = String(o.orderStatus || '').toLowerCase();
+        const isCancelled = lowSt.includes('cancel');
         const isPaid = String(o.paymentStatus || '').toLowerCase() === 'paid';
         totalAmt += Number(o.pricePaid) || 0;
 
@@ -773,7 +1397,7 @@
           pendingAmt += Number(o.buyerToGet) || 0;
         }
 
-        if (!o.refundFormDate && !isCancelled && String(o.orderStatus || '').toLowerCase() !== 'got refund') {
+        if (!o.refundFormDate && !isCancelled && lowSt !== 'got refund') {
           pendingFormCount++;
         }
       });
@@ -808,7 +1432,7 @@
       document.getElementById('buyerPageNum').textContent = `${buyerPage}/${maxPage}`;
 
       if (!pageSlice.length) {
-        tbody.innerHTML = `<tr><td colspan="13" style="text-align:center;padding:30px;color:var(--text-secondary);">No matching orders found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="14" style="text-align:center;padding:30px;color:var(--text-secondary);">No matching orders found.</td></tr>`;
         cardWrap.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text-secondary);">No matching orders found.</div>`;
         return;
       }
@@ -816,11 +1440,15 @@
       tbody.innerHTML = pageSlice.map(o => {
         const isPaid = String(o.paymentStatus || '').toLowerCase() === 'paid';
         const daysAgo = o.refundFormDate ? SD.daysBetween(o.refundFormDate, o.refundDate || null) : null;
-        const daysSub = daysAgo !== null ? `<span style="font-size:0.64rem;color:var(--text-muted)">(${daysAgo}d)</span>` : '';
+        let dueBadge = '';
+        if (daysAgo !== null) {
+          const isOverdue = !o.refundDate && daysAgo >= 15;
+          dueBadge = `<span class="mono" style="font-size:0.62rem;padding:1px 6px;border-radius:4px;margin-left:4px;background:${isOverdue ? 'var(--red-bg)' : 'var(--yellow-bg)'};color:${isOverdue ? '#ef4444' : '#f59e0b'};">${o.refundDate ? `Done ${daysAgo}d` : `Due: ${daysAgo}d`}</span>`;
+        }
 
         const gotHtml = isPaid
-          ? `<strong class="mono" style="color:#dc2626;font-weight:800;">${SD.formatCurrency(o.buyerActualGot !== null ? o.buyerActualGot : o.buyerToGet)}</strong>`
-          : SD.formatActualGotHtml(o.buyerActualGot, o.buyerToGet);
+          ? `<strong class="mono mono-amt" style="color:#dc2626;font-weight:800;">${SD.formatCurrency(o.buyerActualGot !== null ? o.buyerActualGot : o.buyerToGet)}</strong>`
+          : `<span class="mono-amt">${SD.formatActualGotHtml(o.buyerActualGot, o.buyerToGet)}</span>`;
 
         return `
           <tr onclick="openTimelineModal(${o.orderNo})" style="cursor:pointer;">
@@ -830,20 +1458,25 @@
             <td class="mono" onclick="event.stopPropagation();SD.copyText('${SD.escapeHtml(o.platformOrderId)}')">
               ${SD.escapeHtml(o.platformOrderId)} 📋
             </td>
-            <td style="max-width:170px;overflow:hidden;text-overflow:ellipsis;" title="${SD.escapeHtml(o.productName)}">
+            <td style="max-width:165px;overflow:hidden;text-overflow:ellipsis;" title="${SD.escapeHtml(o.productName)}">
               ${SD.escapeHtml(o.productName)}
             </td>
             <td>
               <span style="color:var(--cyan);font-weight:600;">${SD.escapeHtml(o.accountName)}</span>
-              <span style="font-size:0.66rem;color:var(--text-muted);">(${SD.escapeHtml(o.forWhom || 'Self')})</span>
+              <span style="font-size:0.64rem;color:var(--text-muted);">(${SD.escapeHtml(o.forWhom || 'Self')})</span>
             </td>
             <td>${SD.escapeHtml(o.orderedPlatform)}</td>
-            <td class="mono">${SD.formatCurrency(o.pricePaid)}</td>
-            <td class="mono" style="color:#dc2626;font-weight:700;">-${SD.formatCurrency(o.buyerLess)}</td>
-            <td class="mono" style="color:#16a34a;font-weight:700;">${SD.formatCurrency(o.buyerToGet)}</td>
+            <td class="mono mono-amt">${SD.formatCurrency(o.pricePaid)}</td>
+            <td class="mono mono-amt" style="color:#dc2626;font-weight:700;">-${SD.formatCurrency(o.buyerLess)}</td>
+            <td class="mono mono-amt" style="color:#16a34a;font-weight:700;">${SD.formatCurrency(o.buyerToGet)}</td>
             <td>${gotHtml}</td>
-            <td>${SD.statusBadge(o.orderStatus)} ${daysSub}</td>
+            <td>${SD.statusBadge(o.orderStatus)}${dueBadge}</td>
             <td>${SD.paymentBadge(o.paymentStatus)}</td>
+            <td onclick="event.stopPropagation();">
+              <button class="wa-btn" onclick="shareOrderWhatsAppToAdmin(${o.orderNo})" title="Ask Admin on WhatsApp about this Order">
+                🟢 💬
+              </button>
+            </td>
           </tr>
         `;
       }).join('');
@@ -861,15 +1494,18 @@
             <span class="mono">${SD.formatDate(o.orderDate)}</span>
           </div>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--bg-primary);padding:6px;border-radius:7px;text-align:center;font-size:0.74rem;">
-            <div><small style="color:var(--text-muted);font-size:0.6rem;display:block;">Price</small><strong class="mono">${SD.formatCurrency(o.pricePaid)}</strong></div>
-            <div><small style="color:var(--text-muted);font-size:0.6rem;display:block;">Less</small><strong class="mono" style="color:#dc2626">-${SD.formatCurrency(o.buyerLess)}</strong></div>
-            <div><small style="color:var(--text-muted);font-size:0.6rem;display:block;">ToGet</small><strong class="mono" style="color:#16a34a">${SD.formatCurrency(o.buyerToGet)}</strong></div>
+            <div><small style="color:var(--text-muted);font-size:0.6rem;display:block;">Price</small><strong class="mono mono-amt">${SD.formatCurrency(o.pricePaid)}</strong></div>
+            <div><small style="color:var(--text-muted);font-size:0.6rem;display:block;">Less</small><strong class="mono mono-amt" style="color:#dc2626">-${SD.formatCurrency(o.buyerLess)}</strong></div>
+            <div><small style="color:var(--text-muted);font-size:0.6rem;display:block;">ToGet</small><strong class="mono mono-amt" style="color:#16a34a">${SD.formatCurrency(o.buyerToGet)}</strong></div>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:2px;">
             ${SD.paymentBadge(o.paymentStatus)}
-            <span class="mono" style="font-size:0.76rem;color:#dc2626;font-weight:800;">
-              Got: ${o.buyerActualGot !== null ? SD.formatCurrency(o.buyerActualGot) : '—'}
-            </span>
+            <div style="display:flex;align-items:center;gap:6px;" onclick="event.stopPropagation();">
+              <span class="mono mono-amt" style="font-size:0.75rem;color:#dc2626;font-weight:800;">
+                Got: ${o.buyerActualGot !== null ? SD.formatCurrency(o.buyerActualGot) : '—'}
+              </span>
+              <button class="wa-btn" onclick="shareOrderWhatsAppToAdmin(${o.orderNo})">🟢 WhatsApp</button>
+            </div>
           </div>
         </div>
       `).join('');
@@ -885,6 +1521,225 @@
         currentView = 'table'; tbl.style.display = 'block'; crd.style.display = 'none'; btn.textContent = '🗂️ Cards';
       }
     }
+
+    // ─── DIGIPULL-STYLE CUSTOMER ANALYTICS ENGINE ───────────────────────────
+
+    function renderCustomerAnalyticsTab() {
+      const total = buyerOrders.length;
+      let validOrders = 0, validVal = 0, paidSum = 0, refundDaysSum = 0, refundDaysCount = 0;
+
+      buyerOrders.forEach(o => {
+        const lowSt = String(o.orderStatus || '').toLowerCase();
+        if (!lowSt.includes('cancel')) {
+          validOrders++;
+          validVal += Number(o.pricePaid) || 0;
+        }
+        if (String(o.paymentStatus || '').toLowerCase() === 'paid') {
+          paidSum += (o.buyerActualGot !== null ? Number(o.buyerActualGot) : Number(o.buyerToGet)) || 0;
+        }
+        if (o.refundFormDate && o.refundDate) {
+          const d = SD.daysBetween(o.refundFormDate, o.refundDate);
+          if (d !== null && d >= 0 && d < 120) { refundDaysSum += d; refundDaysCount++; }
+        }
+      });
+
+      const avgOrderVal = validOrders ? Math.round(validVal / validOrders) : 0;
+      const avgDays = refundDaysCount ? Math.round(refundDaysSum / refundDaysCount) : 12;
+      const healthScore = total ? Math.min(99, Math.max(60, Math.round((validOrders / total) * 100))) : 80;
+
+      const ring = document.getElementById('anPulseRing');
+      ring.setAttribute('data-score', healthScore);
+      ring.style.setProperty('--pct', healthScore + '%');
+      document.getElementById('anMomentumLabel').textContent = healthScore >= 80 ? 'Strong Momentum' : 'Steady Activity';
+      document.getElementById('anPulseDesc').textContent = `${validOrders} valid orders (${healthScore}% fulfillment rate)`;
+      document.getElementById('anValidValue').textContent = SD.formatCurrency(validVal);
+      document.getElementById('anAvgValue').textContent = SD.formatCurrency(avgOrderVal);
+      document.getElementById('anLifetimePaid').textContent = SD.formatCurrency(paidSum);
+      document.getElementById('anAvgDays').textContent = `${avgDays} days`;
+
+      // Tier System: Bronze (0-10), Silver (11-40), Gold (41-80), Platinum (81+)
+      const tiers = [
+        { name: 'Bronze',   min: 0,  max: 10,  desc: 'Starter (1–10 Orders)' },
+        { name: 'Silver',   min: 11, max: 40,  desc: 'Regular (11–40 Orders)' },
+        { name: 'Gold',     min: 41, max: 80,  desc: 'Loyal (41–80 Orders)' },
+        { name: 'Platinum', min: 81, max: 999, desc: 'VIP (80+ Orders)' }
+      ];
+      let currentTier = tiers[0], nextTier = tiers[1];
+      for (let i = 0; i < tiers.length; i++) {
+        if (validOrders >= tiers[i].min) {
+          currentTier = tiers[i];
+          nextTier = tiers[i + 1] || null;
+        }
+      }
+
+      document.getElementById('anTierBadge').textContent = `🏆 Tier: ${currentTier.name}`;
+      document.getElementById('anTierBoxes').innerHTML = tiers.map(t => {
+        const isCurr = t.name === currentTier.name;
+        return `
+          <div class="tier-box ${isCurr ? 'current' : ''}">
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;font-weight:800;">
+              <span>${t.name}</span>
+              <span style="color:${isCurr ? '#22c55e' : 'var(--text-muted)'}">${isCurr ? '● Current' : `${t.min}+`}</span>
+            </div>
+            <div style="font-size:0.65rem;color:var(--text-secondary);margin-top:3px;">${t.desc}</div>
+          </div>
+        `;
+      }).join('');
+
+      if (nextTier) {
+        const needed = Math.max(0, nextTier.min - validOrders);
+        const pct = Math.min(100, Math.round((validOrders / nextTier.min) * 100));
+        document.getElementById('anNextTierText').textContent = `${pct}% toward ${nextTier.name} Member`;
+        document.getElementById('anNextTierCount').textContent = `${needed} more orders needed`;
+        document.getElementById('anTierProgressBar').style.width = `${pct}%`;
+      } else {
+        document.getElementById('anNextTierText').textContent = `🎉 Highest Platinum VIP Tier Achieved!`;
+        document.getElementById('anNextTierCount').textContent = `${validOrders} lifetime orders`;
+        document.getElementById('anTierProgressBar').style.width = `100%`;
+      }
+
+      // 6-Month SVG Momentum Graph
+      const monthBuckets = new Map();
+      buyerOrders.forEach(o => {
+        if (!o.orderDate) return;
+        const ym = o.orderDate.slice(0, 7);
+        if (!monthBuckets.has(ym)) monthBuckets.set(ym, { count: 0, amount: 0 });
+        const b = monthBuckets.get(ym);
+        b.count++;
+        b.amount += Number(o.pricePaid) || 0;
+      });
+      const sortedMonths = Array.from(monthBuckets.entries()).sort((a, b) => a[0].localeCompare(b[0])).slice(-6);
+      if (sortedMonths.length) {
+        const maxAmt = Math.max(...sortedMonths.map(m => m[1].amount), 1);
+        const pts = sortedMonths.map((m, idx) => {
+          const x = 40 + idx * (500 / Math.max(1, sortedMonths.length - 1));
+          const y = 115 - Math.round((m[1].amount / maxAmt) * 85);
+          return { x, y, label: m[0], amt: m[1].amount, cnt: m[1].count };
+        });
+        const polyPoints = pts.map(p => `${p.x},${p.y}`).join(' ');
+        const areaPoints = `${pts[0].x},120 ${polyPoints} ${pts[pts.length - 1].x},120`;
+
+        document.getElementById('anMomentumChartWrap').innerHTML = `
+          <svg viewBox="0 0 580 145" style="width:100%;height:145px;overflow:visible;">
+            <defs>
+              <linearGradient id="momGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#22c55e" stop-opacity="0.38"/>
+                <stop offset="100%" stop-color="#22c55e" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <polygon points="${areaPoints}" fill="url(#momGrad)" />
+            <polyline fill="none" stroke="#22c55e" stroke-width="2.5" points="${polyPoints}" />
+            ${pts.map(p => `
+              <circle cx="${p.x}" cy="${p.y}" r="4.5" fill="#d4a574" stroke="#0b1120" stroke-width="2" />
+              <text x="${p.x}" y="${p.y - 9}" text-anchor="middle" fill="#f8fafc" font-size="9" font-family="JetBrains Mono">${p.cnt} ord</text>
+              <text x="${p.x}" y="138" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="JetBrains Mono">${p.label}</text>
+            `).join('')}
+          </svg>
+        `;
+      }
+
+      // Platform Mix Bars
+      const platCounts = new Map();
+      buyerOrders.forEach(o => {
+        const p = o.orderedPlatform || 'Other';
+        platCounts.set(p, (platCounts.get(p) || 0) + 1);
+      });
+      const topPlats = Array.from(platCounts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 5);
+      document.getElementById('anPlatformMixList').innerHTML = topPlats.map(([p, c]) => {
+        const pct = Math.round((c / Math.max(1, total)) * 100);
+        return `
+          <div style="margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:3px;">
+              <strong>${SD.escapeHtml(p)}</strong>
+              <span class="mono" style="color:var(--accent);">${c} orders (${pct}%)</span>
+            </div>
+            <div style="height:6px;background:var(--bg-primary);border-radius:999px;overflow:hidden;">
+              <div style="height:100%;width:${pct}%;background:#3b82f6;"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Recent 5 Settled Payments
+      const recentPaid = buyerOrders.filter(o => String(o.paymentStatus || '').toLowerCase() === 'paid').slice(0, 5);
+      document.getElementById('anRecentPaymentsList').innerHTML = recentPaid.length ? recentPaid.map(o => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border-color);font-size:0.74rem;">
+          <div>
+            <strong class="mono" style="color:#22c55e;">+${SD.formatCurrency(o.buyerActualGot ?? o.buyerToGet)}</strong>
+            <span class="mono" style="font-size:0.68rem;color:var(--text-secondary);margin-left:6px;">#${o.orderNo} • ${SD.escapeHtml(o.orderedPlatform)}</span>
+          </div>
+          <span class="mono" style="font-size:0.68rem;color:var(--text-muted);">${SD.formatDate(o.paymentDate || o.refundDate)}</span>
+        </div>
+      `).join('') : `<div style="color:var(--text-secondary);font-size:0.76rem;">No settled payments yet.</div>`;
+    }
+
+    // ─── TOP LIVE DEALS CAROUSEL & DEALS TAB ────────────────────────────────
+
+    function renderTopLiveDealsCarousel() {
+      const box = document.getElementById('topLiveDealsBox');
+      const carousel = document.getElementById('topDealsCarousel');
+      if (!buyerDeals.length) {
+        box.style.display = 'none';
+        return;
+      }
+      box.style.display = 'block';
+      carousel.innerHTML = buyerDeals.slice(0, 10).map(d => `
+        <div class="mini-deal-card" onclick="switchTab('dealsTab')">
+          <div class="mini-deal-img">
+            ${d.imageUrl ? `<img src="${SD.escapeHtml(d.imageUrl)}" alt="" onerror="this.style.display='none'" />` : `<span style="font-size:1.6rem;">🛍️</span>`}
+          </div>
+          <div style="font-size:0.72rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${SD.escapeHtml(d.title)}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+            <span class="mono" style="font-size:0.72rem;font-weight:800;color:#22c55e;">Get ${SD.formatCurrency(d.youGet)}</span>
+            <span style="font-size:0.6rem;background:var(--red-bg);color:#ef4444;padding:1px 6px;border-radius:999px;font-weight:700;">${SD.escapeHtml(d.platform)}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderBuyerDeals() {
+      const grid = document.getElementById('buyerDealsGrid');
+      if (!buyerDeals.length) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text-secondary);">No active deals posted right now.</div>`;
+        return;
+      }
+      grid.innerHTML = buyerDeals.map(d => `
+        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:13px;padding:13px;display:flex;flex-direction:column;justify-content:space-between;gap:10px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <span style="font-size:0.66rem;font-weight:800;color:var(--accent);text-transform:uppercase;background:var(--accent-glow);padding:2px 8px;border-radius:6px;">${SD.escapeHtml(d.platform)}</span>
+              <span style="font-size:0.65rem;color:#22c55e;font-weight:700;">● LIVE DEAL</span>
+            </div>
+            <h3 style="font-size:0.88rem;margin:4px 0;">${SD.escapeHtml(d.title)}</h3>
+            <p style="font-size:0.74rem;color:var(--text-secondary);">${SD.escapeHtml(d.instructions || '')}</p>
+          </div>
+          <div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--bg-primary);padding:6px;border-radius:8px;margin-bottom:8px;text-align:center;font-size:0.74rem;">
+              <div><small style="font-size:0.58rem;color:var(--text-muted);display:block;">Price</small><strong class="mono">${SD.formatCurrency(d.price)}</strong></div>
+              <div><small style="font-size:0.58rem;color:var(--text-muted);display:block;">Less</small><strong class="mono" style="color:#dc2626">-${SD.formatCurrency(d.lessAmount)}</strong></div>
+              <div><small style="font-size:0.58rem;color:var(--text-muted);display:block;">You Get</small><strong class="mono" style="color:#16a34a">${SD.formatCurrency(d.youGet)}</strong></div>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button style="flex:1;padding:8px;border-radius:7px;border:none;background:var(--accent);color:#0b1120;font-weight:800;font-size:0.75rem;cursor:pointer;" onclick="requestDealFromDash('${SD.escapeHtml(d.dealId)}', '${SD.escapeHtml(d.title.replace(/'/g, "\\'"))}', this)">
+                ⚡ Request Deal
+              </button>
+              <button class="wa-btn" onclick="shareDealOnWhatsApp('${SD.escapeHtml(d.dealId)}')" title="Share Deal on WhatsApp">
+                🟢 Share
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function requestDealFromDash(dealId, title, btn) {
+      btn.disabled = true; btn.textContent = 'Requesting...';
+      const res = await SD.api('requestDeal', { dealId, dealTitle: title });
+      if (res?.success) { btn.textContent = '✓ Requested'; SD.toast(res.message, 'success'); }
+      else { btn.disabled = false; btn.textContent = '⚡ Request Deal'; SD.toast(res?.error || 'Failed', 'error'); }
+    }
+
+    // ─── TIMELINE MODAL & ORDER SUBMISSION ──────────────────────────────────
 
     function openTimelineModal(orderNo) {
       const o = buyerOrders.find(x => String(x.orderNo) === String(orderNo));
@@ -908,47 +1763,14 @@
             </div>
           `).join('')}
         </div>
-        ${o.notes ? `<div style="padding:8px;background:var(--bg-primary);border-radius:7px;font-size:0.76rem;margin-bottom:8px;"><strong>Notes:</strong> ${SD.escapeHtml(o.notes)}</div>` : ''}
-        <div style="display:flex;gap:8px;">
-          ${o.reviewLink ? `<a href="${SD.escapeHtml(o.reviewLink)}" target="_blank" class="btn">⭐ Review Link</a>` : ''}
-          ${o.orderScreenshot ? `<a href="${SD.escapeHtml(o.orderScreenshot)}" target="_blank" class="btn">🖼️ Screenshot</a>` : ''}
+        ${o.notes ? `<div style="padding:8px;background:var(--bg-primary);border-radius:7px;font-size:0.75rem;margin-bottom:10px;"><strong>Notes:</strong> ${SD.escapeHtml(o.notes)}</div>` : ''}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="wa-btn" style="padding:8px 12px;" onclick="shareOrderWhatsAppToAdmin(${o.orderNo})">🟢 Ask Admin on WhatsApp</button>
+          ${o.reviewLink ? `<a href="${SD.escapeHtml(o.reviewLink)}" target="_blank" class="icon-btn" style="width:auto;padding:0 10px;font-size:0.74rem;">⭐ Review Link</a>` : ''}
+          ${o.orderScreenshot ? `<a href="${SD.escapeHtml(o.orderScreenshot)}" target="_blank" class="icon-btn" style="width:auto;padding:0 10px;font-size:0.74rem;">🖼️ Screenshot</a>` : ''}
         </div>
       `;
       document.getElementById('timelineModal').classList.add('open');
-    }
-
-    function renderBuyerDeals() {
-      const grid = document.getElementById('buyerDealsGrid');
-      if (!buyerDeals.length) {
-        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text-secondary);">No active deals posted right now.</div>`;
-        return;
-      }
-      grid.innerHTML = buyerDeals.map(d => `
-        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;gap:10px;">
-          <div>
-            <span style="font-size:0.68rem;font-weight:700;color:var(--accent);text-transform:uppercase;">${SD.escapeHtml(d.platform)}</span>
-            <h3 style="font-size:0.9rem;margin:3px 0;">${SD.escapeHtml(d.title)}</h3>
-            <p style="font-size:0.75rem;color:var(--text-secondary);">${SD.escapeHtml(d.instructions || '')}</p>
-          </div>
-          <div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--bg-primary);padding:6px;border-radius:7px;margin-bottom:8px;text-align:center;font-size:0.75rem;">
-              <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">Price</small><strong class="mono">${SD.formatCurrency(d.price)}</strong></div>
-              <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">Less</small><strong class="mono" style="color:#dc2626">-${SD.formatCurrency(d.lessAmount)}</strong></div>
-              <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">You Get</small><strong class="mono" style="color:#16a34a">${SD.formatCurrency(d.youGet)}</strong></div>
-            </div>
-            <button class="btn primary" style="width:100%;justify-content:center;" onclick="requestDealFromDash('${SD.escapeHtml(d.dealId)}', '${SD.escapeHtml(d.title.replace(/'/g, "\\'"))}', this)">
-              ⚡ Request This Deal
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    async function requestDealFromDash(dealId, title, btn) {
-      btn.disabled = true; btn.textContent = 'Requesting...';
-      const res = await SD.api('requestDeal', { dealId, dealTitle: title });
-      if (res?.success) { btn.textContent = '✓ Requested'; SD.toast(res.message, 'success'); }
-      else { btn.disabled = false; btn.textContent = '⚡ Request This Deal'; SD.toast(res?.error || 'Failed', 'error'); }
     }
 
     function parseSmartOrderText(raw) {
@@ -1032,7 +1854,7 @@
     }
 
     async function refreshBuyerData() {
-      const cacheKey = 'buyer_dash_' + (currentUser?.userId || 'me');
+      const cacheKey = 'buyer_dash_v4_' + (currentUser?.userId || 'me');
       const cached = await BUYER_IDB.get(cacheKey);
       if (cached && cached.success && !buyerOrders.length) {
         renderBuyerPayload(cached);
@@ -1048,3 +1870,9 @@
   </script>
 </body>
 </html>
+
+
+
+
+
+  
