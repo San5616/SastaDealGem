@@ -9,17 +9,38 @@
     .navbar {
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 150;
       background: var(--bg-glass);
-      backdrop-filter: blur(14px);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-color);
       padding: 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
       gap: 8px;
     }
+    .nav-left, .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      position: relative;
+    }
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.88rem;
+      transition: all 0.18s;
+      text-decoration: none;
+    }
+    .icon-btn:hover { border-color: var(--accent); transform: translateY(-1px); }
     .brand {
       display: flex;
       align-items: center;
@@ -27,319 +48,340 @@
       text-decoration: none;
       color: var(--text-primary);
       font-weight: 800;
-      font-size: 0.98rem;
+      font-size: 0.96rem;
     }
     .brand-badge {
       width: 28px;
       height: 28px;
       border-radius: 7px;
-      background: var(--purple);
+      background: linear-gradient(135deg, #a855f7, #6366f1);
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
     }
-    .med-pill {
-      background: var(--purple-bg);
-      color: #c084fc;
-      border: 1px solid rgba(124,58,237,0.35);
-      padding: 3px 10px;
+    .avatar-btn {
+      height: 34px;
+      padding: 0 10px 0 4px;
       border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      max-width: 190px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .btn {
-      padding: 6px 10px;
-      border-radius: 7px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      border: 1px solid var(--border-color);
+      border: 1px solid rgba(168, 85, 247, 0.45);
       background: var(--bg-secondary);
       color: var(--text-primary);
-      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      white-space: nowrap;
-    }
-    .btn.primary {
-      background: var(--accent);
-      color: var(--accent-text);
-      border-color: transparent;
-      font-weight: 700;
-    }
-    .btn.danger {
-      background: var(--red-bg);
-      color: #ef4444;
-      border-color: rgba(220,38,38,0.3);
-    }
-
-    .container {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 10px 10px 70px;
-    }
-
-    .dash-tabs {
-      display: flex;
       gap: 6px;
-      margin-bottom: 10px;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 6px;
-    }
-    .dash-tab {
-      padding: 6px 13px;
-      border-radius: 7px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-secondary);
-      color: var(--text-secondary);
-      font-weight: 600;
-      font-size: 0.76rem;
       cursor: pointer;
-    }
-    .dash-tab.active {
-      background: var(--accent);
-      color: var(--accent-text);
-      border-color: transparent;
+      font-size: 0.74rem;
       font-weight: 700;
     }
+    .avatar-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.72rem;
+    }
 
-    /* Ultra-Compact Horizontal Swipe KPI Strip */
-    .kpi-header-bar {
+    /* Profile Dropdown */
+    .profile-menu {
+      position: absolute;
+      top: 44px;
+      right: 0;
+      width: 245px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      z-index: 300;
+    }
+    .profile-menu.open { display: flex; }
+    .pm-item {
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      background: transparent;
+      border: none;
+      text-align: left;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 5px;
-      font-size: 0.68rem;
-      color: var(--text-secondary);
+      cursor: pointer;
     }
-    .kpi-grid {
+    .pm-item:hover { background: var(--bg-tertiary); }
+
+    /* Left Slide Drawer */
+    .side-drawer-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(3px);
+      z-index: 400; display: none;
+    }
+    .side-drawer-backdrop.open { display: block; }
+    .side-drawer {
+      position: fixed; top: 0; left: 0; bottom: 0; width: 265px;
+      background: var(--bg-secondary); border-right: 1px solid var(--border-color);
+      z-index: 410; padding: 16px; transform: translateX(-100%);
+      transition: transform 0.25s ease; display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .side-drawer.open { transform: translateX(0); }
+    .drawer-link {
+      padding: 10px 12px; border-radius: 9px; color: var(--text-primary);
+      font-size: 0.82rem; font-weight: 600; display: flex; align-items: center; gap: 10px;
+      cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; margin-bottom: 4px;
+    }
+    .drawer-link:hover { background: var(--purple-bg); color: #c084fc; }
+
+    body.privacy-blur .mono-amt { filter: blur(6px); user-select: none; }
+
+    .container { max-width: 1440px; margin: 0 auto; padding: 12px 10px 80px; }
+
+    .greeting-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 11px 14px;
       display: flex;
-      gap: 7px;
-      overflow-x: auto;
-      padding-bottom: 6px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
       margin-bottom: 10px;
+    }
+
+    .dash-tabs {
+      display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px;
+      border-bottom: 1px solid var(--border-color); scrollbar-width: none;
+    }
+    .dash-tabs::-webkit-scrollbar { display: none; }
+    .dash-tab {
+      padding: 6px 13px; border-radius: 8px; border: 1px solid var(--border-color);
+      background: var(--bg-secondary); color: var(--text-secondary);
+      font-weight: 600; font-size: 0.76rem; cursor: pointer; white-space: nowrap;
+    }
+    .dash-tab.active {
+      background: var(--accent); color: var(--accent-text); border-color: transparent; font-weight: 700;
+    }
+
+    /* Compact KPI Strip */
+    .kpi-grid {
+      display: flex; gap: 7px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px;
       scroll-snap-type: x mandatory;
     }
-    .kpi-grid.grid-mode {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      overflow-x: visible;
-    }
+    .kpi-grid.grid-mode { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); overflow-x: visible; }
     .kpi-grid.hidden-mode { display: none; }
     .kpi-card {
-      flex: 0 0 auto;
-      min-width: 110px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 9px;
-      padding: 7px 10px;
-      scroll-snap-align: start;
+      flex: 0 0 auto; min-width: 112px; background: var(--bg-secondary);
+      border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 10px;
+      scroll-snap-align: start; cursor: pointer;
     }
-    .kpi-label {
-      font-size: 0.58rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      display: block;
-      margin-bottom: 2px;
-      white-space: nowrap;
-    }
-    .kpi-val {
-      font-size: 0.9rem;
-      font-weight: 800;
-      line-height: 1.2;
-      white-space: nowrap;
-    }
+    .kpi-label { font-size: 0.58rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); display: block; margin-bottom: 2px; }
+    .kpi-val { font-size: 0.9rem; font-weight: 800; }
 
-    /* Compact Search & Quick Filter Strip */
+    /* Search & Filter Strip */
     .search-strip {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 8px;
-      margin-bottom: 8px;
-    }
-    .search-row {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      flex-wrap: wrap;
+      background: var(--bg-secondary); border: 1px solid var(--border-color);
+      border-radius: 10px; padding: 8px; margin-bottom: 8px;
     }
     .input-ctrl, .select-ctrl {
-      padding: 7px 10px;
-      border-radius: 7px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      font-size: 0.78rem;
-      outline: none;
+      padding: 7px 10px; border-radius: 7px; border: 1px solid var(--border-color);
+      background: var(--bg-primary); color: var(--text-primary); font-size: 0.78rem; outline: none;
     }
-    .input-ctrl:focus, .select-ctrl:focus { border-color: var(--accent); }
-
     .quick-pills {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding-top: 7px;
-      margin-top: 7px;
-      border-top: 1px solid var(--border-color);
-      scrollbar-width: none;
+      display: flex; gap: 6px; overflow-x: auto; padding-top: 7px; margin-top: 7px;
+      border-top: 1px solid var(--border-color); scrollbar-width: none;
     }
     .quick-pills::-webkit-scrollbar { display: none; }
     .q-pill {
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      background: var(--bg-primary);
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      cursor: pointer;
-      white-space: nowrap;
+      padding: 4px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 600;
+      background: var(--bg-primary); border: 1px solid var(--border-color);
+      color: var(--text-secondary); cursor: pointer; white-space: nowrap;
     }
-    .q-pill.active {
-      background: var(--accent-glow);
-      color: var(--accent);
-      border-color: var(--accent);
-    }
+    .q-pill.active { background: var(--accent-glow); color: var(--accent); border-color: var(--accent); }
+    .filter-drawer { display: none; padding-top: 8px; margin-top: 8px; border-top: 1px dashed var(--border-color); }
+    .filter-drawer.open { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 
-    .filter-drawer {
-      display: none;
-      padding-top: 8px;
-      margin-top: 8px;
-      border-top: 1px dashed var(--border-color);
-    }
-    .filter-drawer.open { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-
-    /* Compact Table */
+    /* Table */
     .table-wrap {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      overflow-x: auto;
-      max-height: 72vh;
-      -webkit-overflow-scrolling: touch;
+      background: var(--bg-secondary); border: 1px solid var(--border-color);
+      border-radius: 10px; overflow-x: auto; max-height: 70vh; -webkit-overflow-scrolling: touch;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.75rem;
-    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.74rem; }
     thead th {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: var(--bg-tertiary);
-      color: var(--text-secondary);
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: 0.65rem;
-      padding: 9px 7px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-      cursor: pointer;
-      white-space: nowrap;
+      position: sticky; top: 0; z-index: 10; background: var(--bg-tertiary);
+      color: var(--text-secondary); font-weight: 700; text-transform: uppercase;
+      font-size: 0.64rem; padding: 9px 7px; text-align: left; border-bottom: 1px solid var(--border-color);
+      cursor: pointer; white-space: nowrap;
     }
     tbody tr { border-bottom: 1px solid var(--border-color); }
     tbody tr:hover { background: rgba(212, 165, 116, 0.05); }
     tbody td { padding: 7px; vertical-align: middle; white-space: nowrap; }
 
-    .cards-grid {
-      display: none;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 10px;
+    .wa-btn {
+      padding: 4px 8px; border-radius: 6px; background: rgba(34, 197, 94, 0.16);
+      color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.35);
+      font-size: 0.72rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
     }
+    .wa-btn:hover { background: #22c55e; color: #0b1120; }
+
+    .cards-grid { display: none; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 10px; }
     .order-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 11px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+      background: var(--bg-secondary); border: 1px solid var(--border-color);
+      border-radius: 11px; padding: 12px; display: flex; flex-direction: column; gap: 6px;
+    }
+
+    /* Analytics */
+    .analytics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; }
+    .an-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 14px; padding: 14px; }
+    .pulse-ring {
+      width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.95rem; color: #a855f7;
+      background: conic-gradient(#a855f7 var(--pct, 80%), rgba(255,255,255,0.08) 0); position: relative;
+    }
+    .pulse-ring::after {
+      content: attr(data-score); position: absolute; inset: 5px; border-radius: 50%;
+      background: var(--bg-secondary); display: flex; align-items: center; justify-content: center;
     }
 
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
 
     .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.75);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 500;
-      padding: 14px;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(3px);
+      display: none; align-items: center; justify-content: center; z-index: 500; padding: 14px;
     }
     .modal-backdrop.open { display: flex; }
     .modal-box {
-      width: 100%;
-      max-width: 480px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 18px;
+      width: 100%; max-width: 480px; background: var(--bg-secondary);
+      border: 1px solid var(--border-color); border-radius: 16px; padding: 18px;
+    }
+
+    .fab-wa {
+      position: fixed; bottom: 18px; right: 18px; z-index: 250; background: #22c55e; color: #0b1120;
+      border-radius: 999px; padding: 10px 15px; font-weight: 800; font-size: 0.78rem;
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4); border: none; cursor: pointer; display: flex; align-items: center; gap: 6px;
     }
   </style>
 </head>
 <body>
 
+  <!-- Slide-Out Left Drawer -->
+  <div class="side-drawer-backdrop" id="medDrawerBackdrop" onclick="toggleMedDrawer(false)"></div>
+  <aside class="side-drawer" id="medSideDrawer">
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--border-color);">
+        <div class="brand">
+          <div class="brand-badge">M</div>
+          <div>
+            <div id="drawerMedName" style="font-size:0.86rem;">Mediator Portal</div>
+            <div class="mono" style="font-size:0.66rem;color:#c084fc;">Verified Partner</div>
+          </div>
+        </div>
+        <button class="icon-btn" onclick="toggleMedDrawer(false)">✕</button>
+      </div>
+      <button class="drawer-link" onclick="switchMedTab('medOrdersTab');toggleMedDrawer(false)">📦 Deal Orders</button>
+      <button class="drawer-link" onclick="switchMedTab('medAnalyticsTab');toggleMedDrawer(false)">📊 Partner Analytics</button>
+      <button class="drawer-link" onclick="setMedQuickStatus('PENDING_REFUND');switchMedTab('medOrdersTab');toggleMedDrawer(false)">⏳ Pending Refunds</button>
+      <button class="drawer-link" onclick="switchMedTab('medQueryTab');toggleMedDrawer(false)">📩 Contact Admin</button>
+      <button class="drawer-link" onclick="contactAdminWaFromMed()">🟢 WhatsApp Admin</button>
+      <button class="drawer-link" onclick="exportMedOrders('xls');toggleMedDrawer(false)">📊 Export Excel</button>
+    </div>
+    <button class="drawer-link" style="color:#ef4444;border-top:1px solid var(--border-color);padding-top:12px;" onclick="SD.logout()">🚪 Sign Out</button>
+  </aside>
+
+  <!-- Compact Top Navbar -->
   <nav class="navbar">
-    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+    <div class="nav-left">
+      <button class="icon-btn" onclick="toggleMedDrawer(true)">☰</button>
       <a href="index.html" class="brand">
         <div class="brand-badge">M</div>
         <span>Mediator</span>
       </a>
-      <span class="med-pill" id="medNameBadge">🤝 Loading...</span>
     </div>
-    <div style="display:flex;gap:5px;align-items:center;">
-      <button class="btn" onclick="refreshMediatorData()">🔄 Sync</button>
-      <button class="btn" onclick="SD.toggleTheme()">🌓</button>
-      <button class="btn danger" onclick="SD.logout()">Logout</button>
+
+    <div class="nav-right">
+      <button class="icon-btn" onclick="refreshMediatorData()" title="Sync">🔄</button>
+      <button class="icon-btn" onclick="toggleMedPrivacy()" id="medPrivBtn" title="Privacy Blur">👁️</button>
+      <button class="icon-btn" onclick="SD.toggleTheme()" title="Theme">🌓</button>
+      <button class="icon-btn" style="color:#22c55e;border-color:rgba(34,197,94,0.35);" onclick="contactAdminWaFromMed()" title="WhatsApp Admin">💬</button>
+
+      <button class="avatar-btn" onclick="toggleMedProfileMenu(event)">
+        <div class="avatar-circle" id="medAvatarInitials">M</div>
+        <span id="medShortName">Partner</span>
+        <span style="font-size:0.6rem;color:var(--text-secondary);">▼</span>
+      </button>
+
+      <div class="profile-menu" id="medProfileMenu">
+        <div style="padding:6px 8px;border-bottom:1px solid var(--border-color);margin-bottom:4px;">
+          <div style="font-weight:800;font-size:0.84rem;" id="pmMedFullName">Mediator</div>
+          <div class="mono" style="font-size:0.68rem;color:#c084fc;">Partner Account</div>
+        </div>
+        <button class="pm-item" onclick="switchMedTab('medAnalyticsTab')"><span>📊 Partner Analytics</span><span>→</span></button>
+        <button class="pm-item" onclick="toggleMedPrivacy()"><span>🙈 Privacy Blur</span><span id="pmMedPrivState" class="mono" style="font-size:0.68rem;">OFF</span></button>
+        <button class="pm-item" onclick="SD.toggleTheme()"><span>🌓 Toggle Theme</span><span>⚡</span></button>
+        <button class="pm-item" onclick="contactAdminWaFromMed()"><span style="color:#22c55e;">🟢 WhatsApp Admin</span><span>💬</span></button>
+        <button class="pm-item" style="color:#ef4444;border-top:1px solid var(--border-color);margin-top:4px;padding-top:8px;" onclick="SD.logout()"><span>🚪 Sign Out</span><span>✕</span></button>
+      </div>
     </div>
   </nav>
 
   <main class="container">
-    <div id="medHighlights"></div>
+    <!-- Greeting Card -->
+    <div class="greeting-card">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="avatar-circle" style="width:36px;height:36px;font-size:0.88rem;" id="medGreetInitials">M</div>
+        <div>
+          <div style="font-weight:800;font-size:0.9rem;" id="medGreetingTitle">Welcome Partner!</div>
+          <div style="font-size:0.72rem;color:var(--text-secondary);" id="medGreetingSub">Deal & Refund Settlement Tracker</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="wa-btn" style="padding:7px 11px;" onclick="sharePendingSummaryToAdminWa()">🟢 Send Pending Summary to Admin</button>
+      </div>
+    </div>
 
+    <!-- 3 Tabs -->
     <div class="dash-tabs">
-      <button class="dash-tab active" onclick="switchMedTab('medOrdersTab', this)">📦 Deal Orders</button>
-      <button class="dash-tab" onclick="switchMedTab('medQueryTab', this)">📩 Contact Admin</button>
+      <button class="dash-tab active" data-tab="medOrdersTab" onclick="switchMedTab('medOrdersTab')">📦 Deal Orders</button>
+      <button class="dash-tab" data-tab="medAnalyticsTab" onclick="switchMedTab('medAnalyticsTab')">📊 Partner Analytics</button>
+      <button class="dash-tab" data-tab="medQueryTab" onclick="switchMedTab('medQueryTab')">📩 Contact Admin</button>
     </div>
 
     <!-- TAB 1: ORDERS -->
     <section id="medOrdersTab" class="tab-pane active">
-      <div class="kpi-header-bar">
-        <span>👈 Swipe KPIs left/right</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;font-size:0.68rem;color:var(--text-secondary);">
+        <span>👈 Swipe KPIs (Tap card to filter)</span>
         <div style="display:flex;gap:5px;">
-          <button class="btn" style="padding:2px 7px;font-size:0.65rem;" onclick="document.getElementById('medKpiStrip').classList.toggle('grid-mode')">📐 Grid/Swipe</button>
-          <button class="btn" style="padding:2px 7px;font-size:0.65rem;" onclick="document.getElementById('medKpiStrip').classList.toggle('hidden-mode')">👁️ Hide/Show</button>
+          <button class="icon-btn" style="width:auto;height:22px;padding:0 7px;font-size:0.65rem;" onclick="document.getElementById('medKpiStrip').classList.toggle('grid-mode')">📐 Grid/Swipe</button>
+          <button class="icon-btn" style="width:auto;height:22px;padding:0 7px;font-size:0.65rem;" onclick="document.getElementById('medKpiStrip').classList.toggle('hidden-mode')">👁️ Hide</button>
         </div>
       </div>
 
       <!-- 8 Compact KPI Cards -->
       <div class="kpi-grid" id="medKpiStrip">
-        <div class="kpi-card"><span class="kpi-label">Total Orders</span><div class="kpi-val mono" id="mKpiTotal">0</div></div>
-        <div class="kpi-card"><span class="kpi-label">Order Amount</span><div class="kpi-val mono" id="mKpiAmount">₹0</div></div>
-        <div class="kpi-card"><span class="kpi-label">Total Less</span><div class="kpi-val mono" style="color:#d97706" id="mKpiLess">₹0</div></div>
-        <div class="kpi-card"><span class="kpi-label">Total Refund</span><div class="kpi-val mono" style="color:#16a34a" id="mKpiRefund">₹0</div></div>
-        <div class="kpi-card"><span class="kpi-label">Yet to Receive</span><div class="kpi-val mono" style="color:#f59e0b" id="mKpiYetToReceive">₹0</div></div>
-        <div class="kpi-card"><span class="kpi-label">Pending (#)</span><div class="kpi-val mono" style="color:#a855f7" id="mKpiPendingCount">0</div></div>
-        <div class="kpi-card"><span class="kpi-label">Got Refund (#)</span><div class="kpi-val mono" style="color:#22c55e" id="mKpiGotCount">0</div></div>
-        <div class="kpi-card"><span class="kpi-label">Difference</span><div class="kpi-val mono" style="color:#dc2626" id="mKpiDiff">₹0</div></div>
+        <div class="kpi-card" onclick="setMedQuickStatus('ALL')"><span class="kpi-label">Total Orders</span><div class="kpi-val mono" id="mKpiTotal">0</div></div>
+        <div class="kpi-card" onclick="setMedQuickStatus('ALL')"><span class="kpi-label">Order Amount</span><div class="kpi-val mono mono-amt" id="mKpiAmount">₹0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Total Less</span><div class="kpi-val mono mono-amt" style="color:#d97706" id="mKpiLess">₹0</div></div>
+        <div class="kpi-card" onclick="setMedQuickStatus('Got Refund')"><span class="kpi-label">Total Refund</span><div class="kpi-val mono mono-amt" style="color:#16a34a" id="mKpiRefund">₹0</div></div>
+        <div class="kpi-card" onclick="setMedQuickStatus('PENDING_REFUND')"><span class="kpi-label">Yet to Receive</span><div class="kpi-val mono mono-amt" style="color:#f59e0b" id="mKpiYetToReceive">₹0</div></div>
+        <div class="kpi-card" onclick="setMedQuickStatus('PENDING_REFUND')"><span class="kpi-label">Pending (#)</span><div class="kpi-val mono" style="color:#a855f7" id="mKpiPendingCount">0</div></div>
+        <div class="kpi-card" onclick="setMedQuickStatus('Got Refund')"><span class="kpi-label">Got Refund (#)</span><div class="kpi-val mono" style="color:#22c55e" id="mKpiGotCount">0</div></div>
+        <div class="kpi-card"><span class="kpi-label">Difference</span><div class="kpi-val mono mono-amt" style="color:#dc2626" id="mKpiDiff">₹0</div></div>
       </div>
 
       <!-- Compact Search & Quick Filter Bar -->
       <div class="search-strip">
-        <div class="search-row">
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
           <input
             type="text"
             id="medSearch"
@@ -348,17 +390,17 @@
             placeholder="🔍 Search Order ID, #No, Product, Account..."
             oninput="applyMedFilters()"
           />
-          <button class="btn primary" onclick="document.getElementById('medFilterDrawer').classList.toggle('open')">🎛️ More</button>
-          <button class="btn" id="medViewBtn" onclick="toggleMedView()">🗂️ Cards</button>
+          <button class="icon-btn" style="width:auto;padding:0 10px;font-size:0.74rem;font-weight:700;background:var(--accent);color:#0b1120;border:none;" onclick="document.getElementById('medFilterDrawer').classList.toggle('open')">🎛️ More</button>
+          <button class="icon-btn" style="width:auto;padding:0 10px;font-size:0.74rem;font-weight:600;" id="medViewBtn" onclick="toggleMedView()">🗂️ Cards</button>
         </div>
 
         <div class="quick-pills">
-          <button class="q-pill active" onclick="setMedQuickStatus('ALL', this)">All Orders</button>
-          <button class="q-pill" onclick="setMedQuickStatus('PENDING_REFUND', this)">⏳ Pending Refund</button>
-          <button class="q-pill" onclick="setMedQuickStatus('Got Refund', this)">✓ Got Refund</button>
-          <button class="q-pill" onclick="setMedQuickStatus('Refund form filled', this)">📋 Form Filled</button>
-          <button class="q-pill" onclick="setMedQuickStatus('Review Live', this)">⭐ Review Live</button>
-          <button class="q-pill" onclick="setMedQuickStatus('Order Placed', this)">🛒 Order Placed</button>
+          <button class="q-pill active" data-st="ALL" onclick="setMedQuickStatus('ALL', this)">All Orders</button>
+          <button class="q-pill" data-st="PENDING_REFUND" onclick="setMedQuickStatus('PENDING_REFUND', this)">⏳ Pending Refund</button>
+          <button class="q-pill" data-st="Got Refund" onclick="setMedQuickStatus('Got Refund', this)">✓ Got Refund</button>
+          <button class="q-pill" data-st="Refund form filled" onclick="setMedQuickStatus('Refund form filled', this)">📋 Form Filled</button>
+          <button class="q-pill" data-st="Review Live" onclick="setMedQuickStatus('Review Live', this)">⭐ Review Live</button>
+          <button class="q-pill" data-st="Order Placed" onclick="setMedQuickStatus('Order Placed', this)">🛒 Order Placed</button>
         </div>
 
         <div class="filter-drawer" id="medFilterDrawer">
@@ -372,12 +414,12 @@
             <option value="Product Received">Product Received</option>
             <option value="Order Placed">Order Placed</option>
           </select>
-          <button class="btn" onclick="exportMedOrders('csv')">⬇️ CSV</button>
-          <button class="btn" onclick="exportMedOrders('xls')">📊 XLS</button>
+          <button class="icon-btn" style="width:auto;padding:0 10px;font-size:0.72rem;" onclick="exportMedOrders('csv')">⬇️ CSV</button>
+          <button class="icon-btn" style="width:auto;padding:0 10px;font-size:0.72rem;" onclick="exportMedOrders('xls')">📊 XLS</button>
         </div>
       </div>
 
-      <!-- 13-Column Mediator Table -->
+      <!-- 13-Column Mediator Table (With Direct WhatsApp Button) -->
       <div class="table-wrap" id="medTableWrap">
         <table>
           <thead>
@@ -388,13 +430,13 @@
               <th onclick="sortMedTable('productName')">Product ↕</th>
               <th onclick="sortMedTable('sellerName')">Seller ↕</th>
               <th onclick="sortMedTable('orderDate')">Order Date ↕</th>
-              <th onclick="sortMedTable('refundFormDate')">Form Date ↕</th>
+              <th onclick="sortMedTable('refundFormDate')">Form / Due ↕</th>
               <th onclick="sortMedTable('pricePaid')">Price ↕</th>
               <th onclick="sortMedTable('less')">Less ↕</th>
               <th onclick="sortMedTable('toGet')">ToGet ↕</th>
               <th onclick="sortMedTable('actualGot')">Got ↕</th>
               <th onclick="sortMedTable('orderStatus')">Status ↕</th>
-              <th>Actions</th>
+              <th>Actions & WA</th>
             </tr>
           </thead>
           <tbody id="medTableBody">
@@ -406,33 +448,68 @@
       <div class="cards-grid" id="medCardWrap"></div>
     </section>
 
-    <!-- TAB 2: CONTACT ADMIN / QUERY (WITH MEDIATOR'S ORDER ID DROPDOWN) -->
+    <!-- TAB 2: PARTNER ANALYTICS (DIGIPULL STYLE) -->
+    <section id="medAnalyticsTab" class="tab-pane">
+      <div class="analytics-grid">
+        <div class="an-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:0.75rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;">Settlement Pulse</span>
+            <span class="mono" style="font-size:0.7rem;padding:2px 8px;border-radius:999px;background:var(--purple-bg);color:#c084fc;">🤝 Partner</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">
+            <div class="pulse-ring" id="medPulseRing" data-score="0%" style="--pct:0%;"></div>
+            <div>
+              <div style="font-weight:800;font-size:0.95rem;" id="medPulseTitle">Refund Rate</div>
+              <div style="font-size:0.72rem;color:var(--text-secondary);" id="medPulseSub">Orders settled vs total orders</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;background:var(--bg-primary);padding:10px;border-radius:10px;">
+            <div><small style="font-size:0.62rem;color:var(--text-muted);display:block;">Total Volume</small><strong class="mono mono-amt" id="anMedVol">₹0</strong></div>
+            <div><small style="font-size:0.62rem;color:var(--text-muted);display:block;">Refunded Total</small><strong class="mono mono-amt" style="color:#22c55e" id="anMedRef">₹0</strong></div>
+            <div><small style="font-size:0.62rem;color:var(--text-muted);display:block;">Yet to Receive</small><strong class="mono mono-amt" style="color:#f59e0b" id="anMedDue">₹0</strong></div>
+            <div><small style="font-size:0.62rem;color:var(--text-muted);display:block;">Form Filled Due</small><strong class="mono" style="color:#a855f7" id="anMedFormCnt">0 orders</strong></div>
+          </div>
+        </div>
+
+        <div class="an-card">
+          <span style="font-size:0.75rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;display:block;margin-bottom:10px;">📊 Status Breakdown</span>
+          <div id="medStatusBreakdownList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: CONTACT ADMIN (WITH MEDIATOR'S ORDER ID DROPDOWN + WHATSAPP) -->
     <section id="medQueryTab" class="tab-pane">
       <div style="max-width:600px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:14px;padding:16px;">
         <h3 style="font-size:1rem;margin-bottom:6px;">📩 Send Message / Query to Admin</h3>
-        <p style="font-size:0.76rem;color:var(--text-secondary);margin-bottom:12px;">
-          Select an Order ID from your deal orders below or choose General Query.
-        </p>
         <form onsubmit="submitMedQuery(event)">
           <div style="margin-bottom:10px;">
             <label style="display:block;font-size:0.74rem;font-weight:700;color:var(--text-secondary);margin-bottom:4px;">Select Your Order ID *</label>
-            <select id="mqOrderSelect" class="select-ctrl mono" style="width:100%;" onchange="onMedQueryOrderSelect(this.value)">
+            <select id="mqOrderSelect" class="select-ctrl mono" style="width:100%;" onchange="document.getElementById('mqOrderId').value = this.value === 'General Query' ? '' : this.value">
               <option value="General Query">-- General Query / Settlement Update --</option>
             </select>
           </div>
           <div style="margin-bottom:10px;">
-            <label style="display:block;font-size:0.74rem;font-weight:700;color:var(--text-secondary);margin-bottom:4px;">Selected Order Reference</label>
+            <label style="display:block;font-size:0.74rem;font-weight:700;color:var(--text-secondary);margin-bottom:4px;">Order Reference</label>
             <input type="text" id="mqOrderId" class="input-ctrl mono" style="width:100%;" placeholder="Or type Order ID manually..." />
           </div>
           <div style="margin-bottom:14px;">
             <label style="display:block;font-size:0.74rem;font-weight:700;color:var(--text-secondary);margin-bottom:4px;">Message *</label>
             <textarea id="mqMessage" rows="4" class="input-ctrl" style="width:100%;" placeholder="Enter your query or settlement update..." required></textarea>
           </div>
-          <button type="submit" class="btn primary" id="mqBtn" style="width:100%;justify-content:center;padding:10px;">📨 Send to Admin</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="submit" id="mqBtn" style="flex:1;padding:10px;border-radius:8px;border:none;background:var(--accent);color:#0b1120;font-weight:800;cursor:pointer;">📨 Send Ticket</button>
+            <button type="button" onclick="sendMedQueryViaWa()" style="flex:1;padding:10px;border-radius:8px;border:1px solid #22c55e;background:rgba(34,197,94,0.15);color:#22c55e;font-weight:800;cursor:pointer;">🟢 Send on WhatsApp</button>
+          </div>
         </form>
       </div>
     </section>
   </main>
+
+  <button class="fab-wa" onclick="contactAdminWaFromMed()">
+    <span>💬</span>
+    <span>WhatsApp Admin</span>
+  </button>
 
   <!-- Note Modal (📝) -->
   <div class="modal-backdrop" id="noteModal">
@@ -444,7 +521,7 @@
       <form onsubmit="saveMedNote(event)">
         <input type="hidden" id="noteOrderNo" />
         <textarea id="noteText" rows="4" class="input-ctrl" style="width:100%;margin-bottom:12px;" placeholder="Add note for this order..."></textarea>
-        <button type="submit" class="btn primary" id="noteSaveBtn" style="width:100%;justify-content:center;padding:10px;">💾 Save Note</button>
+        <button type="submit" id="noteSaveBtn" style="width:100%;padding:10px;border-radius:8px;border:none;background:var(--accent);color:#0b1120;font-weight:800;cursor:pointer;">💾 Save Note</button>
       </form>
     </div>
   </div>
@@ -462,42 +539,140 @@
 
   <script>
     const medUser = SD.requireAuth('mediator');
+    const ADMIN_WA = '917004984949';
     let medOrders = [];
     let filteredMedOrders = [];
     let medView = 'table';
     let medSortField = 'orderNo';
     let medSortAsc = false;
 
-    function switchMedTab(id, btn) {
+    const MED_IDB = {
+      open() {
+        return new Promise((res, rej) => {
+          const r = indexedDB.open('SastaDeal_MedDB_V4', 1);
+          r.onupgradeneeded = e => e.target.result.createObjectStore('store');
+          r.onsuccess = e => res(e.target.result);
+          r.onerror = e => rej(e);
+        });
+      },
+      async get(k) {
+        try {
+          const db = await this.open();
+          return new Promise(res => {
+            const g = db.transaction('store', 'readonly').objectStore('store').get(k);
+            g.onsuccess = () => res(g.result || null);
+            g.onerror = () => res(null);
+          });
+        } catch (e) { return null; }
+      },
+      async set(k, v) {
+        try {
+          const db = await this.open();
+          db.transaction('store', 'readwrite').objectStore('store').put(v, k);
+        } catch (e) {}
+      }
+    };
+
+    function switchMedTab(id) {
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.dash-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.dash-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
       document.getElementById(id).classList.add('active');
-      btn.classList.add('active');
     }
 
-    function setMedQuickStatus(statusVal, btn) {
-      document.querySelectorAll('.q-pill').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('medStatusFilter').value = statusVal;
-      applyMedFilters();
+    function toggleMedDrawer(open) {
+      document.getElementById('medDrawerBackdrop').classList.toggle('open', open);
+      document.getElementById('medSideDrawer').classList.toggle('open', open);
     }
 
-    function onMedQueryOrderSelect(val) {
-      document.getElementById('mqOrderId').value = val === 'General Query' ? '' : val;
+    function toggleMedProfileMenu(e) {
+      e.stopPropagation();
+      document.getElementById('medProfileMenu').classList.toggle('open');
     }
+    document.addEventListener('click', () => document.getElementById('medProfileMenu').classList.remove('open'));
+
+    function toggleMedPrivacy() {
+      const b = document.body.classList.toggle('privacy-blur');
+      document.getElementById('pmMedPrivState').textContent = b ? 'ON' : 'OFF';
+      document.getElementById('medPrivBtn').textContent = b ? '🙈' : '👁️';
+    }
+
+    // ─── WHATSAPP SHARE FUNCTIONS FOR MEDIATOR ──────────────────────────────
+
+    function shareMedOrderToAdminWa(orderNo) {
+      const o = medOrders.find(x => String(x.orderNo) === String(orderNo));
+      if (!o) return;
+      const msg = [
+        `🤝 *Mediator Order Update — SastaDeal*`,
+        `👤 *Mediator:* ${medUser.name}`,
+        `🔢 *Order No:* #${o.orderNo}`,
+        `🆔 *Order ID:* ${o.platformOrderId}`,
+        `📦 *Product:* ${o.productName}`,
+        `🧑 *Reviewer Account:* ${o.accountName}`,
+        `💵 *Price:* ₹${o.pricePaid} | *Less:* ₹${o.less}`,
+        `💰 *ToGet:* ₹${o.toGet} | *Got:* ${o.actualGot !== null ? '₹' + o.actualGot : 'Pending'}`,
+        `📊 *Status:* ${o.orderStatus}`,
+        o.notes ? `📝 *Note:* ${o.notes}` : ''
+      ].filter(Boolean).join('\n');
+      SD.openWhatsApp(ADMIN_WA, msg);
+    }
+
+    function sharePendingSummaryToAdminWa() {
+      const pending = medOrders.filter(o => String(o.orderStatus || '').toLowerCase() !== 'got refund');
+      const totalDue = pending.reduce((acc, o) => acc + (Number(o.toGet) || 0), 0);
+      const formFilled = pending.filter(o => Boolean(o.refundFormDate));
+      const msg = [
+        `📊 *Mediator Settlement Summary — SastaDeal*`,
+        `🤝 *Mediator:* ${medUser.name}`,
+        `📦 *Total Orders:* ${medOrders.length}`,
+        `⏳ *Pending Refund Orders:* ${pending.length} (Form Filled: ${formFilled.length})`,
+        `💰 *Total Yet to Receive:* ₹${Math.round(totalDue).toLocaleString('en-IN')}`,
+        `────────────────────`,
+        `Hi Admin, let's sync on the pending refund settlements.`
+      ].join('\n');
+      SD.openWhatsApp(ADMIN_WA, msg);
+    }
+
+    function contactAdminWaFromMed() {
+      SD.openWhatsApp(ADMIN_WA, `👋 Hi Admin (SastaDeal), this is Mediator *${medUser.name}*.`);
+    }
+
+    function sendMedQueryViaWa() {
+      const ref = document.getElementById('mqOrderId').value.trim() || document.getElementById('mqOrderSelect').value;
+      const txt = document.getElementById('mqMessage').value.trim();
+      SD.openWhatsApp(ADMIN_WA, `📩 *Mediator Query (${medUser.name})*\n📦 *Order:* ${ref}\n💬 *Msg:* ${txt}`);
+    }
+
+    // ─── RENDER PAYLOAD & ANALYTICS ─────────────────────────────────────────
 
     function renderMedPayload(data) {
       if (!data || !data.success) return;
-      document.getElementById('medNameBadge').textContent = `🤝 ${data.user?.name || medUser.name}`;
+      const mName = data.user?.name || medUser.name || 'Mediator';
+      const init = mName.slice(0, 2).toUpperCase();
+
+      document.getElementById('medAvatarInitials').textContent = init;
+      document.getElementById('medGreetInitials').textContent = init;
+      document.getElementById('medShortName').textContent = mName.slice(0, 12);
+      document.getElementById('pmMedFullName').textContent = mName;
+      document.getElementById('drawerMedName').textContent = mName;
+      document.getElementById('medGreetingTitle').textContent = `Hello, ${mName}! 🤝`;
+
       medOrders = data.orders || [];
 
-      // Populate Mediator's Own Order IDs into Query Dropdown
       const qSel = document.getElementById('mqOrderSelect');
       qSel.innerHTML = `<option value="General Query">-- General Query / Settlement Update (${medOrders.length} Orders) --</option>` +
         medOrders.map(o =>
-          `<option value="#${o.orderNo} (${SD.escapeHtml(o.platformOrderId)})">#${o.orderNo} | ${SD.escapeHtml(o.platformOrderId)} | ${SD.escapeHtml((o.productName || '').slice(0, 28))} (${SD.escapeHtml(o.orderStatus)})</option>`
+          `<option value="#${o.orderNo} (${SD.escapeHtml(o.platformOrderId)})">#${o.orderNo} | ${SD.escapeHtml(o.platformOrderId)} | ${SD.escapeHtml((o.productName || '').slice(0, 26))} (${SD.escapeHtml(o.orderStatus)})</option>`
         ).join('');
 
+      applyMedFilters();
+      renderMedAnalytics();
+    }
+
+    function setMedQuickStatus(statusVal, btnEl) {
+      document.querySelectorAll('.q-pill').forEach(p => {
+        p.classList.toggle('active', p === btnEl || p.dataset.st === statusVal);
+      });
+      document.getElementById('medStatusFilter').value = statusVal;
       applyMedFilters();
     }
 
@@ -551,9 +726,7 @@
         if (isRefunded) {
           gotCount++;
           totalRefund += actualGot;
-          if (o.actualGot !== null && toGet !== actualGot) {
-            diffSum += Math.abs(toGet - actualGot);
-          }
+          if (o.actualGot !== null && toGet !== actualGot) diffSum += Math.abs(toGet - actualGot);
         } else {
           pendingCount++;
           yetToReceive += toGet;
@@ -568,6 +741,52 @@
       document.getElementById('mKpiPendingCount').textContent = pendingCount.toLocaleString('en-IN');
       document.getElementById('mKpiGotCount').textContent = gotCount.toLocaleString('en-IN');
       document.getElementById('mKpiDiff').textContent = SD.formatCurrency(diffSum);
+    }
+
+    function renderMedAnalytics() {
+      const total = medOrders.length;
+      let vol = 0, refAmt = 0, dueAmt = 0, gotCnt = 0, formDueCnt = 0;
+      const stMap = new Map();
+
+      medOrders.forEach(o => {
+        const st = o.orderStatus || 'Order Placed';
+        stMap.set(st, (stMap.get(st) || 0) + 1);
+        vol += Number(o.pricePaid) || 0;
+        if (st.toLowerCase() === 'got refund') {
+          gotCnt++;
+          refAmt += (o.actualGot !== null ? Number(o.actualGot) : Number(o.toGet)) || 0;
+        } else {
+          dueAmt += Number(o.toGet) || 0;
+          if (o.refundFormDate) formDueCnt++;
+        }
+      });
+
+      const pct = total ? Math.round((gotCnt / total) * 100) : 0;
+      const ring = document.getElementById('medPulseRing');
+      ring.setAttribute('data-score', pct + '%');
+      ring.style.setProperty('--pct', pct + '%');
+      document.getElementById('medPulseSub').textContent = `${gotCnt} of ${total} orders refunded (${pct}%)`;
+      document.getElementById('anMedVol').textContent = SD.formatCurrency(vol);
+      document.getElementById('anMedRef').textContent = SD.formatCurrency(refAmt);
+      document.getElementById('anMedDue').textContent = SD.formatCurrency(dueAmt);
+      document.getElementById('anMedFormCnt').textContent = `${formDueCnt} orders`;
+
+      document.getElementById('medStatusBreakdownList').innerHTML = Array.from(stMap.entries())
+        .sort((a, b) => b[1] - a[1])
+        .map(([st, cnt]) => {
+          const p = Math.round((cnt / Math.max(1, total)) * 100);
+          return `
+            <div style="margin-bottom:8px;">
+              <div style="display:flex;justify-content:space-between;font-size:0.74rem;margin-bottom:2px;">
+                <span>${SD.escapeHtml(st)}</span>
+                <span class="mono" style="color:var(--accent);">${cnt} (${p}%)</span>
+              </div>
+              <div style="height:6px;background:var(--bg-primary);border-radius:999px;overflow:hidden;">
+                <div style="height:100%;width:${p}%;background:#a855f7;"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
     }
 
     function sortMedTable(field) {
@@ -588,7 +807,11 @@
 
       tbody.innerHTML = filteredMedOrders.map(o => {
         const days = o.refundFormDate ? SD.daysBetween(o.refundFormDate, o.refundDate || null) : null;
-        const daysTag = days !== null ? `<span style="font-size:0.64rem;color:var(--text-muted)">(${days}d)</span>` : '';
+        let dueBadge = '';
+        if (days !== null) {
+          const isOverdue = !o.refundDate && days >= 15;
+          dueBadge = `<span class="mono" style="font-size:0.62rem;padding:1px 5px;border-radius:4px;margin-left:3px;background:${isOverdue ? 'var(--red-bg)' : 'var(--yellow-bg)'};color:${isOverdue ? '#ef4444' : '#f59e0b'};">${o.refundDate ? `${days}d` : `Due:${days}d`}</span>`;
+        }
 
         return `
           <tr>
@@ -597,20 +820,21 @@
               ${SD.escapeHtml(o.platformOrderId)} 📋
             </td>
             <td style="color:var(--cyan);font-weight:600;">${SD.escapeHtml(o.accountName)}</td>
-            <td style="max-width:170px;overflow:hidden;text-overflow:ellipsis;" title="${SD.escapeHtml(o.productName)}">
+            <td style="max-width:165px;overflow:hidden;text-overflow:ellipsis;" title="${SD.escapeHtml(o.productName)}">
               ${SD.escapeHtml(o.productName)}
             </td>
             <td>${SD.escapeHtml(o.sellerName || '—')}</td>
             <td class="mono">${SD.formatDate(o.orderDate)}</td>
-            <td class="mono">${SD.formatDate(o.refundFormDate)} ${daysTag}</td>
-            <td class="mono">${SD.formatCurrency(o.pricePaid)}</td>
-            <td class="mono" style="color:#dc2626;font-weight:700;">${SD.formatCurrency(o.less)}</td>
-            <td class="mono" style="color:#16a34a;font-weight:700;">${SD.formatCurrency(o.toGet)}</td>
-            <td>${SD.formatActualGotHtml(o.actualGot, o.toGet)}</td>
+            <td class="mono">${SD.formatDate(o.refundFormDate)}${dueBadge}</td>
+            <td class="mono mono-amt">${SD.formatCurrency(o.pricePaid)}</td>
+            <td class="mono mono-amt" style="color:#dc2626;font-weight:700;">${SD.formatCurrency(o.less)}</td>
+            <td class="mono mono-amt" style="color:#16a34a;font-weight:700;">${SD.formatCurrency(o.toGet)}</td>
+            <td class="mono-amt">${SD.formatActualGotHtml(o.actualGot, o.toGet)}</td>
             <td>${SD.statusBadge(o.orderStatus)}</td>
             <td>
-              <button class="btn" style="padding:3px 6px;" onclick="openMedTimeline(${o.orderNo})">📊</button>
-              <button class="btn" style="padding:3px 6px;" onclick="openNoteModal(${o.orderNo})">📝${o.notes ? '•' : ''}</button>
+              <button class="icon-btn" style="width:26px;height:26px;font-size:0.72rem;" onclick="openMedTimeline(${o.orderNo})" title="Timeline">📊</button>
+              <button class="icon-btn" style="width:26px;height:26px;font-size:0.72rem;" onclick="openNoteModal(${o.orderNo})" title="Note">📝${o.notes ? '•' : ''}</button>
+              <button class="wa-btn" onclick="shareMedOrderToAdminWa(${o.orderNo})" title="WhatsApp Admin about this Order">🟢 💬</button>
             </td>
           </tr>
         `;
@@ -627,16 +851,17 @@
             Account: <strong style="color:var(--cyan)">${SD.escapeHtml(o.accountName)}</strong> | Seller: ${SD.escapeHtml(o.sellerName || '—')}
           </div>
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--bg-primary);padding:6px;border-radius:7px;text-align:center;font-size:0.74rem;">
-            <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">Price</small><strong class="mono">${SD.formatCurrency(o.pricePaid)}</strong></div>
-            <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">Less</small><strong class="mono" style="color:#dc2626">${SD.formatCurrency(o.less)}</strong></div>
-            <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">ToGet</small><strong class="mono" style="color:#16a34a">${SD.formatCurrency(o.toGet)}</strong></div>
-            <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">Got</small>${SD.formatActualGotHtml(o.actualGot, o.toGet)}</div>
+            <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">Price</small><strong class="mono mono-amt">${SD.formatCurrency(o.pricePaid)}</strong></div>
+            <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">Less</small><strong class="mono mono-amt" style="color:#dc2626">${SD.formatCurrency(o.less)}</strong></div>
+            <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">ToGet</small><strong class="mono mono-amt" style="color:#16a34a">${SD.formatCurrency(o.toGet)}</strong></div>
+            <div><small style="font-size:0.6rem;color:var(--text-muted);display:block;">Got</small><span class="mono-amt">${SD.formatActualGotHtml(o.actualGot, o.toGet)}</span></div>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span class="mono" style="font-size:0.7rem;color:var(--text-muted)">Form: ${SD.formatDate(o.refundFormDate)}</span>
             <div style="display:flex;gap:5px;">
-              <button class="btn" onclick="openMedTimeline(${o.orderNo})">📊 Timeline</button>
-              <button class="btn" onclick="openNoteModal(${o.orderNo})">📝 Note</button>
+              <button class="icon-btn" style="width:auto;height:26px;padding:0 8px;font-size:0.72rem;" onclick="openMedTimeline(${o.orderNo})">📊</button>
+              <button class="icon-btn" style="width:auto;height:26px;padding:0 8px;font-size:0.72rem;" onclick="openNoteModal(${o.orderNo})">📝 Note</button>
+              <button class="wa-btn" onclick="shareMedOrderToAdminWa(${o.orderNo})">🟢 WA</button>
             </div>
           </div>
         </div>
@@ -700,7 +925,8 @@
             </div>
           `).join('')}
         </div>
-        ${o.notes ? `<div style="padding:8px;background:var(--bg-primary);border-radius:7px;font-size:0.76rem;"><strong>Note:</strong> ${SD.escapeHtml(o.notes)}</div>` : ''}
+        ${o.notes ? `<div style="padding:8px;background:var(--bg-primary);border-radius:7px;font-size:0.76rem;margin-bottom:10px;"><strong>Note:</strong> ${SD.escapeHtml(o.notes)}</div>` : ''}
+        <button class="wa-btn" style="padding:8px 12px;" onclick="shareMedOrderToAdminWa(${o.orderNo})">🟢 Message Admin on WhatsApp</button>
       `;
       document.getElementById('medTimelineModal').classList.add('open');
     }
@@ -715,10 +941,8 @@
         message: document.getElementById('mqMessage').value.trim()
       });
       btn.disabled = false;
-      if (res?.success) {
-        SD.toast(res.message, 'success');
-        document.getElementById('mqMessage').value = '';
-      } else SD.toast(res?.error || 'Error sending query.', 'error');
+      if (res?.success) { SD.toast(res.message, 'success'); document.getElementById('mqMessage').value = ''; }
+      else SD.toast(res?.error || 'Error sending query.', 'error');
     }
 
     function exportMedOrders(format) {
@@ -732,11 +956,15 @@
       else SD.exportToXLS(fn, headers, rows);
     }
 
-    function refreshMediatorData() {
-      SD.api('getDashboardData', {}, {
-        useCache: true,
-        onCached: cached => renderMedPayload(cached)
-      }).then(fresh => renderMedPayload(fresh));
+    async function refreshMediatorData() {
+      const key = 'med_dash_v4_' + (medUser?.name || 'me');
+      const cached = await MED_IDB.get(key);
+      if (cached && cached.success && !medOrders.length) renderMedPayload(cached);
+      const fresh = await SD.api('getDashboardData');
+      if (fresh && fresh.success) {
+        renderMedPayload(fresh);
+        MED_IDB.set(key, fresh);
+      }
     }
 
     refreshMediatorData();
