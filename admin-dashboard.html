@@ -1419,6 +1419,8 @@
               <button class="btn" onclick="openEditStatusModal('${o.orderNo}')">🔄 Status</button>
               <button class="btn" onclick="openEditPaymentModal('${o.orderNo}')">💸 Pay</button>
               <button class="btn" onclick="openEditTrackingModal('${o.orderNo}')">✏️ Track</button>
+              <button class="btn" style="padding:3px 6px;color:#22c55e;" onclick="waOrderParty('${o.orderNo}','buyer')" title="WhatsApp Buyer">💬B</button>
+              <button class="btn" style="padding:3px 6px;color:#a855f7;" onclick="waOrderParty('${o.orderNo}','mediator')" title="WhatsApp Mediator">💬M</button>
             </div>
           </div>
         </div>
@@ -2056,6 +2058,21 @@
         document.getElementById('syncTimeLabel').textContent = 'Synced ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       }
     }
+function waOrderParty(orderNo, targetRole) {
+  const o = allOrders.find(x => String(x.orderNo) === String(orderNo));
+  if (!o) return;
+  if (targetRole === 'buyer') {
+    const acc = allAccounts.find(a => a.userId.toLowerCase() === String(o.userId || '').toLowerCase());
+    const phone = acc?.whatsApp || acc?.mobile || '';
+    const msg = `🛒 *SastaDeal Order Update (#${o.orderNo})*\n📦 Product: ${o.productName}\n🆔 Order ID: ${o.platformOrderId}\n👤 Account: ${o.accountName}\n💵 Price: ₹${o.pricePaid} | Less: -₹${o.buyerLess}\n💰 Refund To Get: ₹${o.buyerToGet}\n📊 Status: *${o.orderStatus}* | Payment: *${o.paymentStatus}*`;
+    SD.openWhatsApp(phone, msg);
+  } else {
+    const med = allMediators.find(m => m.name.toLowerCase() === String(o.mediatorName || '').toLowerCase());
+    const phone = med?.whatsApp || med?.contact || '';
+    const msg = `🤝 *Hi ${o.mediatorName} — Order Follow-up*\n🔢 Order No: #${o.orderNo}\n🆔 Order ID: ${o.platformOrderId}\n📦 Product: ${o.productName}\n🧑 Reviewer: ${o.accountName}\n💵 Price: ₹${o.pricePaid} | Less: ₹${o.less} | *ToGet: ₹${o.toGet}*\n📊 Current Status: *${o.orderStatus}*`;
+    SD.openWhatsApp(phone, msg);
+  }
+}
 
     refreshAdminData();
   </script>
